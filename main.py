@@ -21,9 +21,9 @@ def user_login():
 	return json.dumps(response)
 
 def missingValues(data):
-	if all (k in foo for k in ("facebookId","firstName","lastName","photoUrl","email","token")):
-		return true
-	return false
+	if all (k in data for k in ("facebookId","firstName","lastName","photoUrl","email","token")):
+		return False
+	return True
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
