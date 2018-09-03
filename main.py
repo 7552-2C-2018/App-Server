@@ -3,8 +3,12 @@ from flask import Flask
 from flask import request
 import json
 import requests
+import jwt
+import datetime
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'ImAverySecureScretKey'
 
 
 @app.route('/')
@@ -27,9 +31,11 @@ def user_login():
 			output = json.loads(r.text)
 			if (output["id"] == request_data["facebookId"]):
 				status = 200
-				token = "sdjlksar3287v8a7dvlsajd"
+				payload = {"user": output["id"], "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=900)}
+				token = jwt.encode(payload, app.config.get('SECRET_KEY'))
+				print(token.decode('UTF-8'))
 				message = "Token generado correctamente"
-				response['token'] = token
+				response['token'] = token.decode('UTF-8')
 			else:
 				status = 401
 				message = "El facebook ID es invalido"
