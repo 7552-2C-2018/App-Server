@@ -9,7 +9,7 @@ Application Server of Melli
 - Docker
 - Docker-compose
 
-Ejecutar en el root del proyecto:  
+Ejecutar por cmd ubicado en el root del proyecto:  
 ```
-$~ docker-compose up -d
+docker-compose up -d
 ```
