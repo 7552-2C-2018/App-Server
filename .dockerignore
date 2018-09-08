@@ -1,0 +1,9 @@
+.git
+Dockerfile
+.gitignore
+README.md
+/venv/*
+main.py
+travis.sh
+app/tests/*
+requirements.txt

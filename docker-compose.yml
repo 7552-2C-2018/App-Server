@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app-server:
+    command: >
+      gunicorn -b 0.0.0.0:8000
+      --access-logfile -
+      --reload
+      "server.app:app"
+    container_name: app-server
+    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - "mongodb:database"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+
+  mongodb:
+    image: mongo:3.4.2
+    restart: always
+    command: mongod
+    environment:
+      # provide your credentials here
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=Taller2018
+  
+
