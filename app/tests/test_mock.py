@@ -1,3 +1,3 @@
 import pytest
-def mock_test(self):
+def tesxt_mock():
 	assert 1==1
