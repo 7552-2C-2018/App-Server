@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_restplus import Resource, Api, reqparse
 from . import app
+from werkzeug.contrib.fixers import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app)
 api = Api(app, 
           version='0.1', 
           title='Our sample API',
@@ -21,4 +23,4 @@ class HelloWorld(Resource):
     	return colleccion_prueba.find_one({'hello': 'world'}, {'_id': 0})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run()
