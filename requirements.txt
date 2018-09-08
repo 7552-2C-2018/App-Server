@@ -11,9 +11,9 @@ py==1.5.3
 pylint==1.8.4
 pymongo==3.6.1
 pytest==3.5.1
-pytest-cov==2.5.1
 python-dotenv==0.8.2
 requests==2.18.4
 urllib3==1.22
 Werkzeug==0.14.1
 Flask-Cors==3.0.6
+unittest==2.1

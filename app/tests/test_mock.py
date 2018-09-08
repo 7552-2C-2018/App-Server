@@ -1,3 +1,4 @@
+# content of test_mock.py
 import pytest
-def tesxt_mock():
+def test_mock():
 	assert 1==1
