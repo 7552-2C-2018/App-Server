@@ -4,7 +4,7 @@ from server.Configuration import Config
 
 app = Flask(__name__)
 CORS(app)
-Config().set_up_env()
+Config().set_up_env(app)
 
 mongodb = Config().set_up_mongodb(app)
 
