@@ -54,7 +54,7 @@ class LoginValidator(Resource):
 				message = "El access_token es invalido"
 		response['status'] = status
 		response['message'] = message
-		return jsonify(response)
+		return json.dumps(response)
 
 if __name__ == '__main__':
 	app.run()
