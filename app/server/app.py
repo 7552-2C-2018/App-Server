@@ -15,13 +15,12 @@ class Hello(Resource):
 		return {'welcome': "I'm the App Server for Melli"}
 
 parser = api.parser()
-parser.add_argument('facebookId', type=str, help='Some param', location='data')
-parser.add_argument('firstName', type=str, help='Some param', location='data')
-parser.add_argument('lastName', type=str, help='Some param', location='data')
-parser.add_argument('photoUrl', type=str, help='Some param', location='data')
-parser.add_argument('photoUrl', type=str, help='Some param', location='data')
-parser.add_argument('email', type=str, help='Some param', location='data')
-parser.add_argument('token', type=str, help='Some param', location='data')
+parser.add_argument('facebookId', type=str, help='facebookId', location='headers')
+parser.add_argument('firstName', type=str, help='nombre', location='headers')
+parser.add_argument('lastName', type=str, help='apellido', location='headers')
+parser.add_argument('photoUrl', type=str, help='foto', location='headers')
+parser.add_argument('email', type=str, help='mail', location='headers')
+parser.add_argument('token', type=str, help='token fb', location='headers')
 @api.route('/login')
 class LoginValidator(Resource):
 	@staticmethod
@@ -39,15 +38,12 @@ class LoginValidator(Resource):
 		else:
 			url = 'https://graph.facebook.com/me?access_token=' + request_data["token"]
 			r = requests.get(url)
-			print(r.status_code)
-			print(r.text)
 			if (r.status_code == 200):
 				output = json.loads(r.text)
 				if (output["id"] == request_data["facebookId"]):
 					status = 200
 					payload = {"user": output["id"], "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=900)}
 					token = jwt.encode(payload, app.config.get('SECRET_KEY'))
-					print(token.decode('UTF-8'))
 					message = "Token generado correctamente"
 					response['token'] = token.decode('UTF-8')
 				else:
@@ -58,7 +54,7 @@ class LoginValidator(Resource):
 				message = "El access_token es invalido"
 		response['status'] = status
 		response['message'] = message
-		return json.dumps(response)
+		return jsonify(response)
 
 if __name__ == '__main__':
 	app.run()
