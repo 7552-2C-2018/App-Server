@@ -7,7 +7,7 @@ import jwt
 import datetime
 api = Api(app, version='0.1', title='Our sample API',description='This is our sample API',)
 
-colleccion_prueba = app.database.prueba
+
 
 @api.route('/welcome')
 class Hello(Resource):
