@@ -10,4 +10,4 @@ def test_mock():
 	assert 1==1
 
 def test_db():
-	assert app.database.prueba.findone() is not None
+	assert app.database.prueba.find() is not None
