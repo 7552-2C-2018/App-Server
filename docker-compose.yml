@@ -17,9 +17,6 @@ services:
       - "80:80"
     volumes:
       - ./app:/app
-    environment:
-      - FLASK_DEBUG=true
-
   mongodb:
     image: mongo:3.4.2
     restart: always
