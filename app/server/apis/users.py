@@ -10,10 +10,10 @@ login.add_argument('facebookId', type=str, help='facebookId', location='headers'
 login.add_argument('token', type=str, help='token fb', location='headers', required=True)
 
 register = login.copy()
-register.add_argument('firstName', type=str, help='nombre', location='body', required=True)
-register.add_argument('lastName', type=str, help='apellido', location='body', required=True)
-register.add_argument('photoUrl', type=str, help='foto', location='body', required=True)
-register.add_argument('email', type=str, help='mail', location='body', required=True)
+register.add_argument('firstName', type=str, help='nombre', location='form', required=True)
+register.add_argument('lastName', type=str, help='apellido', location='form', required=True)
+register.add_argument('photoUrl', type=str, help='foto', location='form', required=True)
+register.add_argument('email', type=str, help='mail', location='form', required=True)
 
 
 @api.route('/login')
