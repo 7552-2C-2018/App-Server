@@ -22,5 +22,4 @@ class Config(object):
 		if not MONGO_URL:
 			MONGO_URL = 'mongodb://database:27017/app-server'
 		app.config['MONGO_URI'] = MONGO_URL
-		logging.debug("MongoUri: " + str(MONGO_URL))
 		return PyMongo(app)

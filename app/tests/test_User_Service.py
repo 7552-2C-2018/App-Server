@@ -1,13 +1,14 @@
 # content of test_mock.py
 import pytest
 from server.services.userServices import UserServices
+from server.setup import app
+with app.app_context():
+	db = app.database
+	invalid_request = {"facebookId": "", "token": ""}
+	userServ = UserServices()
 
-invalid_request = {"facebookId": "a", "token": ""}
 
 def test_login_invalid_facebook_id():
-	response = UserServices.checkLogin(invalid_request)
+	response = userServ.checkLogin(invalid_request)
 	assert response["status"] == 400
 	assert response["message"] == 'FacebookId Invalido'
-
-def test_db():
-	assert app.database.prueba.find() is not None

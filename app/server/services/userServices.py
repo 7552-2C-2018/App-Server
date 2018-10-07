@@ -1,5 +1,6 @@
 import jwt
 import datetime
+import json
 from flask import jsonify
 from server.Structures.Response import Responses
 from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
@@ -42,8 +43,8 @@ class UserServices:
         facebook_id = request_data["facebookId"]
         facebook_token = request_data["token"]
         facebook_response = FacebookCommunication.ValidateUser(facebook_token)
-
-        if facebook_response.status_code == 200 and facebook_response.id == facebook_id:
+        facebook_payload = json.loads(facebook_response.text)
+        if facebook_response.status_code == 200 and facebook_payload['id'] == facebook_id:
             if UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__generateToken(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Token generado correctamente', response)
@@ -58,7 +59,8 @@ class UserServices:
         facebook_id = request_data["facebookId"]
         facebook_token = request_data["token"]
         facebook_response = FacebookCommunication.ValidateUser(facebook_token)
-        if facebook_response.status_code == 200 and facebook_response[id] == facebook_id:
+        facebook_payload = json.loads(facebook_response.text)
+        if facebook_response.status_code == 200 and facebook_payload['id'] == facebook_id:
             if not UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__registerNonExistingUser(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Usuario registrado correctamente', response)
