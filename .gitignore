@@ -2,3 +2,4 @@ __pycache__
 app/tests/.pytest_cache/v/cache/lastfailed
 app/tests/.pytest_cache/README.md
 app/tests/.pytest_cache/v/cache/nodeids
+app/debug.log

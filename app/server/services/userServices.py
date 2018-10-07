@@ -43,7 +43,7 @@ class UserServices:
         facebook_token = request_data["token"]
         facebook_response = FacebookCommunication.ValidateUser(facebook_token)
 
-        if True or (facebook_response.status_code == 200 and facebook_response.id == facebook_id):
+        if facebook_response.status_code == 200 and facebook_response.id == facebook_id:
             if UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__generateToken(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Token generado correctamente', response)
@@ -58,7 +58,7 @@ class UserServices:
         facebook_id = request_data["facebookId"]
         facebook_token = request_data["token"]
         facebook_response = FacebookCommunication.ValidateUser(facebook_token)
-        if True or (facebook_response.status_code == 200 and facebook_response[id] == facebook_id):
+        if facebook_response.status_code == 200 and facebook_response[id] == facebook_id:
             if not UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__registerNonExistingUser(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Usuario registrado correctamente', response)
