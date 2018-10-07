@@ -14,7 +14,7 @@ class UserTransactions:
         return workingCollection.find_one(facebook_id)
 
     @staticmethod
-    def newUser(user, token, exp_date):
+    def newUser(user, new_token, new_expdate):
         return workingCollection.insert_one({'facebookId': user, 'token': new_token, 'exp_date': new_expdate})
 
     @staticmethod
