@@ -16,9 +16,15 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 class UserServices:
 
     @staticmethod
-    def __registerNonExistingUser(facebook_id, exp_date):
-        UserTransactions.newUser(facebook_id)
-        token = UserServices.__generateToken(facebook_id, exp_date)
+    def __updateUser(data):
+        UserTransactions.updateUserData(data)
+
+    @staticmethod
+    def __registerNonExistingUser(data):
+        exp_date = UserServices.__getDateTime()
+        UserTransactions.newUser(data["facebookId"], data["firstName"],
+                                 data["lastName"], data["photoUrl"], data["email"])
+        token = UserServices.__generateToken(data["facebookId"], exp_date)
         return token
 
     @staticmethod
@@ -40,11 +46,7 @@ class UserServices:
 
     @staticmethod
     def checkLogin(request_data):
-        facebook_id = request_data["facebookId"]
-        facebook_token = request_data["token"]
-        facebook_response = FacebookCommunication.ValidateUser(facebook_token)
-        facebook_payload = json.loads(facebook_response.text)
-        if facebook_response.status_code == 200 and facebook_payload['id'] == facebook_id:
+        if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
             if UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__generateToken(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Token generado correctamente', response)
@@ -53,18 +55,24 @@ class UserServices:
         else:
             return Responses.badRequest('FacebookId Invalido')
 
-
     @staticmethod
     def registerUser(request_data):
-        facebook_id = request_data["facebookId"]
-        facebook_token = request_data["token"]
-        facebook_response = FacebookCommunication.ValidateUser(facebook_token)
-        facebook_payload = json.loads(facebook_response.text)
-        if facebook_response.status_code == 200 and facebook_payload['id'] == facebook_id:
+        if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
             if not UserServices.__checkUserExistance(facebook_id):
-                response = {'token': UserServices.__registerNonExistingUser(facebook_id, UserServices.__getDateTime())}
+                response = {'token': UserServices.__registerNonExistingUser(request_data)}
                 return Responses.success('Usuario registrado correctamente', response)
             else:
                 return Responses.badRequest('Usuario ya registrado')
+        else:
+            return Responses.badRequest('FacebookId Invalido')
+
+    @staticmethod
+    def updateUser(request_data):
+        if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
+            if UserServices.__checkUserExistance(facebook_id):
+                UserServices.__updateUser(request_data)
+                return Responses.success('Usuario actualizado correctamente', "")
+            else:
+                return Responses.badRequest('Usuario no registrado')
         else:
             return Responses.badRequest('FacebookId Invalido')

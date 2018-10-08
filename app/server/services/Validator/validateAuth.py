@@ -17,9 +17,10 @@ def validateAuth(function):
             return Responses.unauthorized('FacebookId not found')
         token = request.headers.get('access-token')
 
-        if False and token != user['token']:
+        if token != user['token']:
             return Responses.unauthorized('Invalid token')
-        current_date_seconds = time.mktime( datetime.datetime.utcnow().timetuple())
+
+        current_date_seconds = time.mktime(datetime.datetime.utcnow().timetuple())
         exp_date_seconds = time.mktime(user['exp_date'].timetuple())
         if current_date_seconds > exp_date_seconds:
             return Responses.unauthorized('Expirated token')
