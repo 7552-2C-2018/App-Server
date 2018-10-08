@@ -1,5 +1,5 @@
 import requests
-
+import json
 
 class FacebookCommunication:
     def __init__(self):
