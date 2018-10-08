@@ -1,25 +1,29 @@
 from functools import wraps
-from apis import api
 from flask import request
-
-from Structures.Response import Responses
-from DatabaseComunnication.UserTransactions import UserTransactions
-
+import datetime
+import time
+from server.Structures.Response import Responses
+from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
+import logging
+logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
 def validateAuth(function):
 
     @wraps(function)
     def validateAuthorization(*args, **kwargs):
 
-        user = findUserById(requests.headers.get('facebookId'))
-
+        user = UserTransactions.findUserById(request.headers.get('facebookId'))
         if user is None:
             return Responses.unauthorized('FacebookId not found')
-        token = request.headers.get('token')
+        token = request.headers.get('access-token')
 
-        if token != user['token']:
+        if False and token != user['token']:
             return Responses.unauthorized('Invalid token')
+        current_date_seconds = time.mktime( datetime.datetime.utcnow().timetuple())
+        exp_date_seconds = time.mktime(user['exp_date'].timetuple())
+        if current_date_seconds > exp_date_seconds:
+            return Responses.unauthorized('Expirated token')
 
-        return function (*args, **kwargs)
+        return function(*args, **kwargs)
 
     return validateAuthorization
