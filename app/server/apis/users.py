@@ -3,6 +3,7 @@ from flask import request
 from flask_restplus import Resource, reqparse, Namespace
 from server.services.userServices import UserServices
 from server.services.Validator.validateAuth import validateAuth
+from server.Structures.Response import responses
 
 api = Namespace('users', description='Melli user-related endpoints')
 
@@ -23,19 +24,21 @@ update.add_argument('photoUrl', type=str, help='foto', location='form')
 update.add_argument('email', type=str, help='mail', location='form')
 
 
+@api.doc(responses=responses)
 @api.route('/')
 class LoginValidator(Resource):
-    @api.doc(endpoint="Login endpoint")
+
     @api.expect(login)
     def get(self):
-        return UserServices.checkLogin(login.parse_args())
+        return_data = UserServices.checkLogin(login.parse_args())
+        return {'message': return_data["message"]}, return_data["status"], {'body': return_data["data"]}
 
-    @api.doc(endpoint="User registration endpoint")
+    @api.doc()
     @api.expect(register)
     def post(self):
         return UserServices.registerUser(register.parse_args())
 
-    @api.doc(endpoint="User datas update endpoint")
+    @api.doc()
     @api.expect(update)
     @validateAuth
     def put(self):

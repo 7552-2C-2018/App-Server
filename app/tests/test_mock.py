@@ -1,10 +1,11 @@
 from server.setup import app
 from flask import Flask
+from . import GenericTest
 
-with app.app_context():
-    db = app.database
-def test_mock():
-	assert 1==1
+class Test_mock(GenericTest):
 
-def test_db():
-	assert db.prueba.find() is not None
+	def test_mock(self):
+		assert 1==1
+
+	def test_db(self):
+		assert app.database.prueba.find() is not None

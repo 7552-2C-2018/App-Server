@@ -54,7 +54,6 @@ class UserServices:
                 return Responses.unauthorized('Usuario no registrado')
         else:
             return Responses.badRequest('FacebookId Invalido')
-
     @staticmethod
     def registerUser(request_data):
         if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
