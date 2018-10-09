@@ -4,6 +4,4 @@ python:
 services:
   - mongodb
 install: "pip install -r requirements.txt"
-script: bash travis.sh
-after_success:
-  - coveralls 
+script: bash travis.sh 
