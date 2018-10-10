@@ -29,7 +29,7 @@ class LoginValidator(Resource):
     @api.expect(login)
     def get(self):
         return_data = UserServices.checkLogin(login.parse_args())
-        return {'message': return_data["message"]}, return_data["status"], {'body': return_data["data"]}
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
     @api.expect(register)
     def post(self):

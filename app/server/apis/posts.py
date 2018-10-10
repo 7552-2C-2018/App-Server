@@ -44,17 +44,20 @@ class Post(Resource):
 	@validateAuth
 	def get(self):
 		return_data = PostServices.getPost(get_post.parse_args())
-		return {'message': return_data["message"]}, return_data["status"], {'body': return_data["data"]}
+		return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 	@api.expect(new_post_args)
 	@validateAuth
 	def post(self):
-		return PostServices.createNewPost(new_post_args.parse_args())
+		return_data = PostServices.createNewPost(new_post_args.parse_args())
+		return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 	@api.expect(update_post_args)
 	@validateAuth
 	def put(self):
-		return PostServices.updatePost(update_post_args.parse_args())
+		return_data = PostServices.updatePost(update_post_args.parse_args())
+		return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
 
 @api.route('/get_all')
 class Posts(Resource):
@@ -63,4 +66,4 @@ class Posts(Resource):
 	@validateAuth
 	def get(self):
 		return_data = PostServices.getAllPosts(common_args.parse_args())
-		return {'message': return_data["message"]}, return_data["status"], {'body': return_data["data"]}
+		return return_data["data"], return_data["status"], {'message': return_data["message"]}
