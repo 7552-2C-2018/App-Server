@@ -22,3 +22,10 @@ class Categories(Resource):
 	def get(self):
 		return ProductServices.getCategories()
 
+@api.doc(responses=responses)
+@api.route('/payments')
+class Payments(Resource):
+	@api.expect(parser)
+	@validateAuth
+	def get(self):
+		return ProductServices.get_payments()

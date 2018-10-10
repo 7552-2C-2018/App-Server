@@ -11,5 +11,9 @@ class ProductServices:
         pass
 
     @staticmethod
-    def getCategories():
-        return Responses.success("Categorias obtenidas satisfactoriamente", ProductTransactions.getCategories())
+    def get_categories():
+        return Responses.success("Categorias obtenidas satisfactoriamente", ProductTransactions.get_categories())
+
+    @staticmethod
+    def get_payments():
+        return Responses.success("Formas de pago obtenidas satisfactoriamente", ProductTransactions.get_payments())

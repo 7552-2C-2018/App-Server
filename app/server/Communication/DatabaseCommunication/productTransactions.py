@@ -4,7 +4,8 @@ import logging
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
-    categoriesCollection = app.database.categories
+    categories_collection = app.database.categories
+    paymentsCollection = app.database.payments
 
 
 class ProductTransactions:
@@ -13,5 +14,9 @@ class ProductTransactions:
         pass
 
     @staticmethod
-    def getCategories():
+    def get_categories():
         return list(categoriesCollection.find())
+
+    @staticmethod
+    def get_payments():
+        return list(paymentsCollection.find())
