@@ -16,7 +16,7 @@ class Categories(Resource):
 	@api.expect(parser)
 	@validateAuth
 	def get(self):
-		return ProductServices.getCategories()
+		return ProductServices.get_categories()
 
 
 @api.doc(responses=responses)
@@ -26,3 +26,4 @@ class Payments(Resource):
 	@validateAuth
 	def get(self):
 		return ProductServices.get_payments()
+
