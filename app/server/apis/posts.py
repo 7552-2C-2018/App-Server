@@ -1,4 +1,4 @@
-from flask_restplus import Resource,Api, Namespace, reqparse
+from flask_restplus import Resource, Api, Namespace, reqparse
 from server.services.Validator.validateAuth import validateAuth
 from server.services.postServices import PostServices
 from server.Structures.Response import responses
@@ -36,34 +36,35 @@ register.add_argument('lastName', type=str, help='apellido', location='form', re
 register.add_argument('photoUrl', type=str, help='foto', location='form', required=True)
 register.add_argument('email', type=str, help='mail', location='form', required=True)
 
+
 @api.route('/')
 @api.doc(responses=responses)
 class Post(Resource):
 
-	@api.expect(get_post)
-	@validateAuth
-	def get(self):
-		return_data = PostServices.getPost(get_post.parse_args())
-		return return_data["data"], return_data["status"], {'message': return_data["message"]}
+    @api.expect(get_post)
+    @validateAuth
+    def get(self):
+        return_data = PostServices.getPost(get_post.parse_args())
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
-	@api.expect(new_post_args)
-	@validateAuth
-	def post(self):
-		return_data = PostServices.createNewPost(new_post_args.parse_args())
-		return return_data["data"], return_data["status"], {'message': return_data["message"]}
+    @api.expect(new_post_args)
+    @validateAuth
+    def post(self):
+        return_data = PostServices.createNewPost(new_post_args.parse_args())
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
-	@api.expect(update_post_args)
-	@validateAuth
-	def put(self):
-		return_data = PostServices.updatePost(update_post_args.parse_args())
-		return return_data["data"], return_data["status"], {'message': return_data["message"]}
+    @api.expect(update_post_args)
+    @validateAuth
+    def put(self):
+        return_data = PostServices.updatePost(update_post_args.parse_args())
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
 @api.route('/get_all')
 class Posts(Resource):
 
-	@api.expect(common_args)
-	@validateAuth
-	def get(self):
-		return_data = PostServices.getAllPosts(common_args.parse_args())
-		return return_data["data"], return_data["status"], {'message': return_data["message"]}
+    @api.expect(common_args)
+    @validateAuth
+    def get(self):
+        return_data = PostServices.getAllPosts(common_args.parse_args())
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}

@@ -41,7 +41,7 @@ class UserServices:
         payload = {"user": facebook_id,
                    "exp": exp_date}
         token = jwt.encode(payload, secret_key)
-        UserTransactions.updateUserToken(facebook_id, token, exp_date)
+        UserTransactions.updateUserToken(facebook_id, token.decode('UTF-8'), exp_date)
         return token.decode('UTF-8')
 
     @staticmethod
