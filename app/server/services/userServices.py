@@ -46,7 +46,8 @@ class UserServices:
 
     @staticmethod
     def checkLogin(request_data):
-        if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
+        facebook_id = request_data["facebookId"]
+        if FacebookCommunication.ValidateUser(facebook_id, request_data["token"]):
             if UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__generateToken(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Token generado correctamente', response)
@@ -54,6 +55,7 @@ class UserServices:
                 return Responses.unauthorized('Usuario no registrado')
         else:
             return Responses.badRequest('FacebookId Invalido')
+
     @staticmethod
     def registerUser(request_data):
         if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
