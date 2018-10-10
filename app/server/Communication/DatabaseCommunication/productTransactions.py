@@ -1,10 +1,9 @@
 from server.setup import app
-from flask import Flask
 import logging
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
-    categories_collection = app.database.categories
+    categoriesCollection = app.database.categories
     paymentsCollection = app.database.payments
 
 

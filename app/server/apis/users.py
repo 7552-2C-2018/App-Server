@@ -1,13 +1,11 @@
-import json
-from flask import request
-from flask_restplus import Resource, reqparse, Namespace
+from flask_restplus import Resource,Api, reqparse, Namespace
 from server.services.userServices import UserServices
 from server.services.Validator.validateAuth import validateAuth
 from server.Structures.Response import responses
 
 api = Namespace('users', description='Melli user-related endpoints')
 
-login = api.parser()
+login = reqparse.RequestParser()
 login.add_argument('facebookId', type=str, help='facebookId', location='headers', required=True)
 login.add_argument('token', type=str, help='token fb', location='headers', required=True)
 
