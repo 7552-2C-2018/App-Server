@@ -3,25 +3,27 @@ from server.setup import app
 from server.services.userServices import UserServices
 from unittest.mock import *
 invalid_fb_credentials = {"facebookId": "", "token": ""}
-registered_credentials = {"facebookId": 102510700706099, "token": ""}
+registered_credentials = {"facebookId": "102510700706099", "token": ""}
 
-app.database.users.insert_one({"facebookId": 102510700706099,
-                                   "nombre": "mark",
-                                   "apellido": "zuc",
+app.database.users.insert_one({"facebookId": "102510700706099",
+                                   "firstName": "mark",
+                                   "lastName": "zuc",
                                    "photoUrl": "foto",
                                    "email": "mail"})
-mark_credentials = {"facebookId": 102510700706087,
+mark_credentials = {"facebookId": "102510700706087",
                     "token": "token",
                     "firstName": "mark",
                     "lastName": "zuc",
                     "photoUrl": "foto",
                     "email": "mail"}
-mark_updated_credentials = {"facebookId": 102510700706099,
+mark_updated_credentials = {"facebookId": "102510700706099",
                     "token": "token",
                     "firstName": "Mark",
                     "lastName": "zucer",
                     "photoUrl": "foto2",
                     "email": "mailNuevo"}
+
+
 class UserTests(GenericTest):
 
     def test_new_post(self):
