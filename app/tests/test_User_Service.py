@@ -5,11 +5,7 @@ from unittest.mock import *
 invalid_fb_credentials = {"facebookId": "", "token": ""}
 registered_credentials = {"facebookId": "102510700706099", "token": ""}
 
-app.database.users.insert_one({"facebookId": "102510700706099",
-                                   "firstName": "mark",
-                                   "lastName": "zuc",
-                                   "photoUrl": "foto",
-                                   "email": "mail"})
+
 mark_credentials = {"facebookId": "102510700706087",
                     "token": "token",
                     "firstName": "mark",
@@ -62,7 +58,6 @@ class UserTests(GenericTest):
         response = UserServices.updateUser(mark_updated_credentials)
         assert response["status"] == 200
         assert response["message"] == 'Usuario actualizado correctamente'
-
 
     @patch('server.Communication.facebookCommunication.FacebookCommunication.ValidateUser',
            MagicMock(return_value=True))

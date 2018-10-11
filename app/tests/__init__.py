@@ -14,13 +14,17 @@ class GenericTest(unittest.TestCase):
             app.database.users.drop()
         except Exception:
             pass
-            app.database.create_collection('users')
+        app.database.create_collection('users')
         try:
             app.database.posts.drop()
         except Exception:
             pass
         app.database.create_collection('posts')
-
+        app.database.users.insert_one({"facebookId": "102510700706099",
+                                   "firstName": "mark",
+                                   "lastName": "zuc",
+                                   "photoUrl": "foto",
+                                   "email": "mail"})
 def tearDown(self):
         self.app_context.pop()
 
