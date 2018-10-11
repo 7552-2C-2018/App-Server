@@ -24,7 +24,7 @@ class PostServices:
     @staticmethod
     def createNewPost(request_data):
         PostTransactions.newPost(request_data)
-        return Responses.created('Productos creados satisfactoriamente', "")
+        return Responses.created('Producto creado satisfactoriamente', "")
 
     @staticmethod
     def updatePost(request_data):
