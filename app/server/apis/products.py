@@ -7,7 +7,7 @@ api = Namespace('products', description='Melli post-related endpoints')
 
 parser = reqparse.RequestParser()
 parser.add_argument('facebookId', type=str, help='facebookId', location='headers')
-parser.add_argument('access-token', type=str, help='Token de acceso', location='headers')
+parser.add_argument('token', type=str, help='Token de acceso', location='headers')
 
 
 @api.doc(responses=responses)

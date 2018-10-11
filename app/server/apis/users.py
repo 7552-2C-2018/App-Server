@@ -7,7 +7,7 @@ api = Namespace('users', description='Melli user-related endpoints')
 
 login = reqparse.RequestParser()
 login.add_argument('facebookId', type=str, help='facebookId', location='headers', required=True)
-login.add_argument('token', type=str, help='token fb', location='headers', required=True)
+login.add_argument('token', type=str, help='token de acceso', location='headers', required=True)
 
 register = login.copy()
 register.add_argument('firstName', type=str, help='nombre', location='form', required=True)

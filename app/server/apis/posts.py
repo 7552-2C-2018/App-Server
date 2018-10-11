@@ -7,7 +7,7 @@ api = Namespace('posts', description='Melli post-related endpoints')
 
 common_args = reqparse.RequestParser()
 common_args.add_argument('facebookId', type=str, help='facebookId', location='headers')
-common_args.add_argument('access-token', type=str, help='Token de acceso', location='headers')
+common_args.add_argument('token', type=str, help='Token de acceso', location='headers')
 
 get_post = common_args.copy()
 get_post.add_argument('publDate', type=str, help='fecha del post', location='headers')

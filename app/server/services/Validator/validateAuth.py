@@ -16,7 +16,7 @@ def validateAuth(function):
         if user is None:
             return_data = Responses.unauthorized('FacebookId not found') 
             return return_data["data"], return_data["status"], {'message': return_data["message"]}
-        token = request.headers.get('access-token')
+        token = request.headers.get('token')
 
         if token != user['token']:
             return_data = Responses.unauthorized('Invalid token')
