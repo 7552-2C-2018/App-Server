@@ -61,7 +61,7 @@ class UserServices:
         if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
             if not UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__registerNonExistingUser(request_data)}
-                return Responses.success('Usuario registrado correctamente', response)
+                return Responses.created('Usuario registrado correctamente', response)
             else:
                 return Responses.badRequest('Usuario ya registrado')
         else:

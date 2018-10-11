@@ -20,10 +20,11 @@ class PostServices:
             return Responses.success('Productos obtenidos satisfactoriamente', response)
         else:
             return Responses.badRequest('Post inexistente')
+
     @staticmethod
     def createNewPost(request_data):
         PostTransactions.newPost(request_data)
-        return Responses.success('Productos obtenidos satisfactoriamente', "")
+        return Responses.created('Productos creados satisfactoriamente', "")
 
     @staticmethod
     def updatePost(request_data):
