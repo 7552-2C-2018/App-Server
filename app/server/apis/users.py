@@ -22,20 +22,22 @@ update.add_argument('photoUrl', type=str, help='foto', location='form')
 update.add_argument('email', type=str, help='mail', location='form')
 
 
-@api.doc(responses=responses)
+
 @api.route('/')
 class LoginValidator(Resource):
-
+    @api.doc(responses=responses)
     @api.expect(login)
     def get(self):
         return_data = UserServices.checkLogin(login.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
-
+        
+    @api.doc(responses=responses)
     @api.expect(register)
     def post(self):
         return_data = UserServices.registerUser(register.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
+    @api.doc(responses=responses)
     @api.expect(update)
     @validateAuth
     def put(self):

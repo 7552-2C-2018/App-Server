@@ -43,21 +43,20 @@ update_post_args.add_argument("latitude", type=float, help='latitud', location='
 update_post_args.add_argument("longitude", type=float, help='longitud', location='form')
 
 @api.route('/')
-@api.doc(responses=responses)
 class Post(Resource):
-
+    @api.doc(responses=responses)
     @api.expect(get_post)
     @validateAuth
     def get(self):
         return_data = PostServices.getPost(get_post.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
-
+    @api.doc(responses=responses)
     @api.expect(new_post_args)
     @validateAuth
     def post(self):
         return_data = PostServices.createNewPost(new_post_args.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
-
+    @api.doc(responses=responses)
     @api.expect(update_post_args)
     @validateAuth
     def put(self):
@@ -67,7 +66,7 @@ class Post(Resource):
 
 @api.route('/get_all')
 class Posts(Resource):
-
+    @api.doc(responses=responses)
     @api.expect(common_args)
     @validateAuth
     def get(self):
