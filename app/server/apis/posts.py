@@ -48,18 +48,21 @@ class Post(Resource):
     @api.expect(get_post)
     @validateAuth
     def get(self):
+        """Endpoint that gets a single post"""
         return_data = PostServices.getPost(get_post.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
     @api.doc(responses=responses)
     @api.expect(new_post_args)
     @validateAuth
     def post(self):
+        """Endpoint for creating a single post"""
         return_data = PostServices.createNewPost(new_post_args.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
     @api.doc(responses=responses)
     @api.expect(update_post_args)
     @validateAuth
     def put(self):
+        """Endpoint for updating a single post"""
         return_data = PostServices.updatePost(update_post_args.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
@@ -70,5 +73,6 @@ class Posts(Resource):
     @api.expect(common_args)
     @validateAuth
     def get(self):
+        """Endpoint that gets all posts"""
         return_data = PostServices.getAllPosts(common_args.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

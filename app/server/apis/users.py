@@ -28,12 +28,14 @@ class LoginValidator(Resource):
     @api.doc(responses=responses)
     @api.expect(login)
     def get(self):
+        """Login credentials validation endpoint"""
         return_data = UserServices.checkLogin(login.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
         
     @api.doc(responses=responses)
     @api.expect(register)
     def post(self):
+        """Registering user endpoint"""
         return_data = UserServices.registerUser(register.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
@@ -41,5 +43,6 @@ class LoginValidator(Resource):
     @api.expect(update)
     @validateAuth
     def put(self):
+        """Updating user data endpoint"""
         return_data = UserServices.updateUser(update.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

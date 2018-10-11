@@ -16,6 +16,7 @@ class Categories(Resource):
 	@api.expect(parser)
 	@validateAuth
 	def get(self):
+		"""Endpoint that gets all Categories"""
 		return_data = ProductServices.get_categories()
 		return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
@@ -25,6 +26,7 @@ class Payments(Resource):
 	@api.expect(parser)
 	@validateAuth
 	def get(self):
+		"""Endpoint that gets all Payments types"""
 		return_data = ProductServices.get_payments()
 		return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
