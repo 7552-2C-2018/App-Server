@@ -2,5 +2,6 @@
 omit =
   *__init__*
   *app.py
+  *api/*
   *setup.py
   *config/*
