@@ -6,7 +6,7 @@ from unittest.mock import *
 registered_credentials = {"facebookId": "102510700706087", "token": ""}
 registered_credentials_with_date = {"facebookId": "102510700706087", "token": "", "publ_date": "1539228792"}
 
-class UserTests(GenericTest):
+class PostsTests(GenericTest):
 
     def test_get_all_posts(self):
      response = PostServices.getAllPosts(registered_credentials)
