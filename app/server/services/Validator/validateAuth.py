@@ -14,16 +14,19 @@ def validateAuth(function):
 
         user = UserTransactions.findUserById(request.headers.get('facebookId'))
         if user is None:
-            return Responses.unauthorized('FacebookId not found')
+            return_data = Responses.unauthorized('FacebookId not found') 
+            return return_data["data"], return_data["status"], {'message': return_data["message"]}
         token = request.headers.get('access-token')
 
         if token != user['token']:
-            return Responses.unauthorized('Invalid token')
+            return_data = Responses.unauthorized('Invalid token')
+            return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
         current_date_seconds = time.mktime(datetime.datetime.utcnow().timetuple())
         exp_date_seconds = time.mktime(user['exp_date'].timetuple())
         if current_date_seconds > exp_date_seconds:
-            return Responses.unauthorized('Expirated token')
+            return_data = Responses.unauthorized('Expirated token')
+            return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
         return function(*args, **kwargs)
 

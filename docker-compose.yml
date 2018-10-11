@@ -21,9 +21,4 @@ services:
     image: mongo:3.4.2
     restart: always
     command: mongod
-    environment:
-      # provide your credentials here
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=Taller2018
-  
 

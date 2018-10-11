@@ -41,12 +41,13 @@ class UserServices:
         payload = {"user": facebook_id,
                    "exp": exp_date}
         token = jwt.encode(payload, secret_key)
-        UserTransactions.updateUserToken(facebook_id, token, exp_date)
+        UserTransactions.updateUserToken(facebook_id, token.decode('UTF-8'), exp_date)
         return token.decode('UTF-8')
 
     @staticmethod
     def checkLogin(request_data):
-        if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
+        facebook_id = request_data["facebookId"]
+        if FacebookCommunication.ValidateUser(facebook_id, request_data["token"]):
             if UserServices.__checkUserExistance(facebook_id):
                 response = {'token': UserServices.__generateToken(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Token generado correctamente', response)
@@ -54,12 +55,13 @@ class UserServices:
                 return Responses.unauthorized('Usuario no registrado')
         else:
             return Responses.badRequest('FacebookId Invalido')
+
     @staticmethod
     def registerUser(request_data):
         if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
-            if not UserServices.__checkUserExistance(facebook_id):
+            if not UserServices.__checkUserExistance(request_data["facebookId"]):
                 response = {'token': UserServices.__registerNonExistingUser(request_data)}
-                return Responses.success('Usuario registrado correctamente', response)
+                return Responses.created('Usuario registrado correctamente', response)
             else:
                 return Responses.badRequest('Usuario ya registrado')
         else:
@@ -67,11 +69,8 @@ class UserServices:
 
     @staticmethod
     def updateUser(request_data):
-        if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
-            if UserServices.__checkUserExistance(facebook_id):
-                UserServices.__updateUser(request_data)
-                return Responses.success('Usuario actualizado correctamente', "")
-            else:
-                return Responses.badRequest('Usuario no registrado')
+        if UserServices.__checkUserExistance(request_data["facebookId"]):
+            UserServices.__updateUser(request_data)
+            return Responses.success('Usuario actualizado correctamente', "")
         else:
-            return Responses.badRequest('FacebookId Invalido')
+            return Responses.badRequest('Usuario no registrado')

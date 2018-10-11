@@ -16,8 +16,8 @@ class Categories(Resource):
 	@api.expect(parser)
 	@validateAuth
 	def get(self):
-		return ProductServices.get_categories()
-
+		return_data = ProductServices.get_categories()
+		return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 @api.doc(responses=responses)
 @api.route('/payments')
@@ -25,5 +25,6 @@ class Payments(Resource):
 	@api.expect(parser)
 	@validateAuth
 	def get(self):
-		return ProductServices.get_payments()
+		return_data = ProductServices.get_payments()
+		return return_data["data"], return_data["status"], {'message': return_data["message"]}
 

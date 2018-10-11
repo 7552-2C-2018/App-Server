@@ -29,7 +29,12 @@ class UserTransactions:
         return workingCollection.find_one({'facebookId': facebook_id})
 
     @staticmethod
+    def getUserName(facebook_id):
+        return workingCollection.find_one({'facebookId': facebook_id},{"nombre": 1, "apellido": 1, "_id": 0})
+
+    @staticmethod
     def newUser(user_id, first_name, last_name, photo_url, email):
+
         id = workingCollection.insert_one({"facebookId": user_id,
                                            "nombre": first_name,
                                            "apellido": last_name,

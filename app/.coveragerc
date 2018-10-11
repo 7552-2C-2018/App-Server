@@ -2,5 +2,7 @@
 omit =
   *__init__*
   *app.py
+  *apis/*
   *setup.py
   *config/*
+  *services/Validator/*
