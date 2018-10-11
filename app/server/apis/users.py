@@ -33,9 +33,11 @@ class LoginValidator(Resource):
 
     @api.expect(register)
     def post(self):
-        return UserServices.registerUser(register.parse_args())
+        return_data = UserServices.registerUser(register.parse_args())
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
     @api.expect(update)
     @validateAuth
     def put(self):
-        return UserServices.updateUser(update.parse_args())
+        return_data = UserServices.updateUser(update.parse_args())
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}

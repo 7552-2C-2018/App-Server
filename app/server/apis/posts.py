@@ -1,4 +1,4 @@
-from flask_restplus import Resource, Api, Namespace, reqparse
+from flask_restplus import Resource, Api, Namespace, reqparse, inputs
 from server.services.Validator.validateAuth import validateAuth
 from server.services.postServices import PostServices
 from server.Structures.Response import responses
@@ -10,32 +10,37 @@ common_args.add_argument('facebookId', type=str, help='facebookId', location='he
 common_args.add_argument('access-token', type=str, help='Token de acceso', location='headers')
 
 get_post = common_args.copy()
-get_post.add_argument('post_id', type=str, help='Id del post a obtener', location='args')
+get_post.add_argument('publDate', type=str, help='fecha del post', location='headers')
 
 new_post_args = common_args.copy()
 new_post_args.add_argument('title', type=str, help='titulo del post', location='form', required=True)
 new_post_args.add_argument('desc', type=str, help='descripcion del post', location='form', required=True)
 new_post_args.add_argument('stock', type=int, help='stock del post', location='form', required=True)
 new_post_args.add_argument('payments', type=list, help='tipos de pago', location='form', required=True)
-new_post_args.add_argument('email', type=str, help='mail', location='form', required=True)
+new_post_args.add_argument("price",  type=int, help='precio del producto', location='form', required=True)
+new_post_args.add_argument("new", type=inputs.boolean, help='flag si el producto es nuevo o usado', location='form', required=True)
+new_post_args.add_argument("category", type=str, help='categoria del producto', location='form', required=True)
+new_post_args.add_argument("pictures", type=list, help='imagenes del producto', location='form')
+new_post_args.add_argument("shipping", type=inputs.boolean,
+                              help='si el producto puede o no ser enviado por via maritima',
+                              location='form',required=True)
+new_post_args.add_argument("latitude", type=float, help='latitud', location='form', required=True)
+new_post_args.add_argument("longitude", type=float, help='longitud', location='form', required=True)
 
 update_post_args = common_args.copy()
+update_post_args.add_argument('publDate', type=str, help='Fecha del post', location='headers')
 update_post_args.add_argument('title', type=str, help='titulo del post', location='form')
 update_post_args.add_argument('desc', type=str, help='descripcion del post', location='form')
 update_post_args.add_argument('stock', type=int, help='stock del post', location='form')
 update_post_args.add_argument('payments', type=list, help='tipos de pago', location='form')
-update_post_args.add_argument('email', type=str, help='mail', location='form')
-
-login = reqparse.RequestParser()
-login.add_argument('facebookId', type=str, help='facebookId', location='headers', required=True)
-login.add_argument('token', type=str, help='token fb', location='headers', required=True)
-
-register = login.copy()
-register.add_argument('firstName', type=str, help='nombre', location='form', required=True)
-register.add_argument('lastName', type=str, help='apellido', location='form', required=True)
-register.add_argument('photoUrl', type=str, help='foto', location='form', required=True)
-register.add_argument('email', type=str, help='mail', location='form', required=True)
-
+update_post_args.add_argument("price",  type=int, help='precio del producto', location='form')
+update_post_args.add_argument("new", type=inputs.boolean, help='si el producto es nuevo o usado', location='form')
+update_post_args.add_argument("category", type=str, help='categoria del producto', location='form')
+update_post_args.add_argument("pictures", type=list, help='imagenes del producto', location='form')
+update_post_args.add_argument("shipping", type=inputs.boolean,
+                              help='si el producto puede o no ser enviado por via maritima', location='form')
+update_post_args.add_argument("latitude", type=float, help='latitud', location='form')
+update_post_args.add_argument("longitude", type=float, help='longitud', location='form')
 
 @api.route('/')
 @api.doc(responses=responses)
