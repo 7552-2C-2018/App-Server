@@ -25,6 +25,27 @@ class GenericTest(unittest.TestCase):
                                    "lastName": "zuc",
                                    "photoUrl": "foto",
                                    "email": "mail"})
+        app.database.posts.insert_one({
+            "_id": {
+                "facebookId": "102510700706087",
+                "publication_date": 1539228792
+            },
+            "category": "test",
+            "coordenates": [
+                12,
+                13
+            ],
+            "description": "Desde swagger",
+            "new": True,
+            "payments": [
+                "EFECTIVO"
+            ],
+            "pictures": None,
+            "price": 10,
+            "shipping": False,
+            "stock": 2,
+            "title": "Prueba"
+        })
 def tearDown(self):
         self.app_context.pop()
 

@@ -3,19 +3,20 @@ from server.setup import app
 from server.services.postServices import PostServices
 from unittest.mock import *
 
+registered_credentials = {"facebookId": "102510700706087", "token": ""}
+registered_credentials_with_date = {"facebookId": "102510700706087", "token": "", "publ_date": "1539228792"}
 
-# class UserTests(GenericTest):
-#     def test_getPostInexistente(self):
-#
-#     def createNewPost(self):
-#         PostTransactions.newPost(request_data)
-#         return Responses.created('Productos creados satisfactoriamente', "")
-#
-#     def test_new_post(self):
-#         response = UserServices.checkLogin(invalid_fb_credentials)
-#         assert response["status"] == 400
-#         assert response["message"] == 'FacebookId Invalido'
-#
+class UserTests(GenericTest):
+
+    def test_get_all_posts(self):
+     response = PostServices.getAllPosts(registered_credentials)
+     assert response["status"] == 200
+     assert response["message"] == 'Productos obtenidos satisfactoriamente'
+
+    def test_get_post_id(self):
+        response = PostServices.getAllPosts(registered_credentials_with_date)
+        assert response["status"] == 200
+        assert response["message"] == 'Productos obtenidos satisfactoriamente'
 #     def test_getAllPosts(request_data):
 #         response = PostServices.getAllPosts()
 #         assert response["status"] == 200
@@ -29,3 +30,5 @@ from unittest.mock import *
 #         else:
 #             return Responses.badRequest('Post inexistente')
 
+#     def test_getPostInexistente(self):
+#
