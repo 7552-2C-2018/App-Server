@@ -3,13 +3,20 @@ from server.setup import app
 from server.services.userServices import UserServices
 from unittest.mock import *
 invalid_fb_credentials = {"facebookId": "", "token": ""}
+registered_credentials = {"facebookId": 102510700706099, "token": ""}
+
+app.database.users.insert_one({"facebookId": 102510700706099,
+                                   "nombre": "mark",
+                                   "apellido": "zuc",
+                                   "photoUrl": "foto",
+                                   "email": "mail"})
 mark_credentials = {"facebookId": 102510700706087,
                     "token": "token",
                     "firstName": "mark",
                     "lastName": "zuc",
                     "photoUrl": "foto",
                     "email": "mail"}
-mark_updated_credentials = {"facebookId": 102510700706087,
+mark_updated_credentials = {"facebookId": 102510700706099,
                     "token": "token",
                     "firstName": "Mark",
                     "lastName": "zucer",
@@ -37,14 +44,14 @@ class UserTests(GenericTest):
            MagicMock(return_value=True))
     def test_register_new_user(self):
         response = UserServices.registerUser(mark_credentials)
-        assert response["status"] == 200
+        assert response["status"] == 201
         assert response["message"] == 'Usuario registrado correctamente'
 
     @patch('server.Communication.facebookCommunication.FacebookCommunication.ValidateUser',
            MagicMock(return_value=True))
     def test_update_data_unregistered_user(self):
         response = UserServices.updateUser(invalid_fb_credentials)
-        assert response["status"] == 200
+        assert response["status"] == 400
         assert response["message"] == 'Usuario no registrado'
 
     @patch('server.Communication.facebookCommunication.FacebookCommunication.ValidateUser',
@@ -58,8 +65,7 @@ class UserTests(GenericTest):
     @patch('server.Communication.facebookCommunication.FacebookCommunication.ValidateUser',
            MagicMock(return_value=True))
     def test_login_registered_id(self):
-        invalid_request = {"facebookId": "102510700706087", "token": "token"}
-        response = UserServices.checkLogin(invalid_request)
+        response = UserServices.checkLogin(registered_credentials)
         assert response["status"] == 200
         assert response["message"] == 'Token generado correctamente'
         assert response["data"] != ''
