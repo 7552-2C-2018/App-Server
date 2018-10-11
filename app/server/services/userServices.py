@@ -59,7 +59,7 @@ class UserServices:
     @staticmethod
     def registerUser(request_data):
         if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
-            if not UserServices.__checkUserExistance(facebook_id):
+            if not UserServices.__checkUserExistance(request_data["facebookId"]):
                 response = {'token': UserServices.__registerNonExistingUser(request_data)}
                 return Responses.created('Usuario registrado correctamente', response)
             else:
@@ -70,7 +70,7 @@ class UserServices:
     @staticmethod
     def updateUser(request_data):
         if FacebookCommunication.ValidateUser(request_data["facebookId"], request_data["token"]):
-            if UserServices.__checkUserExistance(facebook_id):
+            if UserServices.__checkUserExistance(request_data["facebookId"]):
                 UserServices.__updateUser(request_data)
                 return Responses.success('Usuario actualizado correctamente', "")
             else:
