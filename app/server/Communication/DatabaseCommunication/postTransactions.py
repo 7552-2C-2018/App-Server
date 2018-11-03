@@ -15,6 +15,10 @@ class PostTransactions:
         pass
 
     @staticmethod
+    def __validate_estado(estado):
+        return estado in ["activo", "pausado", "cancelado"]
+
+    @staticmethod
     def __parseData(data):
         parsed_data = {}
         if "title" in data.keys():
@@ -58,7 +62,8 @@ class PostTransactions:
         workingCollection.insert_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}})
         workingCollection.update_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}},
                                      {'$set': parsed_data,
-                                      "ID": postId})
+                                      "ID": postId,
+                                      "estado": "activo"})
         return postId
 
     @staticmethod
@@ -68,6 +73,9 @@ class PostTransactions:
 
     @staticmethod
     def updatePostData(data):
-        parsed_data = PostTransactions.__parseData(data)
-        if parsed_data:
-            workingCollection.update_one({'ID': data['postId']}, {'$set': parsed_data})
+        #parsed_data = PostTransactions.__parseData(data)
+        estado_valido = PostTransactions.__validate_estado(data["estado"])
+        if estado_valido:
+            return workingCollection.update_one({'ID': data['postId']}, {'$set': {"estado": data["estado"]}})
+        else:
+            return "estado Invalido"

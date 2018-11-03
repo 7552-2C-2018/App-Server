@@ -18,7 +18,7 @@ class PostServices:
 
         if not response is None:
             response["name"] = UserTransactions.getUserName(response["_id"]["facebookId"])
-            return Responses.success('Productos obtenidos satisfactoriamente', response)
+            return Responses.success('Post obtenidos satisfactoriamente', response)
         else:
             return Responses.badRequest('Post inexistente')
 
@@ -27,16 +27,21 @@ class PostServices:
         response = PostTransactions.findPostByUserId(request_data["userId"])
 
         if not response is None:
-            return Responses.success('Productos obtenidos satisfactoriamente', response)
+            return Responses.success('Post obtenidos satisfactoriamente', response)
         else:
             return Responses.badRequest('Usuario sin Posts')
 
     @staticmethod
     def createNewPost(request_data):
         PostTransactions.newPost(request_data)
-        return Responses.created('Producto creado satisfactoriamente', "")
+        return Responses.created('Post creado satisfactoriamente', "")
 
     @staticmethod
     def updatePost(request_data):
-        return Responses.badRequest('FacebookId Invalido')
+        response = PostTransactions.updatePostData(request_data)
+        if response != "Estado Invalido":
+            return Responses.success('Post actualizado satisfactoriamente', "")
+        else:
+            return Responses.badRequest('Estado Invalido')
+
 

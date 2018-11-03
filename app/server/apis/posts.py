@@ -28,7 +28,8 @@ new_post_args.add_argument("latitude", type=float, help='latitud', location='for
 new_post_args.add_argument("longitude", type=float, help='longitud', location='form', required=True)
 
 update_post_args = common_args.copy()
-update_post_args.add_argument('postId', type=str, help='id del post', location='headers')
+update_post_args.add_argument('estado', type=str, help='nuevo estado del post', location='form', required=True)
+"""
 update_post_args.add_argument('title', type=str, help='titulo del post', location='form')
 update_post_args.add_argument('desc', type=str, help='descripcion del post', location='form')
 update_post_args.add_argument('stock', type=int, help='stock del post', location='form')
@@ -41,6 +42,8 @@ update_post_args.add_argument("shipping", type=inputs.boolean,
                               help='si el producto puede o no ser enviado por via maritima', location='form')
 update_post_args.add_argument("latitude", type=float, help='latitud', location='form')
 update_post_args.add_argument("longitude", type=float, help='longitud', location='form')
+"""
+
 
 @api.route('/')
 class Posts(Resource):
@@ -58,13 +61,6 @@ class Posts(Resource):
         """Endpoint for creating a single post"""
         return_data = PostServices.createNewPost(new_post_args.parse_args())
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
-    @api.doc(parser=update_post_args,responses=responses)
-    @api.expect(update_post_args)
-    @validateAuth
-    def put(self):
-        """Endpoint for updating a single post"""
-        return_data = PostServices.updatePost(update_post_args.parse_args())
-        return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
 @api.route('/<string:postId>')
@@ -78,6 +74,16 @@ class Post(Resource):
         args['postId'] = postId
         logging.debug("post: " + str(args))
         return_data = PostServices.getPost(args)
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
+    @api.doc(responses=responses)
+    @api.expect(update_post_args)
+    @validateAuth
+    def put(self, postId):
+        """Endpoint for updating a single post"""
+        args = update_post_args.parse_args()
+        args['postId'] = postId
+        return_data = PostServices.updatePost(args)
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 @api.route('/user=<string:userId>')
