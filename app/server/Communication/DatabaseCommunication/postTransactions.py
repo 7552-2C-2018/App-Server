@@ -40,13 +40,14 @@ class PostTransactions:
         return parsed_data
 
     @staticmethod
-    def findPostById(postId):
-        logging.debug(postId)
-        return workingCollection.find_one({'ID': postId})
+    def findPostById(post_id):
+        logging.debug(post_id)
+        return workingCollection.find_one({'ID': post_id})
 
     @staticmethod
     def getPosts():
-        response = list(workingCollection.find({}, {"_id":0, "ID":1, "title": 1, "price": 1, 'pictures': {'$slice': 1}}))
+        response = list(workingCollection.find({},
+                                               {"_id": 0, "ID": 1, "title": 1, "price": 1, 'pictures': {'$slice': 1}}))
         return response
 
     @staticmethod
@@ -59,6 +60,11 @@ class PostTransactions:
                                      {'$set': parsed_data,
                                       "ID": postId})
         return postId
+
+    @staticmethod
+    def findPostByUserId(user_id):
+        return list(workingCollection.find({"_id.facebookId": user_id},
+                                           {"_id": 0, "ID": 1, "title": 1, "price": 1, 'pictures': {'$slice': 1}}))
 
     @staticmethod
     def updatePostData(data):

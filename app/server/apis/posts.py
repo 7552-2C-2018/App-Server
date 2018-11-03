@@ -12,8 +12,6 @@ common_args = reqparse.RequestParser()
 common_args.add_argument('facebookId', type=str, help='facebookId', location='headers', required=True)
 common_args.add_argument('token', type=str, help='Token de acceso', location='headers', required=True)
 
-get_post = common_args.copy()
-
 new_post_args = common_args.copy()
 new_post_args.add_argument('title', type=str, help='titulo del post', location='form', required=True)
 new_post_args.add_argument('desc', type=str, help='descripcion del post', location='form', required=True)
@@ -72,13 +70,25 @@ class Posts(Resource):
 @api.route('/<string:postId>')
 class Post(Resource):
     @api.doc(responses=responses)
-    @api.expect(get_post)
+    @api.expect(common_args)
     @validateAuth
     def get(self, postId):
         """Endpoint that gets a single post"""
-        args = get_post.parse_args()
+        args = common_args.parse_args()
         args['postId'] = postId
         logging.debug("post: " + str(args))
         return_data = PostServices.getPost(args)
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
+@api.route('/user=<string:userId>')
+class PostByUser(Resource):
+    @api.doc(responses=responses)
+    @api.expect(common_args)
+    @validateAuth
+    def get(self, userId):
+        """Endpoint that gets a all posts from user"""
+        args = common_args.parse_args()
+        args['userId'] = userId
+        logging.debug("post: " + str(args))
+        return_data = PostServices.getPostByUser(args)
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}

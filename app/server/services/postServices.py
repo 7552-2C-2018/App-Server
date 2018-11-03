@@ -23,6 +23,15 @@ class PostServices:
             return Responses.badRequest('Post inexistente')
 
     @staticmethod
+    def getPostByUser(request_data):
+        response = PostTransactions.findPostByUserId(request_data["userId"])
+
+        if not response is None:
+            return Responses.success('Productos obtenidos satisfactoriamente', response)
+        else:
+            return Responses.badRequest('Usuario sin Posts')
+
+    @staticmethod
     def createNewPost(request_data):
         PostTransactions.newPost(request_data)
         return Responses.created('Producto creado satisfactoriamente', "")
