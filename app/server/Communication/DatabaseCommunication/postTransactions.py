@@ -14,8 +14,6 @@ class PostTransactions:
     def __init__(self):
         pass
 
-
-
     @staticmethod
     def __parseData(data):
         parsed_data = {}
@@ -42,26 +40,28 @@ class PostTransactions:
         return parsed_data
 
     @staticmethod
-    def findPostById(user_id, publ_date):
-        return workingCollection.find_one({'_id': {"facebookId": user_id, "publication_date": publ_date}})
+    def findPostById(postId):
+        logging.debug(postId)
+        return workingCollection.find_one({'ID': postId})
 
     @staticmethod
     def getPosts():
-        response = list(workingCollection.find({}, {"title": 1, "price": 1, 'pictures': {'$slice': 1}, "payments": 1}))
+        response = list(workingCollection.find({}, {"_id":0, "ID":1, "title": 1, "price": 1, 'pictures': {'$slice': 1}}))
         return response
 
     @staticmethod
     def newPost(data):
         parsed_data = PostTransactions.__parseData(data)
         publ_date = time.mktime(datetime.datetime.utcnow().timetuple())
-        id = workingCollection.insert_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}})
-        workingCollection.update_one({"_id": {"facebookId":  data['facebookId'], "publication_date": publ_date}},
-                                     {'$set': parsed_data})
-        return id
+        postId = data['facebookId'] + str(publ_date)
+        workingCollection.insert_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}})
+        workingCollection.update_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}},
+                                     {'$set': parsed_data,
+                                      "ID": postId})
+        return postId
 
     @staticmethod
     def updatePostData(data):
         parsed_data = PostTransactions.__parseData(data)
         if parsed_data:
-            workingCollection.update_one({'_id': {"facebookId": data['facebookId'],
-                                                  "publication_date": int(data['publDate'])}}, {'$set': parsed_data})
+            workingCollection.update_one({'ID': data['postId']}, {'$set': parsed_data})

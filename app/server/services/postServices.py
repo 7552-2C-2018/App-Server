@@ -14,9 +14,10 @@ class PostServices:
 
     @staticmethod
     def getPost(request_data):
-        response = PostTransactions.findPostById(request_data["facebookId"],int(request_data["publDate"]))
+        response = PostTransactions.findPostById(request_data["postId"])
+
         if not response is None:
-            response["name"] = UserTransactions.getUserName(request_data["facebookId"])
+            response["name"] = UserTransactions.getUserName(response["_id"]["facebookId"])
             return Responses.success('Productos obtenidos satisfactoriamente', response)
         else:
             return Responses.badRequest('Post inexistente')
