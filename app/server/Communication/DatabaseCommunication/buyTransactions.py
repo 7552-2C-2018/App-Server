@@ -3,7 +3,7 @@ import logging
 import json
 import datetime
 import time
-from bson import json_util, ObjectId
+from server.Communication.SharedServerCommunication.sharedServerRequests import SharedServerRequests
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
     buysCollection = app.database.buys
@@ -13,6 +13,23 @@ class BuyTransactions:
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def __parseData(data):
+        parsed_data = {}
+        if "postId" in data.keys():
+            parsed_data["postId"] = data["postId"]
+        if "cardNumber" in data.keys():
+            payment_data = {}
+        else:
+            payment_data = {}
+        # response = SharedServerRequests.newPayment(payment_data)
+        # parsed_data["payment"] = response["id"]
+        if "street" in data.keys():
+            shipping_data = {}
+            # response = SharedServerRequests.newShipping(shipping_data)
+            # parsed_data["shipping"] = response["id"]
+        return parsed_data
 
     @staticmethod
     def __validate_estado(estado):
@@ -112,10 +129,10 @@ class BuyTransactions:
         buy_id = data['facebookId'] + str(buy_date)
         data["ID"] = buy_id
         data["estado"] = "Comprado"
-        data.pop("token")
+        parsed_data = BuyTransactions.__parseData(data)
         buysCollection.insert_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}})
         buysCollection.update_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}},
-                                     {'$set': data})
+                                     {'$set': parsed_data})
         return buy_id
 
     @staticmethod

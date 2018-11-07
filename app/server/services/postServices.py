@@ -28,7 +28,7 @@ class PostServices:
 
     @staticmethod
     def getPostByUser(request_data):
-        response = PostTransactions.findPostByUserId(request_data["userId"])
+        response = PostTransactions.find_post_by_user_id(request_data["userId"])
 
         if not response is None:
             return Responses.success('Post obtenidos satisfactoriamente', response)
@@ -37,12 +37,12 @@ class PostServices:
 
     @staticmethod
     def createNewPost(request_data):
-        PostTransactions.newPost(request_data)
+        PostTransactions.new_post(request_data)
         return Responses.created('Post creado satisfactoriamente', "")
 
     @staticmethod
     def updatePost(request_data):
-        response = PostTransactions.updatePostData(request_data)
+        response = PostTransactions.update_post_data(request_data)
         if response != "Estado Invalido":
             return Responses.success('Post actualizado satisfactoriamente', "")
         else:

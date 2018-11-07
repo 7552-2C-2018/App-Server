@@ -1,6 +1,7 @@
 from server.Structures.Response import Responses
 from server.Communication.DatabaseCommunication.buyTransactions import BuyTransactions
-from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
+from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
+from server.Communication.FirebaseCommunication.firebaseCommunication import FirebaseCommunication
 import logging
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
@@ -43,6 +44,8 @@ class BuyServices:
     @staticmethod
     def createNewBuy(request_data):
         BuyTransactions.newBuy(request_data)
+        post_data = PostTransactions.find_post_by_post_id(request_data['postId'])
+        FirebaseCommunication.newChat(request_data['facebookId'], post_data)
         return Responses.created('Compras creada satisfactoriamente', "")
 
     @staticmethod
