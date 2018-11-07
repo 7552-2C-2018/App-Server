@@ -1,4 +1,5 @@
 import os
+
 os.environ.setdefault('MONGO_URL', 'mongodb://127.0.0.1:27017/testDatabase')
 import unittest
 from server.setup import app
@@ -21,10 +22,10 @@ class GenericTest(unittest.TestCase):
             pass
         app.database.create_collection('posts')
         app.database.users.insert_one({"facebookId": "102510700706099",
-                                   "firstName": "mark",
-                                   "lastName": "zuc",
-                                   "photoUrl": "foto",
-                                   "email": "mail"})
+                                       "firstName": "mark",
+                                       "lastName": "zuc",
+                                       "photoUrl": "foto",
+                                       "email": "mail"})
         app.database.posts.insert_one({
             "_id": {
                 "facebookId": "102510700706087",
@@ -46,6 +47,7 @@ class GenericTest(unittest.TestCase):
             "stock": 2,
             "title": "Prueba"
         })
-def tearDown(self):
-        self.app_context.pop()
 
+
+def tearDown(self):
+    self.app_context.pop()

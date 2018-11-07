@@ -2,10 +2,14 @@ from server.Structures.Response import Responses
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
 from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
 import logging
+
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
 
 class PostServices:
+
+    def __init__(self):
+        pass
 
     @staticmethod
     def getAllPosts():
@@ -43,5 +47,3 @@ class PostServices:
             return Responses.success('Post actualizado satisfactoriamente', "")
         else:
             return Responses.badRequest('Estado Invalido')
-
-

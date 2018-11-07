@@ -1,13 +1,15 @@
 responses = {
-        200: 'Success',
-        201: 'Created',
-        400: 'BadRequest',
-        401: 'Unauthorized',
-        404: 'NotFound',
-        500: 'InternalServerError',
-    }
+    200: 'Success',
+    201: 'Created',
+    400: 'BadRequest',
+    401: 'Unauthorized',
+    404: 'NotFound',
+    500: 'InternalServerError',
+}
+
+
 class Responses:
-    
+
     def __init__(self):
         pass
 
@@ -17,7 +19,7 @@ class Responses:
         return response
 
     @staticmethod
-    def success(message = '', data = None):
+    def success(message='', data=None):
         return Responses.__parseResponse(message, data, 200)
 
     @staticmethod

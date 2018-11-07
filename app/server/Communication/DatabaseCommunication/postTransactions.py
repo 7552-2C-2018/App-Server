@@ -4,6 +4,7 @@ import json
 import datetime
 import time
 from bson import json_util, ObjectId
+
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
     workingCollection = app.database.posts
@@ -73,7 +74,7 @@ class PostTransactions:
 
     @staticmethod
     def updatePostData(data):
-        #parsed_data = PostTransactions.__parseData(data)
+        # parsed_data = PostTransactions.__parseData(data)
         estado_valido = PostTransactions.__validate_estado(data["estado"])
         if estado_valido:
             return workingCollection.update_one({'ID': data['postId']}, {'$set': {"estado": data["estado"]}})

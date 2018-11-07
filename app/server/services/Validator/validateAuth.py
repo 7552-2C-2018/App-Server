@@ -5,16 +5,17 @@ import time
 from server.Structures.Response import Responses
 from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
 import logging
+
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
-def validateAuth(function):
 
+def validateAuth(function):
     @wraps(function)
     def validateAuthorization(*args, **kwargs):
 
         user = UserTransactions.findUserById(request.headers.get('facebookId'))
         if user is None:
-            return_data = Responses.unauthorized('FacebookId not found') 
+            return_data = Responses.unauthorized('FacebookId not found')
             return return_data["data"], return_data["status"], {'message': return_data["message"]}
         token = request.headers.get('token')
 

@@ -21,12 +21,14 @@ new_post = {"facebookId": "102510700706087",
             "shipping": False,
             "stock": 2,
             "title": "Prueba"}
+
+
 class PostsTests(GenericTest):
 
     def test_get_all_posts(self):
-     response = PostServices.getAllPosts(registered_credentials)
-     assert response["status"] == 200
-     assert response["message"] == 'Productos obtenidos satisfactoriamente'
+        response = PostServices.getAllPosts(registered_credentials)
+        assert response["status"] == 200
+        assert response["message"] == 'Productos obtenidos satisfactoriamente'
 
     def test_get_post_id(self):
         response = PostServices.getAllPosts(registered_credentials_with_date)

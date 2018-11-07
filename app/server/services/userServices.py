@@ -15,6 +15,9 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
 class UserServices:
 
+    def __init__(self):
+        pass
+
     @staticmethod
     def __updateUser(data):
         UserTransactions.updateUserData(data)

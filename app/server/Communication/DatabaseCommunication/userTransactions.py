@@ -1,6 +1,7 @@
 from server.setup import app
 from flask import Flask
 import logging
+
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
     workingCollection = app.database.users
@@ -30,7 +31,7 @@ class UserTransactions:
 
     @staticmethod
     def getUserName(facebook_id):
-        return workingCollection.find_one({'facebookId': facebook_id},{"nombre": 1, "apellido": 1, "_id": 0})
+        return workingCollection.find_one({'facebookId': facebook_id}, {"nombre": 1, "apellido": 1, "_id": 0})
 
     @staticmethod
     def newUser(user_id, first_name, last_name, photo_url, email):
@@ -46,7 +47,6 @@ class UserTransactions:
     def updateUserToken(facebook_id, new_token, new_expdate):
         workingCollection.update_one({'facebookId': facebook_id},
                                      {'$set': {'token': new_token, 'exp_date': new_expdate}})
-
 
     @staticmethod
     def updateUserData(data):

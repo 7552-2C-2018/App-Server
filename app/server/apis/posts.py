@@ -63,15 +63,15 @@ class Posts(Resource):
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
-@api.route('/<string:postId>')
+@api.route('/<string:post_id>')
 class Post(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)
     @validateAuth
-    def get(self, postId):
+    def get(self, post_id):
         """Endpoint that gets a single post"""
         args = common_args.parse_args()
-        args['postId'] = postId
+        args['postId'] = post_id
         logging.debug("post: " + str(args))
         return_data = PostServices.getPost(args)
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
@@ -79,22 +79,22 @@ class Post(Resource):
     @api.doc(responses=responses)
     @api.expect(update_post_args)
     @validateAuth
-    def put(self, postId):
+    def put(self, post_id):
         """Endpoint for updating a single post"""
         args = update_post_args.parse_args()
-        args['postId'] = postId
+        args['postId'] = post_id
         return_data = PostServices.updatePost(args)
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
-@api.route('/user=<string:userId>')
+@api.route('/user=<string:user_id>')
 class PostByUser(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)
     @validateAuth
-    def get(self, userId):
+    def get(self, user_id):
         """Endpoint that gets a all posts from user"""
         args = common_args.parse_args()
-        args['userId'] = userId
+        args['userId'] = user_id
         logging.debug("post: " + str(args))
         return_data = PostServices.getPostByUser(args)
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
