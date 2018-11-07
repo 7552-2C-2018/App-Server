@@ -1,4 +1,4 @@
-from flask_restplus import Resource,Api, reqparse, Namespace
+from flask_restplus import Resource, Api, reqparse, Namespace
 from server.services.userServices import UserServices
 from server.services.Validator.validateAuth import validateAuth
 from server.Structures.Response import responses
@@ -20,7 +20,6 @@ update.add_argument('firstName', type=str, help='nombre', location='form')
 update.add_argument('lastName', type=str, help='apellido', location='form')
 update.add_argument('photoUrl', type=str, help='foto', location='form')
 update.add_argument('email', type=str, help='mail', location='form')
-
 
 
 @api.route('/')

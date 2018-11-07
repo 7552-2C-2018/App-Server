@@ -52,7 +52,7 @@ class Posts(Resource):
     @validateAuth
     def get(self):
         """Endpoint that gets all posts"""
-        return_data = PostServices.getAllPosts(common_args.parse_args())
+        return_data = PostServices.getAllPosts()
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
     @api.doc(responses=responses)
     @api.expect(new_post_args)

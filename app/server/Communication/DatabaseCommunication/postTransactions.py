@@ -58,12 +58,12 @@ class PostTransactions:
     def newPost(data):
         parsed_data = PostTransactions.__parseData(data)
         publ_date = time.mktime(datetime.datetime.utcnow().timetuple())
-        postId = data['facebookId'] + str(publ_date)
+        post_id = data['facebookId'] + str(publ_date)
+        parsed_data["ID"] = post_id
+        parsed_data["estado"] = "activo"
         workingCollection.insert_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}})
         workingCollection.update_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}},
-                                     {'$set': parsed_data,
-                                      "ID": postId,
-                                      "estado": "activo"})
+                                     {'$set': parsed_data})
         return postId
 
     @staticmethod

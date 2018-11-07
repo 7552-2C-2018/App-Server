@@ -20,6 +20,7 @@ class Categories(Resource):
 		return_data = ProductServices.get_categories()
 		return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
+
 @api.doc(responses=responses)
 @api.route('/payments')
 class Payments(Resource):
@@ -29,4 +30,3 @@ class Payments(Resource):
 		"""Endpoint that gets all Payments types"""
 		return_data = ProductServices.get_payments()
 		return return_data["data"], return_data["status"], {'message': return_data["message"]}
-

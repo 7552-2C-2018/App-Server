@@ -8,7 +8,7 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 class PostServices:
 
     @staticmethod
-    def getAllPosts(request_data):
+    def getAllPosts():
         response = PostTransactions.getPosts()
         return Responses.success('Productos obtenidos satisfactoriamente', response)
 
