@@ -23,12 +23,12 @@ class BuyTransactions:
             payment_data = {}
         else:
             payment_data = {}
-        # response = SharedServerRequests.newPayment(payment_data)
-        # parsed_data["payment"] = response["id"]
+        #response = SharedServerRequests.newPayment(payment_data)
+        #parsed_data["payment"] = response["id"]
         if "street" in data.keys():
             shipping_data = {}
-            # response = SharedServerRequests.newShipping(shipping_data)
-            # parsed_data["shipping"] = response["id"]
+            #response = SharedServerRequests.newShipping(shipping_data)
+            #parsed_data["shipping"] = response["id"]
         return parsed_data
 
     @staticmethod
@@ -126,10 +126,10 @@ class BuyTransactions:
     @staticmethod
     def newBuy(data):
         buy_date = time.mktime(datetime.datetime.utcnow().timetuple())
-        buy_id = data['facebookId'] + str(buy_date)
-        data["ID"] = buy_id
-        data["estado"] = "Comprado"
+        buy_id = data['facebookId'] + str(int(buy_date))
         parsed_data = BuyTransactions.__parseData(data)
+        parsed_data["ID"] = buy_id
+        parsed_data["estado"] = "Comprado"
         buysCollection.insert_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}})
         buysCollection.update_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}},
                                      {'$set': parsed_data})

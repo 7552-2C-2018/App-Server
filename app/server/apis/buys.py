@@ -19,6 +19,7 @@ new_buy_args.add_argument('price', type=str, help='Precio de la compra', locatio
 new_buy_args.add_argument('cardNumber', type=str, help='Numero de la tarjeta utilizada para la compra', location='form')
 new_buy_args.add_argument('cardDate', type=str, help='ExpDate de la tarjeta utilizada para la compra', location='form')
 new_buy_args.add_argument('cardName', type=str, help='Nombre del titular de la tarjeta utilizada para la compra', location='form')
+new_buy_args.add_argument('cardCVV', type=str, help='Cvv de la tarjeta utilizada para la compra', location='form')
 
 new_buy_args.add_argument('street', type=str, help='Calle de shipping', location='form')
 new_buy_args.add_argument('cp', type=str, help='Codigo postal de shipping', location='form')

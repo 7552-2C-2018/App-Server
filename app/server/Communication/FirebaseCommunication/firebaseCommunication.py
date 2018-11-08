@@ -22,14 +22,11 @@ def async_f(function):
 class FirebaseCommunication:
 
     @staticmethod
-    @async_f
     def __newUserChat(facebook_id, chat_key):
         user = requests.get(URL + 'userChats/' + facebook_id + '.json')
         if user.text == "null":
-            dict = {
-                facebook_id: {'chats':[]}
-            }
-            requests.put(URL + 'userChats.json', data=json.dumps(dict))
+            dict = {'chats': []}
+            requests.put(URL + 'userChats/' + facebook_id + '.json', data=json.dumps(dict))
         chats = requests.get(URL + 'userChats/' + facebook_id + '/chats.json')
         if chats.text != "null":
             new_chat_list = json.loads(chats.text)
@@ -40,7 +37,6 @@ class FirebaseCommunication:
         requests.put((URL + 'userChats/' + facebook_id + '.json'), data=json.dumps({'chats': new_chat_list}))
 
     @staticmethod
-    @async_f
     def __newUser(data):
         facebook_id = data['facebookId']
         data.pop('facebookId')
@@ -50,7 +46,6 @@ class FirebaseCommunication:
         requests.put(URL + 'user/' + facebook_id + '.json', data=json.dumps(dict))
 
     @staticmethod
-    @async_f
     def newChat(facebook_id_comprador, post_data):
         payload = {
                 "picture": post_data["pictures"],
