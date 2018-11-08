@@ -24,19 +24,21 @@ class BuyServices:
             return Responses.badRequest('Compras inexistente')
 
     @staticmethod
-    def getBuyByUser(request_data):
+    def getBuysByUser(request_data):
         response = BuyTransactions.findBuyByUserId(request_data["userId"])
 
         if not response is None:
+            logging.debug("dasdasd"  + str(response))
             return Responses.success('Compras obtenidos satisfactoriamente', response)
         else:
             return Responses.badRequest('Usuario sin Compras')
 
     @staticmethod
-    def getBuyBySeller(request_data):
+    def getBuysBySeller(request_data):
         response = BuyTransactions.findBuyBySellerId(request_data["seller_id"])
 
         if not response is None:
+            logging.debug("dasdasd" + str(response))
             return Responses.success('Compras obtenidos satisfactoriamente', response)
         else:
             return Responses.badRequest('Usuario sin Compras')

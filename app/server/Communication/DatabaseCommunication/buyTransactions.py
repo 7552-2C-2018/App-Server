@@ -40,39 +40,38 @@ class BuyTransactions:
         pipeline = [
             {
                 u"$project": {
-                    u"_id": 0,
-                    u"a": u"$$ROOT"
+                    u"_id": 1,
+                    u"buys": u"$$ROOT"
                 }
             },
             {
                 u"$lookup": {
-                    u"localField": u"a.postId",
+                    u"localField": u"buys.postId",
                     u"from": u"posts",
                     u"foreignField": u"ID",
-                    u"as": u"b"
+                    u"as": u"posts"
                 }
             },
             {
                 u"$unwind": {
-                    u"path": u"$b",
+                    u"path": u"$posts",
                     u"preserveNullAndEmptyArrays": False
                 }
             },
             {
                 u"$match": {
-                    u"b.facebookID": seller_id
+                    u"posts._id.facebookId": seller_id
                 }
             },
             {
                 u"$project": {
-                    u"ID": u"$a.ID",
-                    u"title": u"$b.title",
-                    u"pictures": u"$b.pictures",
-                    u"estado": u"$a.estado"
+                    u"ID": u"$buys.ID",
+                    u"title": u"$posts.title",
+                    u"images": u"$posts.images",
+                    u"estado": u"$buys.estado"
                 }
-            },
+            }
         ]
-
         cursor = buysCollection.aggregate(
             pipeline,
             allowDiskUse=True
@@ -140,39 +139,38 @@ class BuyTransactions:
         pipeline = [
             {
                 u"$project": {
-                    u"_id": 0,
-                    u"a": u"$$ROOT"
+                    u"_id": 1,
+                    u"buys": u"$$ROOT"
                 }
             },
             {
                 u"$lookup": {
-                    u"localField": u"a.post_id",
+                    u"localField": u"buys.postId",
                     u"from": u"posts",
                     u"foreignField": u"ID",
-                    u"as": u"b"
+                    u"as": u"posts"
                 }
             },
             {
                 u"$unwind": {
-                    u"path": u"$b",
+                    u"path": u"$posts",
                     u"preserveNullAndEmptyArrays": False
                 }
             },
             {
                 u"$match": {
-                    u"a._id.facebookId": user_id
+                    u"buys._id.facebookId": user_id
                 }
             },
             {
                 u"$project": {
-                    u"a.ID": u"$a.ID",
-                    u"b.title": u"$b.title",
-                    u"b.pictures": u"$b.pictures",
-                    u"a.estado": u"$a.estado"
+                    u"ID": u"$buys.ID",
+                    u"title": u"$posts.title",
+                    u"images": u"$posts.images",
+                    u"estado": u"$buys.estado"
                 }
-            },
+            }
         ]
-
         cursor = buysCollection.aggregate(
             pipeline,
             allowDiskUse=True
@@ -181,7 +179,7 @@ class BuyTransactions:
 
     @staticmethod
     def updateBuyData(data):
-        estado_valido = PostTransactions.__validate_estado(data["estado"])
+        estado_valido = BuyTransactions.__validate_estado(data["estado"])
         if estado_valido:
             return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": data["estado"]}})
         else:
