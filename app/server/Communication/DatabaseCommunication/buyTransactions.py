@@ -67,7 +67,7 @@ class BuyTransactions:
                 u"$project": {
                     u"ID": u"$buys.ID",
                     u"title": u"$posts.title",
-                    u"images": u"$posts.images",
+                    u"picture": {u"$slice": ["$posts.pictures", 1]},
                     u"estado": u"$buys.estado"
                 }
             }
@@ -166,7 +166,7 @@ class BuyTransactions:
                 u"$project": {
                     u"ID": u"$buys.ID",
                     u"title": u"$posts.title",
-                    u"images": u"$posts.images",
+                    u"picture": {u"$slice": ["$posts.pictures", 1]},
                     u"estado": u"$buys.estado"
                 }
             }
