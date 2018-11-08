@@ -46,7 +46,7 @@ class PostTransactions:
     @staticmethod
     def find_post_by_post_id(post_id):
         logging.debug(post_id)
-        return workingCollection.find_one({'ID': post_id}, {"_id": 1, "ID": 1, "title": 1, 'pictures': {'$slice': 1}})
+        return workingCollection.find_one({'ID': post_id})
 
 
     @staticmethod
