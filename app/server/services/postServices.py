@@ -18,7 +18,7 @@ class PostServices:
 
     @staticmethod
     def getPost(request_data):
-        response = PostTransactions.findPostById(request_data["postId"])
+        response = PostTransactions.find_post_by_post_id(request_data["postId"])
 
         if not response is None:
             response["name"] = UserTransactions.getUserName(response["_id"]["facebookId"])
