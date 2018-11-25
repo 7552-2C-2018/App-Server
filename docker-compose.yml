@@ -12,13 +12,28 @@ services:
       context: .
       dockerfile: Dockerfile
     links:
-      - "mongodb:database"
+      - "mongo-db:mongo-db"
     ports:
       - "80:80"
     volumes:
       - ./app:/app
-  mongodb:
-    image: mongo:3.4.2
+    networks:
+      - mongo
+  mongo-db:
+    image: mongo:latest
+    command: mongod --bind_ip  0.0.0.0
     restart: always
-    command: mongod
+    networks:
+        - mongo
+    ports:
+    - "27017:27017"
 
+  mongosetup:
+    image: mongo
+    volumes:
+        - ./dump:/dump
+    entrypoint: ["mongorestore", "--host", "mongo-db", "-d", "app-server", "/dump"]
+    networks:
+        - mongo
+networks:
+    mongo:

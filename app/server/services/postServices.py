@@ -14,7 +14,7 @@ class PostServices:
     @staticmethod
     def getAllPosts():
         response = PostTransactions.getPosts()
-        return Responses.success('Productos obtenidos satisfactoriamente', response)
+        return Responses.success('Post obtenidos satisfactoriamente', response)
 
     @staticmethod
     def getPost(request_data):

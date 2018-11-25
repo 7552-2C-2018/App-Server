@@ -1,6 +1,6 @@
 import os
 
-os.environ.setdefault('MONGO_URL', 'mongodb://127.0.0.1:27017/testDatabase')
+os.environ.setdefault('MONGO_URL', 'mongodb://mongo-db:27017/testDatabase')
 import unittest
 from server.setup import app
 
@@ -31,6 +31,7 @@ class GenericTest(unittest.TestCase):
                 "facebookId": "102510700706087",
                 "publication_date": 1539228792
             },
+            "ID": "1025107007060871539228792",
             "category": "test",
             "coordenates": [
                 12,

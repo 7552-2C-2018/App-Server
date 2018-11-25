@@ -21,6 +21,6 @@ class Config(object):
         # Mongo DB config
         MONGO_URL = os.environ.get('MONGO_URL')
         if not MONGO_URL:
-            MONGO_URL = 'mongodb://database:27017/app-server'
+            MONGO_URL = 'mongodb://mongo-db:27017/app-server'
         app.config['MONGO_URI'] = MONGO_URL
         return PyMongo(app)
