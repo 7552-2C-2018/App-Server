@@ -5,7 +5,6 @@ import logging
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
-
 class PostServices:
 
     def __init__(self):
