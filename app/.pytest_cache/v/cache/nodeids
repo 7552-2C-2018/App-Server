@@ -1,6 +1,7 @@
 [
   "tests/test_Post_Service.py::PostsTests::test_get_all_posts",
   "tests/test_Post_Service.py::PostsTests::test_get_post_id",
+  "tests/test_Post_Service.py::PostsTests::test_new_post_id",
   "tests/test_User_Service.py::UserTests::test_login_registered_id",
   "tests/test_User_Service.py::UserTests::test_login_unregistered_id",
   "tests/test_User_Service.py::UserTests::test_new_post",
@@ -8,6 +9,6 @@
   "tests/test_User_Service.py::UserTests::test_register_new_user",
   "tests/test_User_Service.py::UserTests::test_update_data_unregistered_user",
   "tests/test_User_Service.py::UserTests::test_update_data_user",
-  "tests/test_mock.py::Test_mock::test_db",
-  "tests/test_mock.py::Test_mock::test_mock"
+  "tests/test_mock.py::TestMock::test_db",
+  "tests/test_mock.py::TestMock::test_mock"
 ]
