@@ -40,7 +40,7 @@ class PostTransactions:
         if "shipping" in data.keys():
             parsed_data["shipping"] = data["shipping"]
         if "latitude" in data.keys() and "longitude" in data.keys():
-            parsed_data["coordenates"] = [data["latitude"], data["longitude"]]
+            parsed_data["coordenates"] = [data["longitude"], data["latitude"]]
         return parsed_data
 
     @staticmethod
@@ -50,9 +50,11 @@ class PostTransactions:
 
 
     @staticmethod
-    def getPosts():
-        response = list(workingCollection.find({},
-                                               {"_id": 0, "ID": 1, "title": 1, "price": 1, 'pictures': {'$slice': 1}}))
+    def getPosts(data):
+        queryFilters = PostTransactions.__build_query_filters(data)
+        response = list(workingCollection.find(queryFilters,
+                                               {"_id": 0, "ID": 1, "title": 1, "price": 1,
+                                                "coordenates": 1}))
         return response
 
     @staticmethod
@@ -80,3 +82,29 @@ class PostTransactions:
             return workingCollection.update_one({'ID': data['postId']}, {'$set': {"estado": data["estado"]}})
         else:
             return "estado Invalido"
+
+    @staticmethod
+    def __build_query_filters(data):
+        filters = {}
+        if data['distancia'] is not None and data['latitud'] is not None and data['longitud'] is not None:
+            filters["coordenates"] = {}
+            filters["coordenates"]["$geoWithin"] = {}
+            filters["coordenates"]["$geoWithin"]["$center"] = [[data['longitud'], data['latitud']], data['distancia']]
+
+        if data['precioMinimo'] is not None or data['precioMaximo'] is not None:
+            filters["price"] = {}
+        if data['precioMaximo'] is not None:
+            filters['price']['$lte'] = data['precioMaximo']
+        if data['precioMinimo'] is not None:
+            filters['price']['$gte'] = data['precioMinimo']
+        if data['estado'] is not None:
+            if data['estado'] == "nuevo":
+                filters['new'] = True
+            else:
+                filters['new'] = False
+        if data['envio'] is not None:
+            filters['shipping'] = data['envio']
+        logging.debug(str(filters))
+        logging.debug(str(data['precioMaximo']))
+        logging.debug(str(data['precioMinimo']))
+        return filters

@@ -11,8 +11,8 @@ class PostServices:
         pass
 
     @staticmethod
-    def getAllPosts():
-        response = PostTransactions.getPosts()
+    def getAllPosts(request_data):
+        response = PostTransactions.getPosts(request_data)
         return Responses.success('Post obtenidos satisfactoriamente', response)
 
     @staticmethod
