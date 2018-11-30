@@ -4,6 +4,9 @@ import json
 import datetime
 import time
 import pymongo
+import base64
+import qrcode
+from io import BytesIO
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
@@ -55,7 +58,7 @@ class PostTransactions:
         queryFilters = PostTransactions.__build_query_filters(data)
         response = list(workingCollection.find(queryFilters,
                                                {"_id": 0, "ID": 1, "title": 1, "price": 1,
-                                                "coordenates": 1}).sort("price", pymongo.ASCENDING))
+                                                "coordenates": 1, 'pictures': {'$slice': 1}}).sort("price", pymongo.ASCENDING))
         return response
 
     @staticmethod
@@ -65,6 +68,7 @@ class PostTransactions:
         post_id = data['facebookId'] + str(int(publ_date))
         parsed_data["ID"] = post_id
         parsed_data["estado"] = "activo"
+        parsed_data["qr"] = PostTransactions.__generate_qr(post_id)
         workingCollection.insert_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}})
         workingCollection.update_one({"_id": {"facebookId": data['facebookId'], "publication_date": publ_date}},
                                      {'$set': parsed_data})
@@ -107,3 +111,18 @@ class PostTransactions:
         if data['envio'] is not None:
             filters['shipping'] = data['envio']
         return filters
+
+    @staticmethod
+    def __generate_qr( post_id):
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(post_id)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        buffered = BytesIO()
+        img.save(buffered, format="JPEG")
+        return str(base64.b64encode(buffered.getvalue()))
