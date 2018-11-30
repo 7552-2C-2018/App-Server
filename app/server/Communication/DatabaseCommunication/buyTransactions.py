@@ -4,6 +4,8 @@ import json
 import datetime
 import time
 from server.Communication.SharedServerCommunication.sharedServerRequests import SharedServerRequests
+
+
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
     buysCollection = app.database.buys
@@ -17,18 +19,26 @@ class BuyTransactions:
     @staticmethod
     def __parseData(data):
         parsed_data = {}
-        if "postId" in data.keys():
+        if data["postId"] is not None:
             parsed_data["postId"] = data["postId"]
-        if "cardNumber" in data.keys():
-            payment_data = {}
-        else:
-            payment_data = {}
-        #response = SharedServerRequests.newPayment(payment_data)
-        #parsed_data["payment"] = response["id"]
-        if "street" in data.keys():
-            shipping_data = {}
-            #response = SharedServerRequests.newShipping(shipping_data)
-            #parsed_data["shipping"] = response["id"]
+        if data["cardNumber"] is not None:
+            payment_response = SharedServerRequests.newPayment(data)
+
+            if payment_response is None:
+                logging.debug("se rompio le payment")
+                raise Exception
+            logging.debug("payment: " + str(payment_response))
+            parsed_data["payment"] = payment_response["id"]
+
+        if data["street"] is not None:
+
+            tracking_response = SharedServerRequests.newTracking(data)
+            if tracking_response is None:
+                logging.debug("se rompio la street")
+                raise Exception
+            parsed_data["shipping"] = tracking_response["id"]
+            logging.debug("tracking: " + str(tracking_response))
+
         return parsed_data
 
     @staticmethod
@@ -126,9 +136,9 @@ class BuyTransactions:
     def newBuy(data):
         buy_date = time.mktime(datetime.datetime.utcnow().timetuple())
         buy_id = data['facebookId'] + str(int(buy_date))
+        data["ID"] = buy_id
+        data["estado"] = "Comprado"
         parsed_data = BuyTransactions.__parseData(data)
-        parsed_data["ID"] = buy_id
-        parsed_data["estado"] = "Comprado"
         buysCollection.insert_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}})
         buysCollection.update_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}},
                                      {'$set': parsed_data})

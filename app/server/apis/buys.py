@@ -13,12 +13,16 @@ common_args.add_argument('facebookId', type=str, help='facebookId', location='he
 common_args.add_argument('token', type=str, help='Token de acceso', location='headers', required=True)
 
 new_buy_args = common_args.copy()
-new_buy_args.add_argument('postId', type=str, help='Id del post del producto a comprar', location='headers', required=True)
+new_buy_args.add_argument('postId', type=str, help='Id del post del producto a comprar',
+                          location='headers', required=True)
 new_buy_args.add_argument('price', type=str, help='Precio de la compra', location='form', required=True)
 
 new_buy_args.add_argument('cardNumber', type=str, help='Numero de la tarjeta utilizada para la compra', location='form')
 new_buy_args.add_argument('cardDate', type=str, help='ExpDate de la tarjeta utilizada para la compra', location='form')
-new_buy_args.add_argument('cardName', type=str, help='Nombre del titular de la tarjeta utilizada para la compra', location='form')
+new_buy_args.add_argument('cardName', type=str,
+                          help='Nombre del titular de la tarjeta utilizada para la compra', location='form')
+new_buy_args.add_argument('cardBank', type=str,
+                          help='Nombre del banco de la tarjeta utilizada para la compra', location='form')
 new_buy_args.add_argument('cardCVV', type=str, help='Cvv de la tarjeta utilizada para la compra', location='form')
 
 new_buy_args.add_argument('street', type=str, help='Calle de shipping', location='form')
@@ -26,6 +30,7 @@ new_buy_args.add_argument('cp', type=str, help='Codigo postal de shipping', loca
 new_buy_args.add_argument('floor', type=str, help='Piso del shipping', location='form')
 new_buy_args.add_argument('dept', type=str, help='Depto del shipping', location='form')
 new_buy_args.add_argument('city', type=str, help='Ciudad del shipping', location='form')
+
 
 @api.route('/')
 class Buys(Resource):

@@ -6,3 +6,5 @@ omit =
   *setup.py
   *config/*
   *services/Validator/*
+  *Communication/GeolocationServiceCommunication/*
+  *Communication/SharedServerCommunication/*
