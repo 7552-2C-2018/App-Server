@@ -31,6 +31,9 @@ new_buy_args.add_argument('floor', type=str, help='Piso del shipping', location=
 new_buy_args.add_argument('dept', type=str, help='Depto del shipping', location='form')
 new_buy_args.add_argument('city', type=str, help='Ciudad del shipping', location='form')
 
+modify_state = common_args.copy()
+modify_state.add_argument('estado', type=str, help='Id del post del producto a comprar',
+                          location='form', required=True)
 
 @api.route('/')
 class Buys(Resource):
@@ -54,6 +57,15 @@ class Buy(Resource):
         args = common_args.parse_args()
         args['buyId'] = buy_id
         return_data = BuyServices.getBuy(args)
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
+    @api.doc(responses=responses)
+    @api.expect(modify_state)
+    @validateAuth
+    def put(self, buy_id):
+        """Endpoint that modify a single buy"""
+        args = modify_state.parse_args()
+        args['buyId'] = buy_id
+        return_data = BuyServices.updateBuy(args)
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 

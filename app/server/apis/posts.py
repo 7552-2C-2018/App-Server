@@ -13,6 +13,9 @@ common_args.add_argument('facebookId', type=str, help='facebookId', location='he
 common_args.add_argument('token', type=str, help='Token de acceso', location='headers', required=True)
 
 get_post_filter_args = common_args.copy()
+get_post_filter_args.add_argument('search',
+                                  type=str, help='titulo del post a buscar',
+                                  location='headers')
 get_post_filter_args.add_argument('distancia', type=int, help='radio de la circunferencia del filtro por distancia',
                                   location='headers')
 get_post_filter_args.add_argument('latitud', type=float,
@@ -29,8 +32,11 @@ get_post_filter_args.add_argument('estado',
                                   type=str, help='estado del producto del post'
                                                   ' (nuevo, usado, ninguno para ambos)',
                                   location='headers')
-get_post_filter_args.add_argument('envio', type=bool,
-                                  help='filtro por productos por los cuales se realizan envios', location='headers')
+get_post_filter_args.add_argument('categoria',
+                                  type=str, help='categoria del producto del post',
+                                  location='headers')
+get_post_filter_args.add_argument('envio', type=int,
+                                  help='filtro por productos por los cuales se realizan envios (1->true,0->false)', location='headers')
 
 new_post_args = common_args.copy()
 new_post_args.add_argument('title', type=str, help='titulo del post', location='form', required=True)

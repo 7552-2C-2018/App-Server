@@ -2,7 +2,7 @@ from urllib.parse import urlencode, quote
 
 import requests
 import json
-
+from math import sin, cos, sqrt, atan2, radians
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
 from server.Communication.GeolocationServiceCommunication.geolocationServiceCommunication import \
     GeolocationServiceCommunication
@@ -67,8 +67,9 @@ class SharedServerRequests:
             tracking_data["end_street"] = data["street"] + " " + data["floor"] + \
                                           " " + data["dept"] + ", " + data["city"]
             end_coordenates = GeolocationServiceCommunication.getCoordenates(data["street"], data["city"])
-            tracking_data["end_lat"] = end_coordenates["latitud"]
-            tracking_data["end_lon"] = end_coordenates["longitud"]
+            tracking_data["end_lat"] = float(end_coordenates["latitud"])
+            tracking_data["end_lon"] = float(end_coordenates["longitud"])
+            tracking_data["distance"] = SharedServerRequests.__calulateDistance(postData["coordenates"],end_coordenates)
             tracking_data["currency"] = "ars"
             tracking_data["value"] = data["price"]
             logging.debug("end_coordenates data: " + str(tracking_data))
@@ -76,6 +77,26 @@ class SharedServerRequests:
             logging.debug(str(e))
             return None
         return tracking_data
+
+    @staticmethod
+    def __calulateDistance(coordenatesList, coordenatesDict):
+        try:
+            R = 6373.0
+
+            lat1 = radians(coordenatesList[1])
+            lon1 = radians(coordenatesList[0])
+            lat2 = radians(float(coordenatesDict["latitud"]))
+            lon2 = radians(float(coordenatesDict["longitud"]))
+
+            dlon = lon2 - lon1
+            dlat = lat2 - lat1
+
+            a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+            c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            return R * c
+        except Exception as e:
+            logging.debug(str(e))
+            raise Exception
 
     @staticmethod
     def newTracking(data):

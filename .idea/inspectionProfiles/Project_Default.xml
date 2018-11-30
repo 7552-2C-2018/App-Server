@@ -4,7 +4,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="19">
+          <list size="21">
             <item index="0" class="java.lang.String" itemvalue="coverage" />
             <item index="1" class="java.lang.String" itemvalue="PyJWT" />
             <item index="2" class="java.lang.String" itemvalue="pymongo" />
@@ -24,8 +24,19 @@
             <item index="16" class="java.lang.String" itemvalue="isort" />
             <item index="17" class="java.lang.String" itemvalue="itsdangerous" />
             <item index="18" class="java.lang.String" itemvalue="Flask" />
+            <item index="19" class="java.lang.String" itemvalue="qrcode" />
+            <item index="20" class="java.lang.String" itemvalue="Pillow" />
           </list>
         </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="server.apis.buys.flask_restplus" />
+          <option value="server.apis.flask_restplus" />
+          <option value="server.apis.questions.flask_restplus" />
+        </list>
       </option>
     </inspection_tool>
   </profile>

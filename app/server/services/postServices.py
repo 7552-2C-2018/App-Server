@@ -42,7 +42,7 @@ class PostServices:
     @staticmethod
     def updatePost(request_data):
         response = PostTransactions.update_post_data(request_data)
-        if response != "Estado Invalido":
+        if response is not None:
             return Responses.success('Post actualizado satisfactoriamente', "")
         else:
             return Responses.badRequest('Estado Invalido')

@@ -36,7 +36,7 @@ class BuyTransactions:
             if tracking_response is None:
                 logging.debug("se rompio la street")
                 raise Exception
-            parsed_data["shipping"] = tracking_response["id"]
+            parsed_data["shipping"] = tracking_response["data"]["id"]
             logging.debug("tracking: " + str(tracking_response))
         parsed_data["ID"] = data["ID"]
         parsed_data["estado"] = data["estado"]
@@ -44,7 +44,7 @@ class BuyTransactions:
 
     @staticmethod
     def __validate_estado(estado):
-        return estado in ["Comprado", "Pagado", "Recibido", "Calificado"]
+        return estado in ["Comprado", "Pagado", "Recibido", "Calificado", "Cancelado"]
 
     @staticmethod
     def findBuyBySellerId(seller_id):

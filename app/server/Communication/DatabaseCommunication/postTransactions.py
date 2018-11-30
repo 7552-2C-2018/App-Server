@@ -58,7 +58,8 @@ class PostTransactions:
         queryFilters = PostTransactions.__build_query_filters(data)
         response = list(workingCollection.find(queryFilters,
                                                {"_id": 0, "ID": 1, "title": 1, "price": 1,
-                                                "coordenates": 1, 'pictures': {'$slice': 1}}).sort("price", pymongo.ASCENDING))
+                                                "coordenates": 1, 'pictures': {'$slice': 1}}
+                                               ).sort("price", pymongo.ASCENDING))
         return response
 
     @staticmethod
@@ -87,7 +88,7 @@ class PostTransactions:
         if estado_valido:
             return workingCollection.update_one({'ID': data['postId']}, {'$set': {"estado": data["estado"]}})
         else:
-            return "estado Invalido"
+            return None
 
     @staticmethod
     def __build_query_filters(data):
@@ -109,7 +110,15 @@ class PostTransactions:
             else:
                 filters['new'] = False
         if data['envio'] is not None:
-            filters['shipping'] = data['envio']
+            if data["envio"] == 1:
+                filters['shipping'] = True
+            if data["envio"] == 0:
+                filters['shipping'] = False
+        if data['categoria'] is not None:
+            filters['categoria'] = data['categoria'].lower()
+        if data['search'] is not None:
+            filters['title'] = {}
+            filters['title']["$regex"] = data['search']
         return filters
 
     @staticmethod
