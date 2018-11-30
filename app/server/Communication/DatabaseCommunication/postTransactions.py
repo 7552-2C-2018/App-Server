@@ -3,6 +3,7 @@ import logging
 import json
 import datetime
 import time
+import pymongo
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
@@ -54,7 +55,7 @@ class PostTransactions:
         queryFilters = PostTransactions.__build_query_filters(data)
         response = list(workingCollection.find(queryFilters,
                                                {"_id": 0, "ID": 1, "title": 1, "price": 1,
-                                                "coordenates": 1}))
+                                                "coordenates": 1}).sort("price", pymongo.ASCENDING))
         return response
 
     @staticmethod
@@ -72,7 +73,8 @@ class PostTransactions:
     @staticmethod
     def find_post_by_user_id(user_id):
         return list(workingCollection.find({"_id.facebookId": user_id},
-                                           {"_id": 0, "ID": 1, "title": 1, "price": 1, 'pictures': {'$slice': 1}}))
+                                           {"_id": 0, "ID": 1, "title": 1
+                                               , "price": 1, 'pictures': {'$slice': 1}}))
 
     @staticmethod
     def update_post_data(data):
@@ -104,7 +106,4 @@ class PostTransactions:
                 filters['new'] = False
         if data['envio'] is not None:
             filters['shipping'] = data['envio']
-        logging.debug(str(filters))
-        logging.debug(str(data['precioMaximo']))
-        logging.debug(str(data['precioMinimo']))
         return filters

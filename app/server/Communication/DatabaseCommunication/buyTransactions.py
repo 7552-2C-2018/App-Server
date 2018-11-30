@@ -28,7 +28,7 @@ class BuyTransactions:
                 logging.debug("se rompio le payment")
                 raise Exception
             logging.debug("payment: " + str(payment_response))
-            parsed_data["payment"] = payment_response["id"]
+            parsed_data["payment"] = payment_response["data"][0]["transaction_id"]
 
         if data["street"] is not None:
 
@@ -38,7 +38,8 @@ class BuyTransactions:
                 raise Exception
             parsed_data["shipping"] = tracking_response["id"]
             logging.debug("tracking: " + str(tracking_response))
-
+        parsed_data["ID"] = data["ID"]
+        parsed_data["estado"] = data["estado"]
         return parsed_data
 
     @staticmethod
