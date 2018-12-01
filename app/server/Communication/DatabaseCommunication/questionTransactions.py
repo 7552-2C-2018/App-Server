@@ -31,6 +31,7 @@ class QuestionTransactions:
         question_id = data['postId'] + str(int(publ_date))
         parsed_data["ID"] = question_id
         parsed_data["userId"] = data["facebookId"]
+        parsed_data["question"] = data["pregunta"]
         workingCollection.insert_one({"_id": {"postId": data['postId'], "publication_date": publ_date}})
         workingCollection.update_one({"_id": {"postId": data['postId'], "publication_date": publ_date}},
                                      {'$set': parsed_data})
@@ -39,4 +40,6 @@ class QuestionTransactions:
 
     @staticmethod
     def updateQuestion(data):
-        return workingCollection.update_one({'ID': data['questionId']}, {'$set': {"answer": data["respuesta"]}})
+        date_now = time.mktime(datetime.datetime.utcnow().timetuple())
+        return workingCollection.update_one({'ID': data['questionId']}, {'$set': {"answer": data["respuesta"],
+                                                                                  "answer_date": date_now}})

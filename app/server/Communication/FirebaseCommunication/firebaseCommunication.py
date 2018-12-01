@@ -64,3 +64,7 @@ class FirebaseCommunication:
         logging.debug(str(facebook_id_comprador))
         FirebaseCommunication.__newUserChat(facebook_id_comprador, chat_id)
         FirebaseCommunication.__newUserChat(post_data["_id"]["facebookId"], chat_id)
+
+    @staticmethod
+    def pushNotification(facebook_id_notificado, data):
+        pass

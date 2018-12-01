@@ -15,7 +15,7 @@ common_args.add_argument('token', type=str, help='Token de acceso', location='he
 
 new_question = common_args.copy()
 new_question.add_argument('postId', type=str, help='id del post por el que se esta preguntandp', location='form', required=True)
-new_question.add_argument('pregunta', type=str, help='pregunta del post ', location='form', required=True)
+new_question.add_argument('question', type=str, help='pregunta del post ', location='form', required=True)
 
 answer = common_args.copy()
 answer.add_argument('respuesta', type=str, help='respuesta a la pregunta', location='form', required=True)
