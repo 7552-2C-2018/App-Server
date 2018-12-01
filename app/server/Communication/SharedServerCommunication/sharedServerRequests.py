@@ -29,7 +29,7 @@ class SharedServerRequests:
         return None
 
     @staticmethod
-    def __parsePayment(data):
+    def __parsePayment(data, post):
         payment_data = {}
         date = data["cardDate"].split("/")
         payment_data["number"] = data["cardNumber"]
@@ -38,12 +38,13 @@ class SharedServerRequests:
         payment_data["expiration_month"] = date[0]
         payment_data["currency"] = "ars"
         payment_data["type"] = data["cardBank"]
+        payment_data["ownerId"] = data["cardBank"]
         return payment_data
 
     @staticmethod
-    def newPayment(data):
+    def newPayment(data, post):
         headers = (SharedServerRequests.__auth())
-        payment_data = SharedServerRequests.__parsePayment(data)
+        payment_data = SharedServerRequests.__parsePayment(data,post)
         response = requests.post(SHARED_SERVER_URL + '/api/payments', headers=headers,
                                  data=json.dumps(payment_data))
         logging.debug("payment data: " + json.dumps(payment_data))
@@ -54,22 +55,21 @@ class SharedServerRequests:
             return None
 
     @staticmethod
-    def __parseTracking(data):
+    def __parseTracking(data, post):
         try:
             tracking_data = {}
-            postData = PostTransactions.find_post_by_post_id(data["postId"])
-            tracking_data["ownerId"] = data["ID"]
+            tracking_data["ownerId"] = post["ID"]
             tracking_data["start_time"] = ""
             tracking_data["start_street"] = ""
-            tracking_data["start_lat"] = postData["coordenates"][0]
-            tracking_data["start_lon"] = postData["coordenates"][1]
+            tracking_data["start_lat"] = post["coordenates"][0]
+            tracking_data["start_lon"] = post["coordenates"][1]
             tracking_data["end_time"] = ""
             tracking_data["end_street"] = data["street"] + " " + data["floor"] + \
                                           " " + data["dept"] + ", " + data["city"]
             end_coordenates = GeolocationServiceCommunication.getCoordenates(data["street"], data["city"])
             tracking_data["end_lat"] = float(end_coordenates["latitud"])
             tracking_data["end_lon"] = float(end_coordenates["longitud"])
-            tracking_data["distance"] = SharedServerRequests.__calulateDistance(postData["coordenates"],end_coordenates)
+            tracking_data["distance"] = SharedServerRequests.__calulateDistance(post["coordenates"],end_coordenates)
             tracking_data["currency"] = "ars"
             tracking_data["value"] = data["price"]
             logging.debug("end_coordenates data: " + str(tracking_data))
@@ -99,10 +99,10 @@ class SharedServerRequests:
             raise Exception
 
     @staticmethod
-    def newTracking(data):
+    def newTracking(data, post):
         try:
             headers = (SharedServerRequests.__auth())
-            tracking_data = SharedServerRequests.__parseTracking(data)
+            tracking_data = SharedServerRequests.__parseTracking(data, post)
             logging.debug("track data: " + json.dumps(tracking_data))
             response = requests.post(SHARED_SERVER_URL + '/api/tracking', headers=headers,
                                      data=json.dumps(tracking_data))

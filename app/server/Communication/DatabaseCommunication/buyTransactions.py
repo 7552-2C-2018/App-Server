@@ -1,3 +1,4 @@
+from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
 from server.setup import app
 import logging
 import json
@@ -19,10 +20,10 @@ class BuyTransactions:
     @staticmethod
     def __parseData(data):
         parsed_data = {}
-        if data["postId"] is not None:
-            parsed_data["postId"] = data["postId"]
+        parsed_data["postId"] = data["postId"]
+        postData = PostTransactions.find_post_by_post_id(data["postId"])
         if data["cardNumber"] is not None:
-            payment_response = SharedServerRequests.newPayment(data)
+            payment_response = SharedServerRequests.newPayment(data, postData)
 
             if payment_response is None:
                 logging.debug("se rompio le payment")
@@ -32,7 +33,7 @@ class BuyTransactions:
 
         if data["street"] is not None:
 
-            tracking_response = SharedServerRequests.newTracking(data)
+            tracking_response = SharedServerRequests.newTracking(data, postData)
             if tracking_response is None:
                 logging.debug("se rompio la street")
                 raise Exception
