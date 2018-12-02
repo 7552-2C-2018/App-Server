@@ -7,6 +7,7 @@ import pymongo
 import base64
 import qrcode
 from io import BytesIO
+import re
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
@@ -118,7 +119,8 @@ class PostTransactions:
             filters['categoria'] = data['categoria'].lower()
         if data['search'] is not None:
             filters['title'] = {}
-            filters['title']["$regex"] = data['search']
+
+            filters['title']["$regex"] = re.compile(data['search'], re.IGNORECASE)
         return filters
 
     @staticmethod
