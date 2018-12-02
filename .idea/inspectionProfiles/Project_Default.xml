@@ -36,6 +36,7 @@
           <option value="server.apis.buys.flask_restplus" />
           <option value="server.apis.flask_restplus" />
           <option value="server.apis.questions.flask_restplus" />
+          <option value="server.services.Monitoring.monitor.flask_restplus" />
         </list>
       </option>
     </inspection_tool>

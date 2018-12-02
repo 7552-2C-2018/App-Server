@@ -10,8 +10,8 @@ class QuestionServices:
         pass
 
     @staticmethod
-    def getAllQuestions():
-        response = QuestionTransactions.getQuestions()
+    def getAllQuestions(postId):
+        response = QuestionTransactions.getQuestions(postId)
         return Responses.success('Preguntas obtenidas satisfactoriamente', response)
 
     @staticmethod

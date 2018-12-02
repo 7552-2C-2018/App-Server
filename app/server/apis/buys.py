@@ -1,4 +1,6 @@
 from flask_restplus import Resource, Api, Namespace, reqparse, inputs
+
+from server.services.Monitoring.monitor import monitor
 from server.services.Validator.validateAuth import validateAuth
 from server.services.buyServices import BuyServices
 from server.Structures.Response import responses

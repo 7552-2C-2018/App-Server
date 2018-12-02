@@ -20,8 +20,9 @@ class QuestionTransactions:
 
 
     @staticmethod
-    def getQuestions():
-        response = list(workingCollection.find().sort("_id.publication_date", pymongo.DESCENDING))
+    def getQuestions(postId):
+        response = list(workingCollection.find({"_id.postId": postId})
+                        .sort("_id.publication_date", pymongo.DESCENDING))
         return response
 
     @staticmethod
@@ -31,7 +32,7 @@ class QuestionTransactions:
         question_id = data['postId'] + str(int(publ_date))
         parsed_data["ID"] = question_id
         parsed_data["userId"] = data["facebookId"]
-        parsed_data["question"] = data["pregunta"]
+        parsed_data["pregunta"] = data["question"]
         workingCollection.insert_one({"_id": {"postId": data['postId'], "publication_date": publ_date}})
         workingCollection.update_one({"_id": {"postId": data['postId'], "publication_date": publ_date}},
                                      {'$set': parsed_data})

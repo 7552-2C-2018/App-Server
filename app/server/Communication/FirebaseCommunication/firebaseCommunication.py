@@ -9,15 +9,6 @@ URL = 'https://melli-7552.firebaseio.com/'
 import logging
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
-def async_f(function):
-
-    @wraps(function)
-    def async_func(*args, **kwargs):
-        thrd = Thread(target=async_func, args=args, kwargs=kwargs)
-        thrd.start()
-        return thrd
-    return async_func
-
 
 class FirebaseCommunication:
 

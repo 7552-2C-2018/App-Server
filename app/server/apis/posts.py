@@ -1,4 +1,6 @@
 from flask_restplus import Resource, Api, Namespace, reqparse, inputs
+
+from server.services.Monitoring.monitor import monitor
 from server.services.Validator.validateAuth import validateAuth
 from server.services.postServices import PostServices
 from server.Structures.Response import responses
@@ -114,6 +116,7 @@ class Post(Resource):
         args['postId'] = post_id
         return_data = PostServices.updatePost(args)
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
 
 @api.route('/user=<string:user_id>')
 class PostByUser(Resource):
