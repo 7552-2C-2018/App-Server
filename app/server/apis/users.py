@@ -14,7 +14,7 @@ path = 'users/'
 common_args = reqparse.RequestParser()
 common_args.add_argument('facebookId', type=str, help='facebookId', location='headers', required=True)
 
-login = reqparse.RequestParser()
+login = common_args.copy()
 login.add_argument('token', type=str, help='token de acceso de facebook', location='headers', required=True)
 
 register = login.copy()

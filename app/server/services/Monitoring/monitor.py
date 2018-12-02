@@ -23,7 +23,7 @@ def monitor_data(path, method, time_end, time_start):
         'route': path,
         'method': method,
         'date_time': datetime.datetime.utcnow(),
-        'day': time.strftime('%Y-%m-%d'),
+        'day': time.strftime('%d/%m/%Y'),
         'hour': time.strftime('%H'),
         'time_elapsed_ms': int((time_end - time_start) * 1000)
     }
