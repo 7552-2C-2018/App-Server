@@ -53,3 +53,11 @@ class UserTransactions:
         parsed_data = UserTransactions.__parseUpdateData(data)
         if parsed_data:
             workingCollection.update_one({'facebookId': data['facebookId']}, {'$set': parsed_data})
+
+    @staticmethod
+    def getUserActivities(facebook_id):
+        return workingCollection.find_one({'facebookId': facebook_id}, {"activities": 1})
+
+    @staticmethod
+    def pushUserActivitiy(facebook_id, data):
+        return workingCollection.update_one({'facebookId': facebook_id}, {'$set': {'$push': {'activities': data}}})

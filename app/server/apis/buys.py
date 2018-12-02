@@ -1,3 +1,5 @@
+import time
+
 from flask_restplus import Resource, Api, Namespace, reqparse, inputs
 
 from server.services.Monitoring.monitor import monitor
@@ -9,6 +11,8 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
 
 api = Namespace('buys', description='Melli buy-related endpoints')
+
+path = 'buys/'
 
 common_args = reqparse.RequestParser()
 common_args.add_argument('facebookId', type=str, help='facebookId', location='headers', required=True)
@@ -37,6 +41,7 @@ modify_state = common_args.copy()
 modify_state.add_argument('estado', type=str, help='Id del post del producto a comprar',
                           location='form', required=True)
 
+
 @api.route('/')
 class Buys(Resource):
     @api.doc(responses=responses)
@@ -44,7 +49,10 @@ class Buys(Resource):
     @validateAuth
     def post(self):
         """Endpoint for creating a single buy"""
+        time_start = time.time()
         return_data = BuyServices.createNewBuy(new_buy_args.parse_args())
+        time_end = time.time()
+        monitor(time_start, time_end, path, "post")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
@@ -56,18 +64,25 @@ class Buy(Resource):
     @validateAuth
     def get(self, buy_id):
         """Endpoint that gets a single buy"""
+        time_start = time.time()
         args = common_args.parse_args()
         args['buyId'] = buy_id
         return_data = BuyServices.getBuy(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
     @api.doc(responses=responses)
     @api.expect(modify_state)
     @validateAuth
     def put(self, buy_id):
         """Endpoint that modify a single buy"""
+        time_start = time.time()
         args = modify_state.parse_args()
         args['buyId'] = buy_id
         return_data = BuyServices.updateBuy(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "put")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
@@ -79,9 +94,12 @@ class BuyByUser(Resource):
     @validateAuth
     def get(self, user_id):
         """Endpoint that gets a all buys from user"""
+        time_start = time.time()
         args = common_args.parse_args()
         args['userId'] = user_id
         return_data = BuyServices.getBuysByUser(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
@@ -93,7 +111,10 @@ class BuyBySeller(Resource):
     @validateAuth
     def get(self, seller_id):
         """Endpoint that gets a all buys from seller"""
+        time_start = time.time()
         args = common_args.parse_args()
         args['seller_id'] = seller_id
         return_data = BuyServices.getBuysBySeller(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

@@ -19,10 +19,6 @@ class UserServices:
         pass
 
     @staticmethod
-    def __updateUser(data):
-        UserTransactions.updateUserData(data)
-
-    @staticmethod
     def __registerNonExistingUser(data):
         exp_date = UserServices.__getDateTime()
         UserTransactions.newUser(data["facebookId"], data["firstName"],
@@ -55,7 +51,7 @@ class UserServices:
                 response = {'token': UserServices.__generateToken(facebook_id, UserServices.__getDateTime())}
                 return Responses.success('Token generado correctamente', response)
             else:
-                return Responses.unauthorized('Usuario no registrado')
+                return Responses.badRequest('Usuario no registrado')
         else:
             return Responses.badRequest('FacebookId Invalido')
 
@@ -72,8 +68,15 @@ class UserServices:
 
     @staticmethod
     def updateUser(request_data):
-        if UserServices.__checkUserExistance(request_data["facebookId"]):
-            UserServices.__updateUser(request_data)
-            return Responses.success('Usuario actualizado correctamente', "")
+        UserTransactions.updateUserData(request_data)
+        return Responses.success('Usuario actualizado correctamente', "")
+
+    @staticmethod
+    def getActivities(request_data):
+        facebook_id = request_data["facebookId"]
+        if UserServices.__checkUserExistance(facebook_id):
+            response = UserTransactions.getUserActivities(request_data)
+            return Responses.success('Actividades obterindas correctamente', response)
         else:
             return Responses.badRequest('Usuario no registrado')
+

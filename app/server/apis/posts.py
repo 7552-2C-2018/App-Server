@@ -1,3 +1,5 @@
+import time
+
 from flask_restplus import Resource, Api, Namespace, reqparse, inputs
 
 from server.services.Monitoring.monitor import monitor
@@ -9,6 +11,8 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
 
 api = Namespace('posts', description='Melli post-related endpoints')
+
+path = 'posts/'
 
 common_args = reqparse.RequestParser()
 common_args.add_argument('facebookId', type=str, help='facebookId', location='headers', required=True)
@@ -38,7 +42,8 @@ get_post_filter_args.add_argument('categoria',
                                   type=str, help='categoria del producto del post',
                                   location='headers')
 get_post_filter_args.add_argument('envio', type=int,
-                                  help='filtro por productos por los cuales se realizan envios (1->true,0->false)', location='headers')
+                                  help='filtro por productos por los cuales se realizan envios (1->true,0->false)'
+                                  , location='headers')
 
 new_post_args = common_args.copy()
 new_post_args.add_argument('title', type=str, help='titulo del post', location='form', required=True)
@@ -81,8 +86,11 @@ class Posts(Resource):
     @validateAuth
     def get(self):
         """Endpoint that gets all posts"""
+        time_start = time.time()
         args = get_post_filter_args.parse_args()
         return_data = PostServices.getAllPosts(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
     @api.doc(responses=responses)
@@ -90,7 +98,10 @@ class Posts(Resource):
     @validateAuth
     def post(self):
         """Endpoint for creating a single post"""
+        time_start = time.time()
         return_data = PostServices.createNewPost(new_post_args.parse_args())
+        time_end = time.time()
+        monitor(time_start, time_end, path, "post")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
@@ -101,10 +112,12 @@ class Post(Resource):
     @validateAuth
     def get(self, post_id):
         """Endpoint that gets a single post"""
+        time_start = time.time()
         args = common_args.parse_args()
         args['postId'] = post_id
-        logging.debug("post: " + str(args))
         return_data = PostServices.getPost(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "post")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
     @api.doc(responses=responses)
@@ -112,9 +125,12 @@ class Post(Resource):
     @validateAuth
     def put(self, post_id):
         """Endpoint for updating a single post"""
+        time_start = time.time()
         args = update_post_args.parse_args()
         args['postId'] = post_id
         return_data = PostServices.updatePost(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "put")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
@@ -125,8 +141,10 @@ class PostByUser(Resource):
     @validateAuth
     def get(self, user_id):
         """Endpoint that gets a all posts from user"""
+        time_start = time.time()
         args = common_args.parse_args()
         args['userId'] = user_id
-        logging.debug("post: " + str(args))
         return_data = PostServices.getPostByUser(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

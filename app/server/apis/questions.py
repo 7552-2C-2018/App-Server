@@ -1,3 +1,5 @@
+import time
+
 from flask_restplus import Resource, Api, Namespace, reqparse, inputs
 
 from server.services.Monitoring.monitor import monitor
@@ -33,24 +35,31 @@ class Questions(Resource):
     @validateAuth
     def post(self):
         """Endpoint for creating a single question"""
-        monitor(path, "post")
+        time_start = time.time()
         args = new_question.parse_args()
         return_data = QuestionServices.createNewQuestion(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "post")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 @api.route('/postId=<string:postId>/')
-class Answers(Resource):
+@api.param('postId', 'Id from post')
+class QuestionsByPost(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)
+
     @validateAuth
     def get(self, postId):
         """Endpoint that gets all questions"""
-        monitor(path, "get")
+        time_start = time.time()
         return_data = QuestionServices.getAllQuestions(postId)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
 @api.route('/<string:questionId>/respuesta/')
+@api.param('questionId', 'Id de la pregunta')
 class Answers(Resource):
 
     @api.doc(responses=responses)
@@ -58,14 +67,17 @@ class Answers(Resource):
     @validateAuth
     def put(self, questionId):
         """Endpoint that update a single answer"""
-        monitor(path + "questionId/respuesta/", "put")
+        time_start = time.time()
         args = answer.parse_args()
         args['questionId'] = questionId
         return_data = QuestionServices.updateQuestion(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path + "questionId/respuesta/", "put")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
 @api.route('/<string:questionId>')
+@api.param('questionId', 'Id de la pregunta')
 class QuestionsAndAnswers(Resource):
 
     @api.doc(responses=responses)
@@ -73,9 +85,11 @@ class QuestionsAndAnswers(Resource):
     @validateAuth
     def get(self, questionId):
         """Endpoint that gets a single questions"""
-        monitor(path + "questionId", "get")
+        time_start = time.time()
         args = {}
         args['questionId'] = questionId
         return_data = QuestionServices.getQuestion(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path + "questionId", "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 

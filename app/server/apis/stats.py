@@ -31,7 +31,7 @@ class Stats(Resource):
             cursor = aware_colection.aggregate(pipeline)
             data = {}
             for row in cursor:
-                request_string = row['_id']['method'] + row['_id']['route']
+                request_string = row['_id']['method'] + ": " + row['_id']['route']
                 if request_string not in data:
                     data[request_string] = []
 

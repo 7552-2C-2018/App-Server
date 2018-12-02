@@ -18,8 +18,7 @@ class PostServices:
     @staticmethod
     def getPost(request_data):
         response = PostTransactions.find_post_by_post_id(request_data["postId"])
-
-        if not response is None:
+        if response is not None:
             response["name"] = UserTransactions.getUserName(response["_id"]["facebookId"])
             return Responses.success('Post obtenidos satisfactoriamente', response)
         else:
@@ -28,8 +27,7 @@ class PostServices:
     @staticmethod
     def getPostByUser(request_data):
         response = PostTransactions.find_post_by_user_id(request_data["userId"])
-
-        if not response is None:
+        if response is not None:
             return Responses.success('Post obtenidos satisfactoriamente', response)
         else:
             return Responses.badRequest('Usuario sin Posts')
