@@ -34,14 +34,15 @@ update.add_argument('email', type=str, help='mail', location='form')
 @api.route('/login')
 class LoginValidator(Resource):
     @api.doc(responses=responses)
-    @api.expect(common_args)
+    @api.expect(login)
     def get(self):
         """Login credentials validation endpoint"""
         time_start = time.time()
-        return_data = UserServices.checkLogin(common_args.parse_args())
+        return_data = UserServices.checkLogin(login.parse_args())
         time_end = time.time()
         monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
 
 @api.route('/register')
 class RegisterValidator(Resource):
@@ -54,6 +55,7 @@ class RegisterValidator(Resource):
         time_end = time.time()
         monitor(time_start, time_end, path, "post")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
 
 @api.route('/')
 class RegisterValidator(Resource):

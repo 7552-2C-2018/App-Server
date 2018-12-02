@@ -36,8 +36,7 @@ class Stats(Resource):
                     data[request_string] = []
 
                 data[request_string].append({
-                    'day': row['_id']['day'],
-                    'hour': row['_id']['hour'],
+                    'daytime': str(row['_id']['day']) + ' - ' + str(row['_id']['hour']),
                     'avg_time_elapsed': row['averageTimeElapsed'],
                     'totalRequests': row['totalRequests']
                 })
