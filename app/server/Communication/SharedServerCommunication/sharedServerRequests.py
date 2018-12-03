@@ -11,6 +11,7 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 SERVER_ID = "7"
 SHARED_SERVER_URL = 'https://shared-server-25.herokuapp.com'
 
+
 class SharedServerRequests:
 
     def __init__(self):
@@ -135,12 +136,9 @@ class SharedServerRequests:
 
     @staticmethod
     def calculateShipping(shippingData):
-        """ headers = (SharedServerRequests.__auth())
-        response = requests.get(SHARED_SERVER_URL + '/api/deliveries/estimate', header={'x-access-token': token}, json=json)
-
-        if response.status_code == 201:
+        headers = (SharedServerRequests.__auth())
+        response = requests.get(SHARED_SERVER_URL + '/api/deliveries/estimate', headers=headers, json=json)
+        if response.status_code == 200:
             return json.loads(response.text)
         else:
-            return None"""
-        return {"Precio envio": 100}
-
+            return None

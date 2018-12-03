@@ -116,7 +116,7 @@ class PostTransactions:
             if data["envio"] == 0:
                 filters['shipping'] = False
         if data['categoria'] is not None:
-            filters['categoria'] = data['categoria'].lower()
+            filters['category'] = re.compile(data['categoria'], re.IGNORECASE)
         if data['search'] is not None:
             filters['title'] = {}
 
