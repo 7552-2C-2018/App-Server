@@ -1,4 +1,3 @@
-from server.Communication.DatabaseCommunication.buyTransactions import BuyTransactions
 from server.setup import app
 from flask import Flask
 import logging
@@ -70,8 +69,7 @@ class UserTransactions:
                                      {'$set': {'$inc': {'sellPoints': points, 'totalPoints': points}}})
 
     @staticmethod
-    def updateUserCalificationPoints(facebook_id):
-        calification = UserTransactions.__getCalification(facebook_id)
+    def updateUserCalificationPoints(facebook_id, calification):
         points = calification*100
         workingCollection.update_one({'facebookId': facebook_id},
                                      {'$set': {'calificationPoints': points}})
@@ -93,7 +91,7 @@ class UserTransactions:
     def pushUserActivitiy(facebook_id, data):
         return workingCollection.update_one({'facebookId': facebook_id}, {'$set': {'$push': {'activities': data}}})
 
-    @staticmethod
+"""    @staticmethod
     def __getCalification(facebook_id):
         BuyTransactions.findBuyCalificationAverageByUserId(facebook_id)
-        return 10
+        return 10"""
