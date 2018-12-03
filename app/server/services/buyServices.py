@@ -61,5 +61,21 @@ class BuyServices:
         else:
             return Responses.badRequest('Estado Invalido')
 
+    @staticmethod
+    def update_buy_by_payment_id(request_data):
+        response = BuyTransactions.update_buy_by_payment_id(request_data)
+        if response != "Estado Invalido":
+            return Responses.success('Compra actualizada satisfactoriamente', "")
+        else:
+            return Responses.badRequest('Estado Invalido')
+
+    @staticmethod
+    def update_buy_by_tracking_id(request_data):
+        response = BuyTransactions.update_buy_by_tracking_id(request_data)
+        if response != "Estado Invalido":
+            return Responses.success('Compra actualizada satisfactoriamente', "")
+        else:
+            return Responses.badRequest('Estado Invalido')
+
 
 

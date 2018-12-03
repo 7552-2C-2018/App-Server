@@ -17,6 +17,7 @@ def validateAuth(function):
         if user is None:
             return_data = Responses.unauthorized('FacebookId not found')
             return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
         token = request.headers.get('token')
 
         if token != user['token']:
@@ -27,6 +28,26 @@ def validateAuth(function):
         exp_date_seconds = time.mktime(user['exp_date'].timetuple())
         if current_date_seconds > exp_date_seconds:
             return_data = Responses.unauthorized('Expirated token')
+            return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
+        return function(*args, **kwargs)
+
+    return validateAuthorization
+
+
+def validateAuthServer(function):
+    @wraps(function)
+    def validateAuthorization(*args, **kwargs):
+
+        user = request.headers.get('UserId')
+        if user != "admin":
+            return_data = Responses.unauthorized('UserId not found')
+            return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
+        token = request.headers.get('Token')
+
+        if token != "57.fcmXg$S@sx-bZ":
+            return_data = Responses.unauthorized('Invalid token')
             return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
         return function(*args, **kwargs)

@@ -3,7 +3,7 @@ import time
 from flask_restplus import Resource, Api, Namespace, reqparse, inputs
 
 from server.services.Monitoring.monitor import monitor
-from server.services.Validator.validateAuth import validateAuth
+from server.services.Validator.validateAuth import validateAuth, validateAuthServer
 from server.services.buyServices import BuyServices
 from server.Structures.Response import responses
 import logging
@@ -38,8 +38,12 @@ new_buy_args.add_argument('dept', type=str, help='Depto del shipping', location=
 new_buy_args.add_argument('city', type=str, help='Ciudad del shipping', location='form')
 
 modify_state = common_args.copy()
-modify_state.add_argument('estado', type=str, help='Id del post del producto a comprar',
+modify_state.add_argument('State', type=str, help='Id del post del producto a comprar',
                           location='form', required=True)
+
+server_communication_args = reqparse.RequestParser()
+server_communication_args.add_argument('UserId', type=str, help='Id del servidor', location='headers', required=True)
+server_communication_args.add_argument('Token', type=str, help='Token de acceso', location='headers', required=True)
 
 
 @api.route('/')
@@ -115,6 +119,40 @@ class BuyBySeller(Resource):
         args = common_args.parse_args()
         args['seller_id'] = seller_id
         return_data = BuyServices.getBuysBySeller(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
+
+@api.route('/trackingId=<string:tracking_id>')
+@api.param('trackingId', 'Id from trackingId')
+class BuyByTracking(Resource):
+    @api.doc(responses=responses)
+    @api.expect(server_communication_args)
+    @validateAuthServer
+    def put(self, tracking_id):
+        """Endpoint that updates buy state by paymentId"""
+        time_start = time.time()
+        args = common_args.parse_args()
+        args['tracking_id'] = tracking_id
+        return_data = BuyServices.update_buy_by_payment_id(args)
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
+
+@api.route('/paymentId=<string:payment_id>')
+@api.param('paymentId', 'Id from payment_id')
+class BuyByShipment(Resource):
+    @api.doc(responses=responses)
+    @api.expect(server_communication_args)
+    @validateAuthServer
+    def put(self, payment_id):
+        """Endpoint that updates buy state by shipmentId"""
+        time_start = time.time()
+        args = common_args.parse_args()
+        args['payment_id'] = payment_id
+        return_data = BuyServices.update_buy_by_payment_id(args)
         time_end = time.time()
         monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

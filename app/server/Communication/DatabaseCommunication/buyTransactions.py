@@ -199,3 +199,68 @@ class BuyTransactions:
             return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": data["estado"]}})
         else:
             return "estado Invalido"
+
+    @staticmethod
+    def findBuyCalificationAverageByUserId(facebook_id):
+        pipeline =[
+            {
+                u"$project": {
+                    u"_id": 1,
+                    u"buys": u"$$ROOT",
+                }
+            },
+            {
+                u"$lookup": {
+                    u"localField": u"buys.postId",
+                    u"from": u"posts",
+                    u"foreignField": u"ID",
+                    u"as": u"posts"
+                }
+            },
+            {
+                u"$unwind": {
+                    u"path": u"$posts",
+                    u"preserveNullAndEmptyArrays": False
+                }
+            },
+            {
+                u"$match": {
+                    u"posts._id.facebookId": facebook_id
+                }
+            },
+            {
+                u"$group": {
+                    u"_id": {},
+                    u"AVG(price)": {
+                        u"$avg": u"$price"
+                    }
+                }
+            },
+
+            {
+                u"$project": {
+                    u"average": "$AVG(price)"
+                }
+            }
+        ]
+        cursor = buysCollection.aggregate(
+            pipeline,
+            allowDiskUse=True
+        )
+        return list(cursor)[0]
+
+    @staticmethod
+    def update_buy_by_tracking_id(data):
+        estado_valido = BuyTransactions.__validate_estado(data["estado"])
+        if estado_valido:
+            return buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": data["State"]}})
+        else:
+            return "estado Invalido"
+
+    @staticmethod
+    def update_buy_by_payment_id(data):
+        estado_valido = BuyTransactions.__validate_estado(data["estado"])
+        if estado_valido:
+            return buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": data["State"]}})
+        else:
+            return "estado Invalido"
