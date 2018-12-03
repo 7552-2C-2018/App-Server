@@ -48,7 +48,7 @@ class BuyServices:
         try:
             BuyTransactions.newBuy(request_data)
             post_data = PostTransactions.find_post_by_post_id(request_data['postId'])
-            FirebaseCommunication.newChat(request_data['facebookId'], post_data)
+            FirebaseCommunication.new_chat(request_data['facebookId'], post_data)
             return Responses.created('Compra creada satisfactoriamente', "")
         except Exception:
             return Responses.internalServerError('Error en la comunicacion con el sharedServer')

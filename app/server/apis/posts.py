@@ -117,7 +117,7 @@ class Post(Resource):
         args['postId'] = post_id
         return_data = PostServices.getPost(args)
         time_end = time.time()
-        monitor(time_start, time_end, path, "post")
+        monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
     @api.doc(responses=responses)

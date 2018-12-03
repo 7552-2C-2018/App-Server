@@ -1,19 +1,20 @@
-import requests
 import json
-from threading import Thread
-from functools import wraps
 import datetime
 import time
-
+import os
+import requests
 URL = 'https://melli-7552.firebaseio.com/'
 import logging
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
+
+URL = 'https://fcm.googleapis.com/project/melli-7552//send'
+FIREBASE_KEY = os.environ.get('FIREBASE_KEY')
 
 
 class FirebaseCommunication:
 
     @staticmethod
-    def __newUserChat(facebook_id, chat_key):
+    def __new_user_chat(facebook_id, chat_key):
         user = requests.get(URL + 'userChats/' + facebook_id + '.json')
         if user.text == "null":
             dict = {'chats': []}
@@ -28,16 +29,16 @@ class FirebaseCommunication:
         requests.put((URL + 'userChats/' + facebook_id + '.json'), data=json.dumps({'chats': new_chat_list}))
 
     @staticmethod
-    def __newUser(data):
+    def __new_user(data):
         facebook_id = data['facebookId']
         data.pop('facebookId')
-        dict = {
+        json_data = {
                 facebook_id: data
             }
-        requests.put(URL + 'user/' + facebook_id + '.json', data=json.dumps(dict))
+        requests.put(URL + 'user/' + facebook_id + '.json', data=json.dumps(json_data))
 
     @staticmethod
-    def newChat(facebook_id_comprador, post_data):
+    def new_chat(facebook_id_comprador, post_data):
         payload = {
                 "picture": post_data["pictures"],
                 "title": post_data["title"],
@@ -47,15 +48,22 @@ class FirebaseCommunication:
                                   "timestamp": time.mktime(datetime.datetime.utcnow().timetuple())}}
             }
         response = requests.post(URL + 'chats.json', data=json.dumps(payload))
-        logging.debug(str(response))
         new_chat = json.loads(response.text)
         chat_id = new_chat['name']
-        logging.debug(str(chat_id))
-        logging.debug(str(post_data["_id"]["facebookId"]))
-        logging.debug(str(facebook_id_comprador))
-        FirebaseCommunication.__newUserChat(facebook_id_comprador, chat_id)
-        FirebaseCommunication.__newUserChat(post_data["_id"]["facebookId"], chat_id)
+        FirebaseCommunication.__new_user_chat(facebook_id_comprador, chat_id)
+        FirebaseCommunication.__new_user_chat(post_data["_id"]["facebookId"], chat_id)
 
     @staticmethod
-    def pushNotification(facebook_id_notificado, data):
-        pass
+    def send_notification(title, categoria, facebook_id):
+        try:
+            json_data = {
+                'id': facebook_id,
+                'categoria': categoria,
+                'title': title
+            }
+
+            response = requests.post(URL, json=json_data, headers={'Authorization': FIREBASE_KEY,
+                                                                   'Content-type': 'application/json'})
+            logging.info('Mensaje enviado satisfactoriamente. Respuesta: ' + response.json())
+        except Exception as e:
+            logging.error('Surgio un problema al enviar el mensaje: ' + str(e))
