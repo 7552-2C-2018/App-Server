@@ -17,8 +17,8 @@ with app.app_context():
 def monitor(time_start, time_end, path, method):
     monitor_data(path, method, time_end, time_start)
 
+
 def monitor_data(path, method, time_end, time_start):
-    logging.debug("estamo aca 2")
     request_data = {
         'route': path,
         'method': method,

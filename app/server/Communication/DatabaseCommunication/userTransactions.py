@@ -1,3 +1,4 @@
+from server.Communication.DatabaseCommunication.buyTransactions import BuyTransactions
 from server.setup import app
 from flask import Flask
 import logging
@@ -39,7 +40,7 @@ class UserTransactions:
         id = workingCollection.insert_one({"facebookId": user_id,
                                            "nombre": first_name,
                                            "apellido": last_name,
-                                           "photoUrl": photo_url,
+                                           "photoUrlToken": photo_url,
                                            "email": email})
         return id
 
@@ -47,6 +48,36 @@ class UserTransactions:
     def updateUserToken(facebook_id, new_token, new_expdate):
         workingCollection.update_one({'facebookId': facebook_id},
                                      {'$set': {'token': new_token, 'exp_date': new_expdate}})
+
+    @staticmethod
+    def updateUserBuyPoints(facebook_id, payment_method):
+        points = 0
+        if payment_method == "":
+            points = 0
+        elif payment_method == "":
+            points = 0
+        elif payment_method == "":
+            points = 0
+        elif payment_method == "":
+            points = 0
+        workingCollection.update_one({'facebookId': facebook_id},
+                                     {'$set': {'$inc': {'buyPoints': points, 'totalPoints': points}}})
+
+    @staticmethod
+    def updateUserSellPoints(facebook_id):
+        points = 0
+        workingCollection.update_one({'facebookId': facebook_id},
+                                     {'$set': {'$inc': {'sellPoints': points, 'totalPoints': points}}})
+
+    @staticmethod
+    def updateUserCalificationPoints(facebook_id):
+        calification = UserTransactions.__getCalification(facebook_id)
+        points = calification*100
+        workingCollection.update_one({'facebookId': facebook_id},
+                                     {'$set': {'calificationPoints': points}})
+        workingCollection.update_one({'facebookId': facebook_id},
+                                     {'$set': {'totalPoints': {'$add':
+                                                                   ['sellPoints', 'buyPoints', 'calificationPoints']}}})
 
     @staticmethod
     def updateUserData(data):
@@ -61,3 +92,8 @@ class UserTransactions:
     @staticmethod
     def pushUserActivitiy(facebook_id, data):
         return workingCollection.update_one({'facebookId': facebook_id}, {'$set': {'$push': {'activities': data}}})
+
+    @staticmethod
+    def __getCalification(facebook_id):
+        BuyTransactions.findBuyCalificationAverageByUserId(facebook_id)
+        return 10

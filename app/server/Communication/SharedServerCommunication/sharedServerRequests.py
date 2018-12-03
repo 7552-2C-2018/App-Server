@@ -4,9 +4,13 @@ import requests
 import json
 from math import sin, cos, sqrt, atan2, radians
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
+from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
 from server.Communication.GeolocationServiceCommunication.geolocationServiceCommunication import \
     GeolocationServiceCommunication
 import logging
+
+from server.Structures.Response import Responses
+
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 SERVER_ID = "7"
 SHARED_SERVER_URL = 'https://shared-server-25.herokuapp.com'
@@ -21,8 +25,8 @@ class SharedServerRequests:
     def __auth():
         headers = {}
         headers['Content-Type'] = "application/json"
-        headers['Accept'] = "application/json"
-        response = requests.post(SHARED_SERVER_URL + '/api/auth/token', headers=headers, data=json.dumps({"id": SERVER_ID}))
+        response = requests.post(SHARED_SERVER_URL + '/api/auth/token',
+                                 headers=headers, data=json.dumps({"id": SERVER_ID}))
         logging.debug("token: " + str(response))
         if response.status_code == 201:
             headers['x-access-token'] = json.loads(response.text)["token"]
@@ -45,7 +49,7 @@ class SharedServerRequests:
     @staticmethod
     def newPayment(data, post):
         headers = (SharedServerRequests.__auth())
-        payment_data = SharedServerRequests.__parsePayment(data,post)
+        payment_data = SharedServerRequests.__parsePayment(data, post)
         response = requests.post(SHARED_SERVER_URL + '/api/payments', headers=headers,
                                  data=json.dumps(payment_data))
         logging.debug("payment data: " + json.dumps(payment_data))
@@ -70,14 +74,33 @@ class SharedServerRequests:
             end_coordenates = GeolocationServiceCommunication.getCoordenates(data["street"], data["city"])
             tracking_data["end_lat"] = float(end_coordenates["latitud"])
             tracking_data["end_lon"] = float(end_coordenates["longitud"])
-            tracking_data["distance"] = SharedServerRequests.__calulateDistance(post["coordenates"],end_coordenates)
+            tracking_data["distance"] = SharedServerRequests.__calulateDistance(post["coordenates"], end_coordenates)
             tracking_data["currency"] = "ars"
             tracking_data["value"] = data["price"]
             logging.debug("end_coordenates data: " + str(tracking_data))
+            return tracking_data
         except Exception as e:
             logging.debug(str(e))
             return None
-        return tracking_data
+
+    @staticmethod
+    def __parseEstimation(data):
+        try:
+            tracking_data = {}
+            tracking_data["userId"] = data["facebookId"]
+            post_data = PostTransactions.find_post_by_post_id(data["postId"])
+            user_data = UserTransactions.findUserById(data["facebookId"])
+            end_coordenates = GeolocationServiceCommunication.getCoordenates(data["street"], data["city"])
+            tracking_data["distance"] = str(SharedServerRequests.__calulateDistance(post_data["coordenates"],
+                                                                                end_coordenates))
+            tracking_data["price"] = str(post_data["price"])
+            #tracking_data["points"] = user_data["puntos"]
+            tracking_data["points"] = str(100)
+            tracking_data["userMail"] = user_data["email"]
+            return tracking_data
+        except Exception as e:
+            logging.debug(str(e))
+            return None
 
     @staticmethod
     def __calulateDistance(coordenatesList, coordenatesDict):
@@ -135,10 +158,19 @@ class SharedServerRequests:
             return None
 
     @staticmethod
-    def calculateShipping(shippingData):
+    def calculateShipping(shipping_data):
         headers = (SharedServerRequests.__auth())
-        response = requests.get(SHARED_SERVER_URL + '/api/deliveries/estimate', headers=headers, json=json)
+        request_data = SharedServerRequests.__parseEstimation(shipping_data)
+        logging.debug("track data: " + json.dumps(request_data))
+        logging.debug("track data: " + str(headers))
+        response = requests.post(SHARED_SERVER_URL + '/api/deliveries/estimate',
+                                 headers=headers, data=json.dumps(request_data))
+        logging.debug(str(response))
+        logging.debug(str(response.text))
         if response.status_code == 200:
-            return json.loads(response.text)
+
+            return Responses.success('Estimacion realizada satisfactoriamente',
+                                     {"ShipmentCost": json.loads(response.text)['ShipmentCost']})
         else:
-            return None
+            return Responses.internalServerError('Error en la comunicacion con el Shared Server',
+                                                 "")

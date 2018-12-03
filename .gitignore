@@ -10,4 +10,3 @@ app/debug.log
 .idea/workspace.xml
 .idea/inspectionProfiles/profiles_settings.xml
 app/server/Configuration/.env
-app/server/Configuration/.env
