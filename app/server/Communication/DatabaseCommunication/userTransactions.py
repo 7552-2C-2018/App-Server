@@ -61,21 +61,24 @@ class UserTransactions:
             points = 0
         workingCollection.update_one({'facebookId': facebook_id},
                                      {'$set': {'$inc': {'buyPoints': points, 'totalPoints': points}}})
-
+        UserTransactions.__update_total_score(facebook_id)
+        
     @staticmethod
     def updateUserSellPoints(facebook_id):
         points = 0
         workingCollection.update_one({'facebookId': facebook_id},
                                      {'$set': {'$inc': {'sellPoints': points, 'totalPoints': points}}})
+        UserTransactions.__update_total_score(facebook_id)
 
     @staticmethod
-    def updateUserCalificationPoints(facebook_id, calification):
-        points = calification*100
+    def updateUserScorePoints(facebook_id, score_average):
+        points = int(score_average*100)
+        logging.debug(facebook_id)
+        logging.debug(points)
         workingCollection.update_one({'facebookId': facebook_id},
-                                     {'$set': {'calificationPoints': points}})
-        workingCollection.update_one({'facebookId': facebook_id},
-                                     {'$set': {'totalPoints': {'$add':
-                                                                   ['sellPoints', 'buyPoints', 'calificationPoints']}}})
+                                     {'$set': {'scorePoints': points}})
+        UserTransactions.__update_total_score(facebook_id)
+
 
     @staticmethod
     def updateUserData(data):
@@ -90,6 +93,11 @@ class UserTransactions:
     @staticmethod
     def pushUserActivitiy(facebook_id, data):
         return workingCollection.update_one({'facebookId': facebook_id}, {'$set': {'$push': {'activities': data}}})
+
+    @staticmethod
+    def __update_total_score( facebook_id):
+        pass
+
 
 """    @staticmethod
     def __getCalification(facebook_id):

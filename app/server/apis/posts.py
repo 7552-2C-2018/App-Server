@@ -36,7 +36,7 @@ get_post_filter_args.add_argument('precioMinimo',
                                   type=int, help='precio minimo del producto filtrado', location='headers')
 get_post_filter_args.add_argument('estado',
                                   type=str, help='estado del producto del post'
-                                                  ' (nuevo, usado, ninguno para ambos)',
+                                  ' (nuevo, usado, ninguno para ambos)',
                                   location='headers')
 get_post_filter_args.add_argument('categoria',
                                   type=str, help='categoria del producto del post',

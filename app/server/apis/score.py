@@ -20,7 +20,7 @@ common_args.add_argument('facebookId', type=str, help='facebookId', location='he
 common_args.add_argument('token', type=str, help='Token de acceso', location='headers', required=True)
 
 update_score = common_args.copy()
-update_score.add_argument('value', type=int, help='Valor de la calificacion', location='form', required=True)
+update_score.add_argument('value', type=float, help='Valor de la calificacion', location='form', required=True)
 update_score.add_argument('comment', type=str, help='commentario sobre la calificacion', location='form')
 
 new_score = update_score.copy()
@@ -97,7 +97,7 @@ class ScoreUpdate(Resource):
         """Endpoint that gets a score"""
         time_start = time.time()
         args = common_args.parse_args()
-        args['buy_id'] = buy_id
+        args['buyId'] = buy_id
         return_data = ScoreServices.getScore(args)
         time_end = time.time()
         monitor(time_start, time_end, path, "get")

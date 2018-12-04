@@ -16,11 +16,14 @@ class ScoreServices:
     def createNewScore(request_data):
         if request_data["rol"] in ["Comprador", "Vendedor"]:
             try:
-                ScoreTransactions.create_new_score(request_data)
-                return Responses.created('Calificado correctamente', "")
+                scored_user_id = ScoreTransactions.create_new_score(request_data)
             except Exception as e:
                 logging.debug(str(e))
                 return Responses.badRequest('Ya calificado', "")
+            score_average = ScoreTransactions.find_scored_user_average(scored_user_id)
+            UserTransactions.updateUserScorePoints(scored_user_id, score_average)
+            return Responses.created('Calificado correctamente', "")
+
         else:
             return Responses.badRequest('Rol invalido')
 

@@ -28,14 +28,14 @@ class ScoreTransactions:
         if insert_data["comment"] is None:
             insert_data["comment"] = ""
 
-        score_id = scoresCollection.insert_one({"_id": {"scorerUserId": data['facebookId'],
-                                                        "buy_id": data["buyId"]}})
+        scoresCollection.insert_one({"_id": {"scorerUserId": data['facebookId'],
+                                             "buy_id": data["buyId"]}})
         scoresCollection.update_one({"_id": {"scorerUserId": data['facebookId'],
                                              "buy_id": data["buyId"]}},
                                     {'$set': {"scoredUserId": calificado,
                                               "value": data['value'],
                                               "comment": data['comment']}})
-        return score_id
+        return calificado
     @staticmethod
     def update_score(data):
         score_id = scoresCollection.update_one({"_id": {"scorerUserId": data['facebookId'],
@@ -56,6 +56,36 @@ class ScoreTransactions:
     def find_score(data):
         return scoresCollection.find_one({"_id": {"scorerUserId": data['facebookId'],
                                                   "buy_id": data["buyId"]}})
+
+    @staticmethod
+    def find_scored_user_average(user_id):
+        pipeline = [
+            {
+                u"$match": {
+                    u"scoredUserId": user_id
+                }
+            },
+            {
+                u"$group": {
+                    u"_id": {},
+                    u"AVG(value)": {
+                        u"$avg": u"$value"
+                    }
+                }
+            },
+            {
+                u"$project": {
+                    u"_id": 0,
+                    u"AVG(value)": u"$AVG(value)"
+                }
+            }
+        ]
+
+        cursor = scoresCollection.aggregate(
+            pipeline,
+            allowDiskUse=True
+        )
+        return list(cursor)[0]["AVG(value)"]
 
     @staticmethod
     def __get_calificado(data):
