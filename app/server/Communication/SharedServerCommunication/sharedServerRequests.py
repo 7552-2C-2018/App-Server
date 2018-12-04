@@ -140,24 +140,6 @@ class SharedServerRequests:
             return None
 
     @staticmethod
-    def getPayment(id):
-        headers = (SharedServerRequests.__auth())
-        response = requests.post(SHARED_SERVER_URL + '/api/payment/' + str(id), headers=headers)
-        if response.status_code == 200:
-            return json.loads(response.text)
-        else:
-            return None
-
-    @staticmethod
-    def getTracking(id):
-        headers = (SharedServerRequests.__auth())
-        response = requests.post(SHARED_SERVER_URL + '/api/tracking/' + str(id), headers=headers)
-        if response.status_code == 200:
-            return json.loads(response.text)
-        else:
-            return None
-
-    @staticmethod
     def calculateShipping(shipping_data):
         headers = (SharedServerRequests.__auth())
         request_data = SharedServerRequests.__parseEstimation(shipping_data)
@@ -174,3 +156,23 @@ class SharedServerRequests:
         else:
             return Responses.internalServerError('Error en la comunicacion con el Shared Server',
                                                  "")
+"""
+    @staticmethod
+    def getPayment(id):
+        headers = (SharedServerRequests.__auth())
+        response = requests.post(SHARED_SERVER_URL + '/api/payment/' + str(id), headers=headers)
+        if response.status_code == 200:
+            return json.loads(response.text)
+        else:
+            return None
+
+    @staticmethod
+    def getTracking(id):
+        headers = (SharedServerRequests.__auth())
+        response = requests.post(SHARED_SERVER_URL + '/api/tracking/' + str(id), headers=headers)
+        if response.status_code == 200:
+            return json.loads(response.text)
+        else:
+            return None
+"""
+

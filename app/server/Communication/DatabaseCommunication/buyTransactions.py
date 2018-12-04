@@ -137,6 +137,10 @@ class BuyTransactions:
         return list(cursor)[0]
 
     @staticmethod
+    def findBuyerById(data):
+        return buysCollection.find_one({"ID": data}, {"_id": 1, "postId": 1})
+
+    @staticmethod
     def newBuy(data):
         buy_date = time.mktime(datetime.datetime.utcnow().timetuple())
         buy_id = data['facebookId'] + str(int(buy_date))
@@ -200,54 +204,54 @@ class BuyTransactions:
         else:
             return "estado Invalido"
 
-    @staticmethod
-    def findBuyCalificationAverageByUserId(facebook_id):
-        pipeline =[
-            {
-                u"$project": {
-                    u"_id": 1,
-                    u"buys": u"$$ROOT",
-                }
-            },
-            {
-                u"$lookup": {
-                    u"localField": u"buys.postId",
-                    u"from": u"posts",
-                    u"foreignField": u"ID",
-                    u"as": u"posts"
-                }
-            },
-            {
-                u"$unwind": {
-                    u"path": u"$posts",
-                    u"preserveNullAndEmptyArrays": False
-                }
-            },
-            {
-                u"$match": {
-                    u"posts._id.facebookId": facebook_id
-                }
-            },
-            {
-                u"$group": {
-                    u"_id": {},
-                    u"AVG(price)": {
-                        u"$avg": u"$price"
-                    }
-                }
-            },
-
-            {
-                u"$project": {
-                    u"average": "$AVG(price)"
-                }
-            }
-        ]
-        cursor = buysCollection.aggregate(
-            pipeline,
-            allowDiskUse=True
-        )
-        return list(cursor)[0]
+    # @staticmethod
+    # def findBuyCalificationAverageByUserId(facebook_id):
+    #     pipeline =[
+    #         {
+    #             u"$project": {
+    #                 u"_id": 1,
+    #                 u"buys": u"$$ROOT",
+    #             }
+    #         },
+    #         {
+    #             u"$lookup": {
+    #                 u"localField": u"buys.postId",
+    #                 u"from": u"posts",
+    #                 u"foreignField": u"ID",
+    #                 u"as": u"posts"
+    #             }
+    #         },
+    #         {
+    #             u"$unwind": {
+    #                 u"path": u"$posts",
+    #                 u"preserveNullAndEmptyArrays": False
+    #             }
+    #         },
+    #         {
+    #             u"$match": {
+    #                 u"posts._id.facebookId": facebook_id
+    #             }
+    #         },
+    #         {
+    #             u"$group": {
+    #                 u"_id": {},
+    #                 u"AVG(price)": {
+    #                     u"$avg": u"$price"
+    #                 }
+    #             }
+    #         },
+    #
+    #         {
+    #             u"$project": {
+    #                 u"average": "$AVG(price)"
+    #             }
+    #         }
+    #     ]
+    #     cursor = buysCollection.aggregate(
+    #         pipeline,
+    #         allowDiskUse=True
+    #     )
+    #     return list(cursor)[0]
 
     @staticmethod
     def update_buy_by_tracking_id(data):

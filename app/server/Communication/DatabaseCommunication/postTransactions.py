@@ -26,25 +26,27 @@ class PostTransactions:
     @staticmethod
     def __parse_data(data):
         parsed_data = {}
-        if "title" in data.keys():
+        if data["title"] is not None:
             parsed_data["title"] = data["title"]
-        if "desc" in data.keys():
+        if data["desc"] is not None:
             parsed_data["description"] = data["desc"]
-        if "stock" in data.keys():
+        if data["stock"] is not None:
             parsed_data["stock"] = data["stock"]
-        if "payments" in data.keys():
+        if data["payments"] is not None:
             parsed_data["payments"] = data["payments"]
-        if "price" in data.keys():
+        if data["price"] is not None:
             parsed_data["price"] = data["price"]
-        if "new" in data.keys():
+        if data["new"] is not None:
             parsed_data["new"] = data["new"]
-        if "category" in data.keys():
+        if data["category"] is not None:
             parsed_data["category"] = data["category"]
-        if "pictures" in data.keys():
+        if data["pictures"] is not None:
             parsed_data["pictures"] = data["pictures"]
-        if "shipping" in data.keys():
+        if data["shipping"] is not None:
             parsed_data["shipping"] = data["shipping"]
-        if "latitude" in data.keys() and "longitude" in data.keys():
+        if data["street"] is not None:
+            parsed_data["street"] = data["street"]
+        if data["latitude"] is not None and data["longitude"]:
             parsed_data["coordenates"] = [data["longitude"], data["latitude"]]
         return parsed_data
 
@@ -84,9 +86,9 @@ class PostTransactions:
 
     @staticmethod
     def update_post_data(data):
-        # parsed_data = PostTransactions.__parseData(data)
+        parsed_data = PostTransactions.__parse_data(data)
         estado_valido = PostTransactions.__validate_estado(data["estado"])
-        if estado_valido:
+        if estado_valido or "estado" not in parsed_data.keys():
             return workingCollection.update_one({'ID': data['postId']}, {'$set': {"estado": data["estado"]}})
         else:
             return None

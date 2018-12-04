@@ -19,6 +19,7 @@ parser.add_argument('street', type=str, help='Calle de shipping', location='head
 parser.add_argument('cp', type=str, help='Codigo postal de shipping', location='headers')
 parser.add_argument('city', type=str, help='Ciudad del shipping', location='headers')
 
+
 @api.doc(responses=responses)
 @api.route('/')
 class Estimation(Resource):

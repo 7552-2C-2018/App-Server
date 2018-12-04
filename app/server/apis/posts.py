@@ -58,12 +58,12 @@ new_post_args.add_argument("pictures", type=str, help='imagenes del producto', l
 new_post_args.add_argument("shipping", type=inputs.boolean,
                               help='si el producto puede o no ser enviado por via maritima',
                               location='form',required=True)
-new_post_args.add_argument("latitude", type=float, help='latitud', location='form', required=True)
+new_post_args.add_argument("street", type=float, help='calle y altura del comprador', location='form')
+new_post_args.add_argument("latitude", type=float, help='latitud', location='form')
 new_post_args.add_argument("longitude", type=float, help='longitud', location='form', required=True)
 
 update_post_args = common_args.copy()
-update_post_args.add_argument('estado', type=str, help='nuevo estado del post', location='form', required=True)
-"""
+update_post_args.add_argument('estado', type=str, help='nuevo estado del post', location='form')
 update_post_args.add_argument('title', type=str, help='titulo del post', location='form')
 update_post_args.add_argument('desc', type=str, help='descripcion del post', location='form')
 update_post_args.add_argument('stock', type=int, help='stock del post', location='form')
@@ -76,7 +76,6 @@ update_post_args.add_argument("shipping", type=inputs.boolean,
                               help='si el producto puede o no ser enviado por via maritima', location='form')
 update_post_args.add_argument("latitude", type=float, help='latitud', location='form')
 update_post_args.add_argument("longitude", type=float, help='longitud', location='form')
-"""
 
 
 @api.route('/')
@@ -106,6 +105,7 @@ class Posts(Resource):
 
 
 @api.route('/<string:post_id>')
+@api.param('post_id', 'Id form post')
 class Post(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)
@@ -135,6 +135,7 @@ class Post(Resource):
 
 
 @api.route('/user=<string:user_id>')
+@api.param('user_id', 'Id form user')
 class PostByUser(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)

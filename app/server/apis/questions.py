@@ -42,6 +42,7 @@ class Questions(Resource):
         monitor(time_start, time_end, path, "post")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
+
 @api.route('/postId=<string:postId>/')
 @api.param('postId', 'Id from post')
 class QuestionsByPost(Resource):

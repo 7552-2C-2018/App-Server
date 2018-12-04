@@ -1,4 +1,6 @@
 from flask_restplus import Api
+
+from .score import api as score
 from .users import api as users
 from .products import api as products
 from .posts import api as posts
@@ -23,4 +25,5 @@ def registerApi(app):
     api.add_namespace(ping)
     api.add_namespace(stats)
     api.add_namespace(estimation)
+    api.add_namespace(score)
     api.init_app(app)
