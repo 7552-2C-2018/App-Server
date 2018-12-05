@@ -57,8 +57,8 @@ new_post_args.add_argument("category", type=str, help='categoria del producto', 
 new_post_args.add_argument("pictures", type=str, help='imagenes del producto', location='form',action='split')
 new_post_args.add_argument("shipping", type=inputs.boolean,
                               help='si el producto puede o no ser enviado por via maritima',
-                              location='form',required=True)
-new_post_args.add_argument("street", type=float, help='calle y altura del comprador', location='form')
+                              location='form', required=True)
+new_post_args.add_argument("street", type=float, help='calle y altura del comprador', location='form', required=True)
 new_post_args.add_argument("latitude", type=float, help='latitud', location='form')
 new_post_args.add_argument("longitude", type=float, help='longitud', location='form', required=True)
 

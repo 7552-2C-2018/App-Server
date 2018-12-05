@@ -42,5 +42,6 @@ class QuestionTransactions:
     @staticmethod
     def updateQuestion(data):
         date_now = time.mktime(datetime.datetime.utcnow().timetuple())
-        return workingCollection.update_one({'ID': data['questionId']}, {'$set': {"answer": data["respuesta"],
-                                                                                  "answer_date": date_now}})
+        workingCollection.update_one({'ID': data['questionId']}, {'$set': {"answer": data["respuesta"],
+                                                                           "answer_date": date_now}})
+        return workingCollection.find_one({'ID': data['questionId']})

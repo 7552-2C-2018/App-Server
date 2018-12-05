@@ -1,3 +1,5 @@
+import time
+import datetime
 from server.setup import app
 from flask import Flask
 import logging
@@ -100,7 +102,10 @@ class UserTransactions:
 
     @staticmethod
     def pushUserActivitiy(facebook_id, data):
-        return userCollection.update_one({'facebookId': facebook_id}, {'$push': {'activities': data}})
+        date = time.mktime(datetime.datetime.utcnow().timetuple())
+        return userCollection.update_one({'facebookId': facebook_id}, {'$push': {'activities':
+                                                                                     {"action": data,
+                                                                                      "date": date}}})
 
     @staticmethod
     def __update_total_score(facebook_id):

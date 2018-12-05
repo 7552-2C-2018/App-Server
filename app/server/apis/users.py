@@ -90,12 +90,12 @@ class LoginValidator(Resource):
 @api.route('/activities')
 class Activities(Resource):
     @api.doc(responses=responses)
-    @api.expect(common_args)
+    @api.expect(get_puntos)
     @validateAuth
     def get(self):
         """Login credentials validation endpoint"""
         time_start = time.time()
-        return_data = UserServices.getActivities(common_args.parse_args())
+        return_data = UserServices.getActivities(get_puntos.parse_args())
         time_end = time.time()
         monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

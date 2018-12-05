@@ -1,3 +1,6 @@
+import datetime
+import time
+
 from server.Communication.DatabaseCommunication.scoreTransactions import ScoreTransactions
 from server.Structures.Response import Responses
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
@@ -25,10 +28,8 @@ class ScoreServices:
             score_average = ScoreTransactions.find_scored_user_average(scored_user_id)
 
             UserTransactions.updateUserScorePoints(scored_user_id, score_average)
-            scored_activity_data = ScoreServices.__generate_scored_activiy_data(request_data)
-            scorer_activity_data = ScoreServices.__generate_scorer_activiy_data(request_data)
-            UserTransactions.pushUserActivitiy(request_data["facebookId"], scored_activity_data)
-            UserTransactions.pushUserActivitiy(scored_user_id, scorer_activity_data)
+            UserTransactions.pushUserActivitiy(request_data["facebookId"], "scorer")
+            UserTransactions.pushUserActivitiy(scored_user_id, "scored")
             return Responses.created('Calificado correctamente', "")
 
         else:
@@ -70,13 +71,3 @@ class ScoreServices:
         except Exception as e:
             logging.debug(str(e))
             return Responses.badRequest('Error al actualizar los puntos', "")
-
-    @staticmethod
-    def __generate_scorer_activiy_data(data):
-        return {"action": "score", "buy": data["buyId"]}
-
-    @staticmethod
-    def __generate_scored_activiy_data(data):
-        return {"action": "scored", "buy": data["buyId"]}
-
-

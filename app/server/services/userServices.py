@@ -75,8 +75,8 @@ class UserServices:
     def getActivities(request_data):
         facebook_id = request_data["facebookId"]
         if UserServices.__checkUserExistance(facebook_id):
-            response = UserTransactions.getUserActivities(request_data)
-            return Responses.success('Actividades obterindas correctamente', response)
+            response = UserTransactions.getUserActivities(request_data["facebookId"])
+            return Responses.success('Actividades obtenidas correctamente', response)
         else:
             return Responses.badRequest('Usuario no registrado')
 

@@ -7,7 +7,6 @@ URL = 'https://melli-7552.firebaseio.com/'
 import logging
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
-URL = 'https://fcm.googleapis.com/project/melli-7552//send'
 FIREBASE_KEY = os.environ.get('FIREBASE_KEY')
 
 
@@ -56,13 +55,14 @@ class FirebaseCommunication:
     @staticmethod
     def send_notification(title, categoria, facebook_id):
         try:
+            url = 'https://fcm.googleapis.com/project/melli-7552//send'
             json_data = {
                 'id': facebook_id,
                 'categoria': categoria,
                 'title': title
             }
 
-            response = requests.post(URL, json=json_data, headers={'Authorization': FIREBASE_KEY,
+            response = requests.post(url, json=json_data, headers={'Authorization': FIREBASE_KEY,
                                                                    'Content-type': 'application/json'})
             logging.info('Mensaje enviado satisfactoriamente. Respuesta: ' + response.json())
         except Exception as e:

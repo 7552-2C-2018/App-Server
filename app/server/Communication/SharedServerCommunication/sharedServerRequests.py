@@ -65,7 +65,10 @@ class SharedServerRequests:
             tracking_data = {}
             tracking_data["ownerId"] = post["ID"]
             tracking_data["start_time"] = ""
-            tracking_data["start_street"] = ""
+            if "street" in post.keys():
+                tracking_data["start_street"] = post["street"]
+            else:
+                tracking_data["start_street"] = ""
             tracking_data["start_lat"] = post["coordenates"][0]
             tracking_data["start_lon"] = post["coordenates"][1]
             tracking_data["end_time"] = ""
