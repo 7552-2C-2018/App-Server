@@ -18,15 +18,16 @@ class ScoreServices:
     @staticmethod
     def createNewScore(request_data):
         if request_data["rol"] in ["Comprador", "Vendedor"]:
-            #try:
-            scored_user_id = ScoreTransactions.create_new_score(request_data)
-            #except Exception as e:
-            #logging.debug(str(e))
-            #return Responses.badRequest('Ya calificado', "")
+            try:
+                scored_user_id = ScoreTransactions.create_new_score(request_data)
+            except Exception as e:
+                logging.debug(str(e))
+                return Responses.internalServerError('Error al calificar', "")
+            if scored_user_id == "Calificado":
+                return Responses.badRequest('Ya calificado', "")
             if scored_user_id is None:
                 return Responses.badRequest('No se puede calificar a si mismo', "")
             score_average = ScoreTransactions.find_scored_user_average(scored_user_id)
-
             UserTransactions.updateUserScorePoints(scored_user_id, score_average)
             UserTransactions.pushUserActivitiy(request_data["facebookId"], "scorer")
             UserTransactions.pushUserActivitiy(scored_user_id, "scored")
@@ -39,7 +40,7 @@ class ScoreServices:
     def getScore(request_data):
         response = ScoreTransactions.find_score(request_data)
         if response is not None:
-            return Responses.success('Calificaciones obtenidas satisfactoriamente', response)
+            return Responses.success('Calificacion obtenida satisfactoriamente', response)
         else:
             return Responses.badRequest('El usuario no a calificado dicha compra')
 

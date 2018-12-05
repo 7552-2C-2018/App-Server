@@ -11,8 +11,7 @@ with app.app_context():
 SCORE_MULTIPLIER = 100
 BUY_SCORE = 20
 SELL_SCORE = 20
-CARD_POINTS = 5
-MERCADO_PAGO_POINTS = 10
+CARD_POINTS = 10
 CASH_POINTS = 0
 
 
@@ -62,13 +61,8 @@ class UserTransactions:
         points = BUY_SCORE
         if payment_method == "Debito" or payment_method == "Credito":
             points += CARD_POINTS
-        elif payment_method == "Efectivo" \
-                or payment_method == "Transferencia" \
-                or payment_method == "Cheque"\
-                or payment_method == "DepositoBancario":
+        elif payment_method == "Efectivo":
             points += CASH_POINTS
-        elif payment_method == "MercadoPago":
-            points += MERCADO_PAGO_POINTS
         userCollection.update_one({'facebookId': facebook_id},
                                      {'$inc': {'buyPoints': points}})
         UserTransactions.__update_total_score(facebook_id)
@@ -109,8 +103,7 @@ class UserTransactions:
 
     @staticmethod
     def __update_total_score(facebook_id):
-        result = userCollection.find_one({'facebookId': facebook_id},
-                                         {"sellPoints": 1, "buyPoints": 1, "scorePoints": 1})
+        result = userCollection.find_one({'facebookId': facebook_id})
         if "sellPoints" not in result.keys():
             result["sellPoints"] = 0
         if "buyPoints" not in result.keys():

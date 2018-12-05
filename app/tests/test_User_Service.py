@@ -6,7 +6,7 @@ invalid_fb_credentials = {"facebookId": "", "token": ""}
 registered_credentials = {"facebookId": "102510700706099", "token": ""}
 
 
-mark_credentials = {"facebookId": "102510700706087",
+mark_credentials = {"facebookId": "99999999999999",
                     "token": "token",
                     "firstName": "mark",
                     "lastName": "zuc",
@@ -67,4 +67,3 @@ class UserTests(GenericTest):
         assert response["status"] == 200
         assert response["message"] == 'Token generado correctamente'
         assert response["data"] != ''
-

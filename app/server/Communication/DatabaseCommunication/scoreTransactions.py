@@ -32,14 +32,16 @@ class ScoreTransactions:
             return None
         if insert_data["comment"] is None:
             insert_data["comment"] = ""
-
-        scoresCollection.insert_one({"_id": {"scorerUserId": data['facebookId'],
-                                             "buy_id": data["buyId"]}})
-        scoresCollection.update_one({"_id": {"scorerUserId": data['facebookId'],
-                                             "buy_id": data["buyId"]}},
-                                    {'$set': {"scoredUserId": calificado,
-                                              "value": data['value'],
-                                              "comment": data['comment']}})
+        try:
+            scoresCollection.insert_one({"_id": {"scorerUserId": data['facebookId'],
+                                                 "buy_id": data["buyId"]}})
+            scoresCollection.update_one({"_id": {"scorerUserId": data['facebookId'],
+                                                 "buy_id": data["buyId"]}},
+                                        {'$set': {"scoredUserId": calificado,
+                                                  "value": data['value'],
+                                                  "comment": data['comment']}})
+        except Exception:
+            return "calificado"
         return calificado
     @staticmethod
     def update_score(data):
@@ -49,7 +51,10 @@ class ScoreTransactions:
                                              "buy_id": data["buyId"]}},
                                     {'$set': {"value": data['value'],
                                               "comment": data['comment']}})
-        return score_data["scoredUserId"]
+        try:
+            return score_data["scoredUserId"]
+        except Exception:
+            return None
 
     @staticmethod
     def find_score_by_scorer_id(data):
@@ -100,14 +105,16 @@ class ScoreTransactions:
 
     @staticmethod
     def __get_calificado(data):
-        buy = BuyTransactions.findBuyerById(data["buyId"])
+        buy = BuyTransactions.findBuyById(data["buyId"])
         seller_facebook_id = PostTransactions.find_post_by_post_id(buy["postId"])["_id"]["facebookId"]
         buyer_facebook_id = buy["_id"]["facebookId"]
         if data["rol"] == "Vendedor":
+            data["estado"] = ESTADO_COMPLETADO
             UserTransactions.updateUserSellPoints(seller_facebook_id)
-            BuyTransactions.updateBuyData(ESTADO_COMPLETADO)
+            BuyTransactions.updateBuyData(data)
             return buyer_facebook_id
         else:
+            data["estado"] = ESTADO_CALIFICADO
             UserTransactions.updateUserBuyPoints(buyer_facebook_id, buy["paymentMethod"])
-            BuyTransactions.updateBuyData(ESTADO_CALIFICADO)
+            BuyTransactions.updateBuyData(data)
             return seller_facebook_id

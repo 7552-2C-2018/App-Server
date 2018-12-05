@@ -6,7 +6,7 @@ import pymongo
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
-    workingCollection = app.database.questions
+    questions_collection = app.database.questions
 
 
 class QuestionTransactions:
@@ -16,14 +16,13 @@ class QuestionTransactions:
     
     @staticmethod
     def findQuestion(question_id):
-        return workingCollection.find_one({'ID': question_id})
+        return questions_collection.find_one({'ID': question_id})
 
 
     @staticmethod
     def getQuestions(postId):
-        response = list(workingCollection.find({"_id.postId": postId})
-                        .sort("_id.publication_date", pymongo.DESCENDING))
-        return response
+        return  list(questions_collection.find({"_id.postId": postId})
+                     .sort("_id.publication_date", pymongo.DESCENDING))
 
     @staticmethod
     def newQuestion(data):
@@ -33,8 +32,8 @@ class QuestionTransactions:
         parsed_data["ID"] = question_id
         parsed_data["userId"] = data["facebookId"]
         parsed_data["pregunta"] = data["question"]
-        workingCollection.insert_one({"_id": {"postId": data['postId'], "publication_date": publ_date}})
-        workingCollection.update_one({"_id": {"postId": data['postId'], "publication_date": publ_date}},
+        questions_collection.insert_one({"_id": {"postId": data['postId'], "publication_date": publ_date}})
+        questions_collection.update_one({"_id": {"postId": data['postId'], "publication_date": publ_date}},
                                      {'$set': parsed_data})
         return question_id
 
@@ -42,6 +41,7 @@ class QuestionTransactions:
     @staticmethod
     def updateQuestion(data):
         date_now = time.mktime(datetime.datetime.utcnow().timetuple())
-        workingCollection.update_one({'ID': data['questionId']}, {'$set': {"answer": data["respuesta"],
-                                                                           "answer_date": date_now}})
-        return workingCollection.find_one({'ID': data['questionId']})
+        questions_collection.update_one({'ID': data['questionId']}, {'$set': {"answer": data["respuesta"],
+                                                                              "answer_date": date_now}})
+        logging.debug(questions_collection.find_one({'ID': data['questionId']}))
+        return questions_collection.find_one({'ID': data['questionId']})

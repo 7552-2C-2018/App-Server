@@ -137,8 +137,8 @@ class BuyTransactions:
             return None
 
     @staticmethod
-    def findBuyerById(data):
-        return buysCollection.find_one({"ID": data}, {"_id": 1, "postId": 1})
+    def findBuyById(data):
+        return buysCollection.find_one({"ID": data})
 
     @staticmethod
     def newBuy(data):

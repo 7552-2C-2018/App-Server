@@ -74,6 +74,7 @@ class UserServices:
             return Responses.success('Usuario actualizado correctamente', "")
         else:
             return Responses.badRequest('Usuario no registrado')
+
     @staticmethod
     def getActivities(request_data):
         facebook_id = request_data["facebookId"]

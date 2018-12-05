@@ -13,26 +13,13 @@ class GenericTest(unittest.TestCase):
         self.app_context = app.app_context()
         self.app_context.push()
 
-        try:
-            app.database.users.drop()
-        except Exception:
-            pass
-        try:
-            app.database.posts.drop()
-        except Exception:
-            pass
-        try:
-            app.database.buys.drop()
-        except Exception:
-            pass
-        try:
-            app.database.buy_states.drop()
-        except Exception:
-            pass
+        self.flush_database()
         app.database.create_collection('users')
         app.database.create_collection('posts')
         app.database.create_collection('buy_states')
         app.database.create_collection('buys')
+        app.database.create_collection('questions')
+        app.database.create_collection('scores')
         self.setUpDbEnviroment()
 
 
@@ -41,6 +28,11 @@ class GenericTest(unittest.TestCase):
                                        "firstName": "mark",
                                        "lastName": "zuc",
                                        "photoUrl": "foto",
+                                       "email": "mail"})
+        app.database.users.insert_one({"facebookId": "102510700706087",
+                                       "firstName": "test",
+                                       "lastName": "User",
+                                       "photoUrl": "foto2@Comprame.com",
                                        "email": "mail"})
         app.database.users.insert_one({"facebookId": "99",
                                        "firstName": "test",
@@ -93,17 +85,71 @@ class GenericTest(unittest.TestCase):
             "payment": 1,
             "tracking": 1
         })
-        app.database.buy_states.insert({"_id":1, "state": "Comprado"})
-        app.database.buy_states.insert({"_id":2, "state": "Finalizado"})
-        app.database.buy_states.insert({"_id":3, "state": "Calificado"})
-        app.database.buy_states.insert({"_id":4, "state": "Completado"})
-        app.database.buy_states.insert({"_id":6, "state": "Pago Pendiente", "payment": True})
-        app.database.buy_states.insert({"_id":7, "state": "Pago rechazado", "payment": True})
-        app.database.buy_states.insert({"_id":8, "state": "Pago aceptado", "payment": True})
-        app.database.buy_states.insert({"_id":9, "state": "Envio en progreso", "tracking": True})
-        app.database.buy_states.insert({"_id":10, "state": "Pendiente de envio", "tracking": True})
-        app.database.buy_states.insert({"_id":11, "state": "Envio realizado", "tracking": True})
+        app.database.questions.insert_one({
+            "_id": {
+                "postId": "1025107007060871539228792",
+                "publication_date": 1999439
+            },
+            "ID": "10251070070608715392287921999439",
+            "pregunta": "cuanto me cobras por 1000?",
+            "answer": "lo mismo capo",
+            "answer_date": 19994399,
+            "userId": "99"
+        })
+        app.database.scores.insert_one({
+            "_id": {
+                "scorerUserId": "99",
+                "buy_id": "991539228792"
+            },
+            "scoredUserId": "102510700706087",
+            "comment": "muy amable como vendedor",
+            "value": 4
+        })
+        app.database.scores.insert_one({
+            "_id": {
+                "scorerUserId": "102510700706087",
+                "buy_id": "991539228792"
+            },
+            "scoredUserId": "99",
+            "comment": "muy amable como comprador",
+            "value": 4
+        })
+        app.database.buy_states.insert({"_id": 1, "state": "Comprado"})
+        app.database.buy_states.insert({"_id": 2, "state": "Finalizado"})
+        app.database.buy_states.insert({"_id": 3, "state": "Calificado"})
+        app.database.buy_states.insert({"_id": 4, "state": "Completado"})
+        app.database.buy_states.insert({"_id": 6, "state": "Pago Pendiente", "payment": True})
+        app.database.buy_states.insert({"_id": 7, "state": "Pago rechazado", "payment": True})
+        app.database.buy_states.insert({"_id": 8, "state": "Pago aceptado", "payment": True})
+        app.database.buy_states.insert({"_id": 9, "state": "Envio en progreso", "tracking": True})
+        app.database.buy_states.insert({"_id": 10, "state": "Pendiente de envio", "tracking": True})
+        app.database.buy_states.insert({"_id": 11, "state": "Envio realizado", "tracking": True})
 
+    def flush_database(self):
+        try:
+            app.database.users.drop()
+        except Exception:
+            pass
+        try:
+            app.database.posts.drop()
+        except Exception:
+            pass
+        try:
+            app.database.buys.drop()
+        except Exception:
+            pass
+        try:
+            app.database.buy_states.drop()
+        except Exception:
+            pass
+        try:
+            app.database.questions.drop()
+        except Exception:
+            pass
+        try:
+            app.database.scores.drop()
+        except Exception:
+            pass
 
 def tearDown(self):
     self.app_context.pop()
