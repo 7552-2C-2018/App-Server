@@ -2,7 +2,7 @@ from flask_restplus import Api
 
 from .score import api as score
 from .users import api as users
-from .products import api as products
+from .resources import api as resources
 from .posts import api as posts
 from .buys import api as buys
 from .questions import api as questions
@@ -18,7 +18,7 @@ def registerApi(app):
     api.namespaces.clear()
 
     api.add_namespace(users)
-    api.add_namespace(products)
+    api.add_namespace(resources)
     api.add_namespace(posts)
     api.add_namespace(buys)
     api.add_namespace(questions)
