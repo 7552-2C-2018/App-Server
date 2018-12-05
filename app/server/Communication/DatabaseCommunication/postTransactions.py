@@ -92,7 +92,7 @@ class PostTransactions:
                     u"ID": u"$posts.ID",
                     u"title": u"$posts.title",
                     u"coordenates": u"$posts.coordenates",
-                    #u'pictures': {"$slice": ["$posts.pictures", 0, 1]},
+                    'pictures': {"$slice": ["$posts.pictures", 0, 1]},
                     u'totalPoints': u"$users.totalPoints"
                 }
 

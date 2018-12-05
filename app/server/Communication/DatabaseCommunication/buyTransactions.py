@@ -178,8 +178,23 @@ class BuyTransactions:
                 }
             },
             {
+                u"$lookup": {
+                    u"localField": u"buys.ID",
+                    u"from": u"scores",
+                    u"foreignField": u"_id.buy_id",
+                    u"as": u"scores"
+                }
+            },
+            {
+                u"$unwind": {
+                    u"path": u"$scores",
+                    u"preserveNullAndEmptyArrays": True
+                }
+            },
+            {
                 u"$match": {
-                    u"buys._id.facebookId": user_id
+                    u"buys._id.facebookId": user_id,
+                    u"scores._id.scorerUserId": {"$ne": user_id}
                 }
             },
             {
@@ -188,7 +203,8 @@ class BuyTransactions:
                     u"postId": u"$buys.postId",
                     u"title": u"$posts.title",
                     u"picture": {u"$slice": ["$posts.pictures", 1]},
-                    u"estado": u"$buys.estado"
+                    u"estado": u"$buys.estado",
+                    u"value": u"$scores.value"
                 }
             }
         ]
