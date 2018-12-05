@@ -22,6 +22,7 @@ new_buy_args = common_args.copy()
 new_buy_args.add_argument('postId', type=str, help='Id del post del producto a comprar',
                           location='headers', required=True)
 new_buy_args.add_argument('price', type=str, help='Precio de la compra', location='form', required=True)
+new_buy_args.add_argument('paymentMethod', type=str, help='tipo de pago para la compra', location='form', required=True)
 
 new_buy_args.add_argument('cardNumber', type=str, help='Numero de la tarjeta utilizada para la compra', location='form')
 new_buy_args.add_argument('cardDate', type=str, help='ExpDate de la tarjeta utilizada para la compra', location='form')
@@ -44,6 +45,8 @@ modify_state.add_argument('State', type=str, help='Id del post del producto a co
 server_communication_args = reqparse.RequestParser()
 server_communication_args.add_argument('UserId', type=str, help='Id del servidor', location='headers', required=True)
 server_communication_args.add_argument('Token', type=str, help='Token de acceso', location='headers', required=True)
+server_communication_args.add_argument('State', type=str, help='Nuevo estado de la compra',
+                                                                                location='form', required=True)
 
 
 @api.route('/')

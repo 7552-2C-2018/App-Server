@@ -22,6 +22,7 @@ class BuyTransactions:
     def __parseData(data):
         parsed_data = {}
         parsed_data["postId"] = data["postId"]
+        parsed_data["paymentMethod"] = data["paymentMethod"]
         post_data = PostTransactions.find_post_by_post_id(data["postId"])
         if data["cardNumber"] is not None:
             payment_response = SharedServerRequests.newPayment(data, post_data)
@@ -44,10 +45,6 @@ class BuyTransactions:
         parsed_data["estado"] = data["estado"]
         return parsed_data
 
-    @staticmethod
-    def __validate_estado(estado):
-
-        return estado in ResourceTransactions.get_buys_states_ids()
 
     @staticmethod
     def findBuyBySellerId(seller_id):
@@ -217,25 +214,60 @@ class BuyTransactions:
 
     @staticmethod
     def updateBuyData(data):
-        estado_valido = BuyTransactions.__validate_estado(data["estado"])
-        if estado_valido:
-            return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": data["estado"]}})
+        estado = BuyTransactions.__get_estado(data["estado"])
+        if estado is not None or data["State"] == "Completado":
+            has_tracking = buysCollection.find_one({'ID': data['buyId'], 'tracking': {"$exists": True}})
+            tracking_state = BuyTransactions.__get_estado_tracking(data["estado"])
+            if has_tracking is not None:
+                if tracking_state is not None:
+                    raise Exception
+            has_payment = buysCollection.find_one({'ID': data['buyId'], 'payment': {"$exists": True}})
+            payment_state = BuyTransactions.__get_estado_paymeny(data["estado"])
+            if has_payment is not None:
+                if payment_state is not None:
+                    raise Exception
+            if data["State"] == "Envio realizado":
+                data["State"] = "Finalizado"
+            BuyTransactions.__sendNotifications(data)
+            return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": estado}})
         else:
-            return "estado Invalido"
+            raise Exception
 
 
     @staticmethod
     def update_buy_by_tracking_id(data):
-        estado_valido = BuyTransactions.__validate_estado(data["estado"])
-        if estado_valido:
+        data["State"] = BuyTransactions.__get_estado_tracking(data["State"])
+        if data["State"] is not None or data["State"] == "Completado":
+            if data["State"] == "Envio realizado":
+                data["State"] = "Finalizado"
+            BuyTransactions.__sendNotifications(data)
             return buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": data["State"]}})
         else:
             return "estado Invalido"
 
     @staticmethod
     def update_buy_by_payment_id(data):
-        estado_valido = BuyTransactions.__validate_estado(data["estado"])
-        if estado_valido:
+        data["State"] = BuyTransactions.__get_estado_payment(data["State"])
+        if data["State"] == "Envio realizado":
+            data["State"] = "Finalizado"
+        BuyTransactions.__sendNotifications(data)
+        if data["State"] is not None or data["State"] == "Completado":
             return buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": data["State"]}})
         else:
             return "estado Invalido"
+
+    @staticmethod
+    def __get_estado(estado):
+        return ResourceTransactions.get_buy_states_by_id(estado)
+
+    @staticmethod
+    def __get_estado_tracking(estado):
+        return ResourceTransactions.get_buy_tracking_states_by_id(estado)
+
+    @staticmethod
+    def __get_estado_payment( estado):
+        return ResourceTransactions.get_buy_payment_states_by_id(estado)
+
+    @staticmethod
+    def __sendNotifications(data):
+        pass

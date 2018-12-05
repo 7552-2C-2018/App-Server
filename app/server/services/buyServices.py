@@ -59,10 +59,10 @@ class BuyServices:
 
     @staticmethod
     def updateBuy(request_data):
-        response = BuyTransactions.updateBuyData(request_data)
-        if response != "Estado Invalido":
+        try:
+            response = BuyTransactions.updateBuyData(request_data)
             return Responses.success('Compra actualizada satisfactoriamente', "")
-        else:
+        except Exception:
             return Responses.badRequest('Estado Invalido')
 
     @staticmethod

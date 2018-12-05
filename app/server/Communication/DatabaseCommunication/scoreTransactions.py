@@ -13,6 +13,8 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
     scoresCollection = app.database.scores
 
+ESTADO_CALIFICADO = 3
+ESTADO_COMPLETADO = 4
 
 class ScoreTransactions:
 
@@ -96,8 +98,13 @@ class ScoreTransactions:
     @staticmethod
     def __get_calificado(data):
         buy = BuyTransactions.findBuyerById(data["buyId"])
+        seller_facebook_id = PostTransactions.find_post_by_post_id(buy["postId"])["_id"]["facebookId"]
+        buyer_facebook_id = buy["_id"]["facebookId"]
         if data["rol"] == "Vendedor":
-            facebook_id = buy["_id"]["facebookId"]
+            UserTransactions.updateUserSellPoints(seller_facebook_id)
+            BuyTransactions.updateBuyData(ESTADO_COMPLETADO)
+            return buyer_facebook_id
         else:
-            facebook_id = PostTransactions.find_post_by_post_id(buy["postId"])["_id"]["facebookId"]
-        return facebook_id
+            UserTransactions.updateUserBuyPoints(buyer_facebook_id, buy["paymentMethod"])
+            BuyTransactions.updateBuyData(ESTADO_CALIFICADO)
+            return seller_facebook_id

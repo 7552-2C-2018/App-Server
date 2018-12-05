@@ -18,11 +18,11 @@ class ScoreServices:
     @staticmethod
     def createNewScore(request_data):
         if request_data["rol"] in ["Comprador", "Vendedor"]:
-            try:
-                scored_user_id = ScoreTransactions.create_new_score(request_data)
-            except Exception as e:
-                logging.debug(str(e))
-                return Responses.badRequest('Ya calificado', "")
+            #try:
+            scored_user_id = ScoreTransactions.create_new_score(request_data)
+            #except Exception as e:
+            #logging.debug(str(e))
+            #return Responses.badRequest('Ya calificado', "")
             if scored_user_id is None:
                 return Responses.badRequest('No se puede calificar a si mismo', "")
             score_average = ScoreTransactions.find_scored_user_average(scored_user_id)
