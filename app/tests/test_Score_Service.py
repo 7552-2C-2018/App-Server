@@ -84,6 +84,4 @@ class PostsTests(GenericTest):
     def test_update_score(self):
         response = ScoreServices.updateScore(update_score)
         assert response["message"] == 'Calificacion actualizada satisfactoriamente'
-        assert response["status"] == 201
-        logging.debug(str(UserTransactions.getUserActivities(update_score["facebookId"])))
-        assert len(UserTransactions.getUserActivities(update_score["facebookId"])["activities"]) != 0
+        assert response["status"] == 200

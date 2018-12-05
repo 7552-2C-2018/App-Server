@@ -70,5 +70,5 @@ class ScoreServices:
             UserTransactions.updateUserScorePoints(scored_user_id, score_average)
             return Responses.success('Calificacion actualizada satisfactoriamente', "")
         except Exception as e:
-            logging.debug(str(e))
+            #logging.debug(str(e))
             return Responses.badRequest('Error al actualizar los puntos', "")

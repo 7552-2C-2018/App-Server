@@ -99,9 +99,12 @@ class ScoreTransactions:
                 allowDiskUse=True
             )
             try:
-                return list(cursor)[0]["AVG(value)"]
+                average = list(cursor)[0]["AVG(value)"]
+                if average is None:
+                    return 0
+                return average
             except Exception:
-                return None
+                return 0
 
     @staticmethod
     def __get_calificado(data):
