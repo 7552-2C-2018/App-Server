@@ -1,4 +1,5 @@
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
+from server.Communication.DatabaseCommunication.resourceTransactions import ResourceTransactions
 from server.setup import app
 import logging
 import json
@@ -45,7 +46,8 @@ class BuyTransactions:
 
     @staticmethod
     def __validate_estado(estado):
-        return estado in ["Comprado", "Pagado", "Recibido", "Calificado", "Cancelado"]
+
+        return estado in ResourceTransactions.get_buys_states_ids()
 
     @staticmethod
     def findBuyBySellerId(seller_id):
@@ -196,6 +198,7 @@ class BuyTransactions:
         )
         return list(cursor)
 
+
     @staticmethod
     def updateBuyData(data):
         estado_valido = BuyTransactions.__validate_estado(data["estado"])
@@ -204,54 +207,6 @@ class BuyTransactions:
         else:
             return "estado Invalido"
 
-    # @staticmethod
-    # def findBuyCalificationAverageByUserId(facebook_id):
-    #     pipeline =[
-    #         {
-    #             u"$project": {
-    #                 u"_id": 1,
-    #                 u"buys": u"$$ROOT",
-    #             }
-    #         },
-    #         {
-    #             u"$lookup": {
-    #                 u"localField": u"buys.postId",
-    #                 u"from": u"posts",
-    #                 u"foreignField": u"ID",
-    #                 u"as": u"posts"
-    #             }
-    #         },
-    #         {
-    #             u"$unwind": {
-    #                 u"path": u"$posts",
-    #                 u"preserveNullAndEmptyArrays": False
-    #             }
-    #         },
-    #         {
-    #             u"$match": {
-    #                 u"posts._id.facebookId": facebook_id
-    #             }
-    #         },
-    #         {
-    #             u"$group": {
-    #                 u"_id": {},
-    #                 u"AVG(price)": {
-    #                     u"$avg": u"$price"
-    #                 }
-    #             }
-    #         },
-    #
-    #         {
-    #             u"$project": {
-    #                 u"average": "$AVG(price)"
-    #             }
-    #         }
-    #     ]
-    #     cursor = buysCollection.aggregate(
-    #         pipeline,
-    #         allowDiskUse=True
-    #     )
-    #     return list(cursor)[0]
 
     @staticmethod
     def update_buy_by_tracking_id(data):
