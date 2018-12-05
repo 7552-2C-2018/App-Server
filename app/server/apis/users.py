@@ -23,8 +23,10 @@ register.add_argument('lastName', type=str, help='apellido', location='form', re
 register.add_argument('photoUrl', type=str, help='foto', location='form', required=True)
 register.add_argument('email', type=str, help='mail', location='form', required=True)
 
-update = common_args.copy()
-update.add_argument('token', type=str, help='token de acceso', location='headers', required=True)
+get_puntos = common_args.copy()
+get_puntos.add_argument('token', type=str, help='token de acceso', location='headers', required=True)
+
+update = get_puntos.copy()
 update.add_argument('firstName', type=str, help='nombre', location='form')
 update.add_argument('lastName', type=str, help='apellido', location='form')
 update.add_argument('photoUrl', type=str, help='foto', location='form')
@@ -71,10 +73,25 @@ class RegisterValidator(Resource):
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
+@api.route('/puntos')
+class LoginValidator(Resource):
+    @api.doc(responses=responses)
+    @api.expect(get_puntos)
+    @validateAuth
+    def get(self):
+        """Login credentials validation endpoint"""
+        time_start = time.time()
+        return_data = UserServices.get_puntos(get_puntos.parse_args())
+        time_end = time.time()
+        monitor(time_start, time_end, path, "get")
+        return return_data["data"], return_data["status"], {'message': return_data["message"]}
+
+
 @api.route('/activities')
 class Activities(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)
+    @validateAuth
     def get(self):
         """Login credentials validation endpoint"""
         time_start = time.time()

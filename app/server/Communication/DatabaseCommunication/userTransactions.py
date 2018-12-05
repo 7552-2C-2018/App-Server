@@ -13,6 +13,7 @@ CARD_POINTS = 5
 MERCADO_PAGO_POINTS = 10
 CASH_POINTS = 0
 
+
 class UserTransactions:
 
     def __init__(self):
@@ -67,14 +68,14 @@ class UserTransactions:
         elif payment_method == "MercadoPago":
             points += MERCADO_PAGO_POINTS
         userCollection.update_one({'facebookId': facebook_id},
-                                     {'$set': {'$inc': {'buyPoints': points}}})
+                                     {'$inc': {'buyPoints': points}})
         UserTransactions.__update_total_score(facebook_id)
 
     @staticmethod
     def updateUserSellPoints(facebook_id):
         points = SCORE_MULTIPLIER
         userCollection.update_one({'facebookId': facebook_id},
-                                     {'$set': {'$inc': {'sellPoints': points}}})
+                                     {'$inc': {'sellPoints': points}})
         UserTransactions.__update_total_score(facebook_id)
 
     @staticmethod
@@ -95,11 +96,11 @@ class UserTransactions:
 
     @staticmethod
     def getUserActivities(facebook_id):
-        return userCollection.find_one({'facebookId': facebook_id}, {"activities": 1})
+        return userCollection.find_one({'facebookId': facebook_id}, {"_id": 0, "activities": 1})
 
     @staticmethod
     def pushUserActivitiy(facebook_id, data):
-        return userCollection.update_one({'facebookId': facebook_id}, {'$set': {'$push': {'activities': data}}})
+        return userCollection.update_one({'facebookId': facebook_id}, {'$push': {'activities': data}})
 
     @staticmethod
     def __update_total_score(facebook_id):
@@ -116,7 +117,8 @@ class UserTransactions:
         points += result["scorePoints"]
         userCollection.update_one({'facebookId': facebook_id}, {'$set': {'totalPoints': points}})
 
-"""    @staticmethod
-    def __getCalification(facebook_id):
-        BuyTransactions.findBuyCalificationAverageByUserId(facebook_id)
-        return 10"""
+    @staticmethod
+    def get_user_points(user_id):
+        result = userCollection.find_one({'facebookId': user_id},
+                                         {"_id": 0, "scorePoints": 1})
+        return result

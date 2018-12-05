@@ -80,3 +80,11 @@ class UserServices:
         else:
             return Responses.badRequest('Usuario no registrado')
 
+    @staticmethod
+    def get_puntos(request_data):
+        facebook_id = request_data["facebookId"]
+        if UserServices.__checkUserExistance(facebook_id):
+            response = UserTransactions.get_user_points(facebook_id)
+            return Responses.success('Puntaje obteindo correctamente', response)
+        else:
+            return Responses.badRequest('Usuario no registrado')
