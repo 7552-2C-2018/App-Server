@@ -135,7 +135,7 @@ class BuyByTracking(Resource):
         time_start = time.time()
         args = common_args.parse_args()
         args['tracking_id'] = tracking_id
-        return_data = BuyServices.update_buy_by_payment_id(args)
+        return_data = BuyServices.update_buy_by_tracking_id(args)
         time_end = time.time()
         monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

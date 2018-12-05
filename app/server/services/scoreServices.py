@@ -20,8 +20,15 @@ class ScoreServices:
             except Exception as e:
                 logging.debug(str(e))
                 return Responses.badRequest('Ya calificado', "")
+            if scored_user_id is None:
+                return Responses.badRequest('No se puede calificar a si mismo', "")
             score_average = ScoreTransactions.find_scored_user_average(scored_user_id)
+
             UserTransactions.updateUserScorePoints(scored_user_id, score_average)
+            scored_activity_data = ScoreServices.__generate_scored_activiy_data(request_data)
+            scorer_activity_data = ScoreServices.__generate_scorer_activiy_data(request_data)
+            UserTransactions.pushUserActivitiy(request_data["facebookId"], scored_activity_data)
+            UserTransactions.pushUserActivitiy(scored_user_id, scorer_activity_data)
             return Responses.created('Calificado correctamente', "")
 
         else:
@@ -41,7 +48,7 @@ class ScoreServices:
         if response is not None:
             return Responses.success('Calificaciones obtenidas satisfactoriamente', response)
         else:
-            return Responses.badRequest('Usuario sin scorees')
+            return Responses.badRequest('Usuario sin scores')
 
     @staticmethod
     def getScoreByScoredId(request_data):
@@ -49,14 +56,27 @@ class ScoreServices:
         if response is not None:
             return Responses.success('Calificaciones obtenidas satisfactoriamente', response)
         else:
-            return Responses.badRequest('Usuario sin scorees')
+            return Responses.badRequest('Usuario sin scores')
 
     @staticmethod
     def updateScore(request_data):
-        response = ScoreTransactions.update_score(request_data)
-        if response is not None:
+        scored_user_id = ScoreTransactions.update_score(request_data)
+        if scored_user_id is None:
+            return Responses.badRequest('Usuario sin scores para esa compra')
+        try:
+            score_average = ScoreTransactions.find_scored_user_average(scored_user_id)
+            UserTransactions.updateUserScorePoints(scored_user_id, score_average)
             return Responses.success('Calificacion actualizada satisfactoriamente', "")
-        else:
-            return Responses.badRequest('Estado Invalido')
+        except Exception as e:
+            logging.debug(str(e))
+            return Responses.badRequest('Error al actualizar los puntos', "")
+
+    @staticmethod
+    def __generate_scorer_activiy_data(data):
+        return {"action": "score", "buy": data["buyId"]}
+
+    @staticmethod
+    def __generate_scored_activiy_data(data):
+        return {"action": "scored", "buy": data["buyId"]}
 
 

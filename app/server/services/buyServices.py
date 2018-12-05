@@ -1,3 +1,4 @@
+from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
 from server.Structures.Response import Responses
 from server.Communication.DatabaseCommunication.buyTransactions import BuyTransactions
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
@@ -47,11 +48,16 @@ class BuyServices:
     def createNewBuy(request_data):
         try:
             BuyTransactions.newBuy(request_data)
-            post_data = PostTransactions.find_post_by_post_id(request_data['postId'])
-            FirebaseCommunication.new_chat(request_data['facebookId'], post_data)
-            return Responses.created('Compra creada satisfactoriamente', "")
         except Exception:
             return Responses.internalServerError('Error en la comunicacion con el sharedServer')
+        post_data = PostTransactions.find_post_by_post_id(request_data['postId'])
+        FirebaseCommunication.new_chat(request_data['facebookId'], post_data)
+        buy_data = BuyServices.__generate_buy_activiy_data(request_data)
+        sell_data = BuyServices.__generate_sell_activiy_data(post_data)
+        UserTransactions.pushUserActivitiy(request_data['facebookId'], buy_data)
+        UserTransactions.pushUserActivitiy(post_data['facebookId'], sell_data)
+        return Responses.created('Compra creada satisfactoriamente', "")
+
 
     @staticmethod
     def updateBuy(request_data):
@@ -77,5 +83,12 @@ class BuyServices:
         else:
             return Responses.badRequest('Estado Invalido')
 
+    @staticmethod
+    def __generate_buy_activiy_data(data):
+        return {"action": "buy", "buy": data["buyId"]}
+
+    @staticmethod
+    def __generate_sell_activiy_data(data):
+        return {"sell": "buy", "post": data["ID"]}
 
 
