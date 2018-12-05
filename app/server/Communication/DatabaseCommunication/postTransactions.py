@@ -27,27 +27,28 @@ class PostTransactions:
     @staticmethod
     def __parse_data(data):
         parsed_data = {}
-        if data["title"] is not None:
+        if "title" in  data.keys() and data["title"] is not None:
             parsed_data["title"] = data["title"]
-        if data["desc"] is not None:
+        if "desc" in  data.keys() and data["desc"] is not None:
             parsed_data["description"] = data["desc"]
-        if data["stock"] is not None:
+        if "stock" in  data.keys() and data["stock"] is not None:
             parsed_data["stock"] = data["stock"]
-        if data["payments"] is not None:
+        if "payments" in  data.keys() and data["payments"] is not None:
             parsed_data["payments"] = data["payments"]
-        if data["price"] is not None:
+        if "price" in  data.keys() and data["price"] is not None:
             parsed_data["price"] = data["price"]
-        if data["new"] is not None:
+        if "new" in  data.keys() and data["new"] is not None:
             parsed_data["new"] = data["new"]
-        if data["category"] is not None:
+        if "category" in  data.keys() and data["category"] is not None:
             parsed_data["category"] = data["category"]
-        if data["pictures"] is not None:
+        if "pictures" in  data.keys() and data["pictures"] is not None:
             parsed_data["pictures"] = data["pictures"]
-        if data["shipping"] is not None:
+        if "shipping" in  data.keys() and data["shipping"] is not None:
             parsed_data["shipping"] = data["shipping"]
-        if data["street"] is not None:
+        if "street" in  data.keys() and data["street"] is not None:
             parsed_data["street"] = data["street"]
-        if data["latitude"] is not None and data["longitude"]:
+        if "latitude" in  data.keys() and data["latitude"] is not None and \
+                "longitude" in  data.keys() and data["longitude"]:
             parsed_data["coordenates"] = [data["longitude"], data["latitude"]]
         return parsed_data
 
@@ -143,33 +144,39 @@ class PostTransactions:
     @staticmethod
     def __build_query_filters(data):
         filters = {}
-        if data['distancia'] is not None and data['latitud'] is not None and data['longitud'] is not None:
-            filters["posts.coordenates"] = {}
-            filters["posts.coordenates"]["$geoWithin"] = {}
-            filters["posts.coordenates"]["$geoWithin"]["$center"] = [[data['longitud'], data['latitud']], data['distancia']]
-
-        if data['precioMinimo'] is not None or data['precioMaximo'] is not None:
-            filters["posts.price"] = {}
-        if data['precioMaximo'] is not None:
-            filters['posts.price']['$lte'] = data['precioMaximo']
-        if data['precioMinimo'] is not None:
-            filters['posts.price']['$gte'] = data['precioMinimo']
-        if data['estado'] is not None:
-            if data['estado'] == "nuevo":
-                filters['posts.new'] = True
-            else:
-                filters['posts.new'] = False
-        if data['envio'] is not None:
-            if data["envio"] == 1:
-                filters['posts.shipping'] = True
-            if data["envio"] == 0:
-                filters['posts.shipping'] = False
-        if data['categoria'] is not None:
-            filters['posts.category'] = re.compile(data['categoria'], re.IGNORECASE)
-        if data['search'] is not None:
-            filters['posts.title'] = {}
-
-            filters['posts.title']["$regex"] = re.compile(data['search'], re.IGNORECASE)
+        if 'distancia' in data.keys() and 'latitud' in data.keys() and 'longitud' in data.keys():
+            if data['distancia'] is not None and data['latitud'] is not None and data['longitud'] is not None:
+                filters["posts.coordenates"] = {}
+                filters["posts.coordenates"]["$geoWithin"] = {}
+                filters["posts.coordenates"]["$geoWithin"]["$center"] = [[data['longitud'], data['latitud']], data['distancia']]
+        if ('precioMinimo' in data.keys() and data['precioMinimo'] is not None) or \
+                ('precioMaximo' in data.keys() and data['precioMaximo'] is not None):
+                filters["posts.price"] = {}
+        if 'precioMaximo' in data.keys():
+            if data['precioMaximo'] is not None:
+                filters['posts.price']['$lte'] = data['precioMaximo']
+        if 'precioMaximo' in data.keys():
+            if data['precioMinimo'] is not None:
+                filters['posts.price']['$gte'] = data['precioMinimo']
+        if 'estado' in data.keys():
+            if data['estado'] is not None:
+                if data['estado'] == "nuevo":
+                    filters['posts.new'] = True
+                else:
+                    filters['posts.new'] = False
+        if 'envio' in data.keys():
+            if data['envio'] is not None:
+                if data["envio"] == 1:
+                    filters['posts.shipping'] = True
+                if data["envio"] == 0:
+                    filters['posts.shipping'] = False
+        if 'categoria' in data.keys():
+            if data['categoria'] is not None:
+                filters['posts.category'] = re.compile(data['categoria'], re.IGNORECASE)
+        if 'search' in data.keys():
+            if data['search'] is not None:
+                filters['posts.title'] = {}
+                filters['posts.title']["$regex"] = re.compile(data['search'], re.IGNORECASE)
         return filters
 
     @staticmethod

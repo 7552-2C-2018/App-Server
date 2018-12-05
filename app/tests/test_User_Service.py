@@ -22,15 +22,16 @@ mark_updated_credentials = {"facebookId": "102510700706099",
 
 class UserTests(GenericTest):
 
-    def test_new_post(self):
+    def test_login_invalid_fb_credentials(self):
         response = UserServices.checkLogin(invalid_fb_credentials)
         assert response["status"] == 400
         assert response["message"] == 'FacebookId Invalido'
 
-    @patch('server.Communication.facebookCommunication.FacebookCommunication.ValidateUser', MagicMock(return_value=True))
+    @patch('server.Communication.facebookCommunication.FacebookCommunication.ValidateUser',
+           MagicMock(return_value=True))
     def test_login_unregistered_id(self):
         response = UserServices.checkLogin(invalid_fb_credentials)
-        assert response["status"] == 401
+        assert response["status"] == 400
         assert response["message"] == 'Usuario no registrado'
 
     def test_register_invalid_facebook_id(self):
@@ -66,3 +67,4 @@ class UserTests(GenericTest):
         assert response["status"] == 200
         assert response["message"] == 'Token generado correctamente'
         assert response["data"] != ''
+

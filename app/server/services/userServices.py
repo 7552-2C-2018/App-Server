@@ -68,9 +68,12 @@ class UserServices:
 
     @staticmethod
     def updateUser(request_data):
-        UserTransactions.updateUserData(request_data)
-        return Responses.success('Usuario actualizado correctamente', "")
-
+        facebook_id = request_data["facebookId"]
+        if UserServices.__checkUserExistance(facebook_id):
+            UserTransactions.updateUserData(request_data)
+            return Responses.success('Usuario actualizado correctamente', "")
+        else:
+            return Responses.badRequest('Usuario no registrado')
     @staticmethod
     def getActivities(request_data):
         facebook_id = request_data["facebookId"]

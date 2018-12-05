@@ -24,13 +24,13 @@ class UserTransactions:
     @staticmethod
     def __parseUpdateData(data):
         parsed_data = {}
-        if "firstName" in data.keys():
+        if "firstName" in data.keys() and data["firstName"] is not None:
             parsed_data["nombre"] = data["firstName"]
-        if "lastName" in data.keys():
+        if "lastName" in data.keys() and data["lastName"] is not None:
             parsed_data["apellido"] = data["lastName"]
-        if "photoUrl" in data.keys():
+        if "photoUrl" in data.keys() and data["photoUrl"] is not None:
             parsed_data["photoUrl"] = data["photoUrl"]
-        if "email" in data.keys():
+        if "email" in data.keys() and data["email"] is not None:
             parsed_data["email"] = data["email"]
         return parsed_data
 

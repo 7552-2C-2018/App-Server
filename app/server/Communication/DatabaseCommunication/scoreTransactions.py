@@ -93,7 +93,10 @@ class ScoreTransactions:
                 pipeline,
                 allowDiskUse=True
             )
-            return list(cursor)[0]["AVG(value)"]
+            try:
+                return list(cursor)[0]["AVG(value)"]
+            except Exception:
+                return None
 
     @staticmethod
     def __get_calificado(data):

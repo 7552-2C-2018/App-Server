@@ -55,7 +55,7 @@ class SharedServerRequests:
         logging.debug("payment data: " + json.dumps(payment_data))
         logging.debug("payment req: " + str(response.text))
         if response.status_code == 200:
-            return json.loads(response.text)
+            return json.loads(response.text)["data"][0]["transaction_id"]
         else:
             return None
 
@@ -130,7 +130,7 @@ class SharedServerRequests:
             logging.debug(str(e))
             return None
         if response.status_code == 200:
-            return json.loads(response.text)
+            return json.loads(response.text)["data"]["id"]
         else:
             return None
 

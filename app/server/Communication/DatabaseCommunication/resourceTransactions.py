@@ -27,12 +27,12 @@ class ResourceTransactions:
 
     @staticmethod
     def get_buy_states_by_id(state_id):
-        return buyStatesCollection.find_one({"_id": state_id},{"tracking": 0, "payment": 0, "estado": 0})
+        return buyStatesCollection.find_one({"_id": int(state_id)}, {"tracking": 0, "payment": 0, "estado": 0})
 
     @staticmethod
     def get_buy_tracking_states_by_id(state_id):
-        return buyStatesCollection.find_one({"_id": state_id, "tracking": True}, {"tracking": 0, "estado": 0})
+        return buyStatesCollection.find_one({"_id": int(state_id), "tracking": True}, {"tracking": 0, "estado": 0})
 
     @staticmethod
     def get_buy_payment_states_by_id(state_id):
-        return buyStatesCollection.find_one({"_id": state_id, "payment": True}, {"payment": 0, "estado": 0})
+        return buyStatesCollection.find_one({"_id": int(state_id), "payment": True}, {"payment": 0, "estado": 0})

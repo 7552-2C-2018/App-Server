@@ -21,8 +21,10 @@ common_args.add_argument('token', type=str, help='Token de acceso', location='he
 new_buy_args = common_args.copy()
 new_buy_args.add_argument('postId', type=str, help='Id del post del producto a comprar',
                           location='headers', required=True)
-new_buy_args.add_argument('price', type=str, help='Precio de la compra', location='form', required=True)
-new_buy_args.add_argument('paymentMethod', type=str, help='tipo de pago para la compra', location='form', required=True)
+new_buy_args.add_argument('price', type=str,
+                          help='Precio de la compra', location='form', required=True)
+new_buy_args.add_argument('paymentMethod',
+                          type=str, help='tipo de pago para la compra', location='form', required=True)
 
 new_buy_args.add_argument('cardNumber', type=str, help='Numero de la tarjeta utilizada para la compra', location='form')
 new_buy_args.add_argument('cardDate', type=str, help='ExpDate de la tarjeta utilizada para la compra', location='form')

@@ -24,22 +24,20 @@ class BuyTransactions:
         parsed_data["postId"] = data["postId"]
         parsed_data["paymentMethod"] = data["paymentMethod"]
         post_data = PostTransactions.find_post_by_post_id(data["postId"])
-        if data["cardNumber"] is not None:
+        if "cardNumber" in data.keys() and data["cardNumber"] is not None:
             payment_response = SharedServerRequests.newPayment(data, post_data)
-
             if payment_response is None:
                 logging.debug("se rompio le payment")
                 raise Exception
             logging.debug("payment: " + str(payment_response))
-            parsed_data["payment"] = payment_response["data"][0]["transaction_id"]
+            parsed_data["payment"] = payment_response
 
-        if data["street"] is not None:
-
+        if "street" in data.keys() and data["street"] is not None:
             tracking_response = SharedServerRequests.newTracking(data, post_data)
             if tracking_response is None:
                 logging.debug("se rompio la street")
                 raise Exception
-            parsed_data["shipping"] = tracking_response["data"]["id"]
+            parsed_data["shipping"] = tracking_response
             logging.debug("tracking: " + str(tracking_response))
         parsed_data["ID"] = data["ID"]
         parsed_data["estado"] = data["estado"]
@@ -133,7 +131,10 @@ class BuyTransactions:
             pipeline,
             allowDiskUse=True
         )
-        return list(cursor)[0]
+        try:
+            return list(cursor)[0]
+        except Exception:
+            return None
 
     @staticmethod
     def findBuyerById(data):
@@ -215,19 +216,22 @@ class BuyTransactions:
     @staticmethod
     def updateBuyData(data):
         estado = BuyTransactions.__get_estado(data["estado"])
+        logging.debug("estado:" + str(estado))
         if estado is not None or data["State"] == "Completado":
             has_tracking = buysCollection.find_one({'ID': data['buyId'], 'tracking': {"$exists": True}})
             tracking_state = BuyTransactions.__get_estado_tracking(data["estado"])
             if has_tracking is not None:
                 if tracking_state is not None:
+                    logging.debug("invalid by tracking")
                     raise Exception
             has_payment = buysCollection.find_one({'ID': data['buyId'], 'payment': {"$exists": True}})
-            payment_state = BuyTransactions.__get_estado_paymeny(data["estado"])
+            payment_state = BuyTransactions.__get_estado_payment(data["estado"])
             if has_payment is not None:
                 if payment_state is not None:
+                    logging.debug("invalid by payment")
                     raise Exception
-            if data["State"] == "Envio realizado":
-                data["State"] = "Finalizado"
+            if data["estado"] == "Envio realizado":
+                data["estado"] = "Finalizado"
             BuyTransactions.__sendNotifications(data)
             return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": estado}})
         else:
@@ -243,21 +247,20 @@ class BuyTransactions:
             BuyTransactions.__sendNotifications(data)
             return buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": data["State"]}})
         else:
-            return "estado Invalido"
+            return "Estado Invalido"
 
     @staticmethod
     def update_buy_by_payment_id(data):
         data["State"] = BuyTransactions.__get_estado_payment(data["State"])
-        if data["State"] == "Envio realizado":
-            data["State"] = "Finalizado"
         BuyTransactions.__sendNotifications(data)
-        if data["State"] is not None or data["State"] == "Completado":
+        if data["State"] is not None and data["State"] != "Completado":
             return buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": data["State"]}})
         else:
-            return "estado Invalido"
+            return "Estado Invalido"
 
     @staticmethod
     def __get_estado(estado):
+        logging.debug("estado:" + str(estado))
         return ResourceTransactions.get_buy_states_by_id(estado)
 
     @staticmethod

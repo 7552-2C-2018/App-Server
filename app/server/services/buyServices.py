@@ -10,11 +10,6 @@ logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 class BuyServices:
 
     @staticmethod
-    def getAllBuys():
-        response = BuyTransactions.getBuys()
-        return Responses.success('Compras obtenidas satisfactoriamente', response)
-
-    @staticmethod
     def getBuy(request_data):
 
         response = BuyTransactions.findBuyById(request_data["buyId"])
@@ -39,7 +34,6 @@ class BuyServices:
         response = BuyTransactions.findBuyBySellerId(request_data["seller_id"])
 
         if not response is None:
-            logging.debug("dasdasd" + str(response))
             return Responses.success('Compras obtenidas satisfactoriamente', response)
         else:
             return Responses.badRequest('Usuario sin Compras')
@@ -59,6 +53,8 @@ class BuyServices:
 
     @staticmethod
     def updateBuy(request_data):
+        if BuyServices.__validate_buy(request_data):
+            return Responses.badRequest('Compra inexistente')
         try:
             response = BuyTransactions.updateBuyData(request_data)
             return Responses.success('Compra actualizada satisfactoriamente', "")
@@ -67,6 +63,8 @@ class BuyServices:
 
     @staticmethod
     def update_buy_by_payment_id(request_data):
+        if BuyServices.__validate_buy(request_data):
+            return Responses.badRequest('Compra inexistente')
         response = BuyTransactions.update_buy_by_payment_id(request_data)
         if response != "Estado Invalido":
             return Responses.success('Compra actualizada satisfactoriamente', "")
@@ -75,11 +73,18 @@ class BuyServices:
 
     @staticmethod
     def update_buy_by_tracking_id(request_data):
+        if BuyServices.__validate_buy(request_data):
+            return Responses.badRequest('Compra inexistente')
         response = BuyTransactions.update_buy_by_tracking_id(request_data)
         if response != "Estado Invalido":
             return Responses.success('Compra actualizada satisfactoriamente', "")
         else:
             return Responses.badRequest('Estado Invalido')
+
+    @classmethod
+    def __validate_buy(cls, request_data):
+        valid_buy = BuyTransactions.findBuyById(request_data["buyId"])
+        return valid_buy is None
 
 
 

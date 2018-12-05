@@ -26,7 +26,7 @@ new_post = {"facebookId": "102510700706087",
 class PostsTests(GenericTest):
 
     def test_get_all_posts(self):
-        response = PostServices.getAllPosts()
+        response = PostServices.getAllPosts(registered_credentials)
         assert response["status"] == 200
         assert response["message"] == 'Post obtenidos satisfactoriamente'
 
