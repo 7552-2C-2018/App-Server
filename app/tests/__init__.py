@@ -1,7 +1,7 @@
 import os
-MONGO_URL = os.environ.get('MONGO_URL_TEST')
+MONGO_URL = os.environ.get('MONGO_URL')
 if not MONGO_URL:
-    os.environ.setdefault('MONGO_URL', 'mongodb://127.0.0.1:27017/testDatabase')
+    os.environ.setdefault('MONGO_URL', 'mongodb://mongo-db:27017/testDatabase')
     MONGO_URL = os.environ.get('MONGO_URL')
 import unittest
 from server.setup import app
@@ -31,8 +31,8 @@ class GenericTest(unittest.TestCase):
                                        "email": "mail"})
         app.database.users.insert_one({"facebookId": "102510700706087",
                                        "firstName": "test",
-                                       "lastName": "User",
-                                       "photoUrl": "foto2@Comprame.com",
+                                       "lastName": "zuc",
+                                       "photoUrl": "foto",
                                        "email": "mail"})
         app.database.users.insert_one({"facebookId": "99",
                                        "firstName": "test",

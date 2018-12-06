@@ -30,7 +30,7 @@ class ScoreServices:
             UserTransactions.pushUserActivitiy(request_data["facebookId"], "Has calificado una publicacion")
             UserTransactions.pushUserActivitiy(scored_user_id, "Has sido calificado por una publicacion")
             FirebaseCommunication.send_notification(scored_user_id,
-                                                    "Haz recibido una calificacion: " + \
+                                                    "Has recibido una calificacion: " + \
                                                     str(request_data["value"]) + " puntos.")
             return Responses.created('Calificado correctamente', "")
         else:

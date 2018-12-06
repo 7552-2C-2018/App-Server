@@ -31,7 +31,7 @@ class QuestionServices:
         if post_data is None:
             return Responses.badRequest('Post inexistente', "")
         QuestionTransactions.newQuestion(request_data)
-        UserTransactions.pushUserActivitiy(request_data["facebookId"], "Haz realizado una pregunta")
+        UserTransactions.pushUserActivitiy(request_data["facebookId"], "Has realizado una pregunta")
         UserTransactions.pushUserActivitiy(post_data["_id"]["facebookId"], "Te han realizado una pregunta")
         FirebaseCommunication.send_notification(post_data["_id"]["facebookId"],
                                                 "Recibiste una pregunta sobre el post " + post_data["title"])
@@ -41,7 +41,7 @@ class QuestionServices:
     def updateQuestion(request_data):
         response = QuestionTransactions.updateQuestion(request_data)
         if response is not None:
-            UserTransactions.pushUserActivitiy(request_data["facebookId"], "Haz respondido una pregunta")
+            UserTransactions.pushUserActivitiy(request_data["facebookId"], "Has respondido una pregunta")
             UserTransactions.pushUserActivitiy(response["userId"], "Te han respondido una pregunta")
             FirebaseCommunication.send_notification(response["userId"],
                                                     "Recibiste una respuesta!")
