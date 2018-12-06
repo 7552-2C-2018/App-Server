@@ -20,7 +20,7 @@ common_args.add_argument('facebookId', type=str, help='facebookId', location='he
 common_args.add_argument('token', type=str, help='Token de acceso', location='headers', required=True)
 
 new_question = common_args.copy()
-new_question.add_argument('postId', type=str, help='id del post por el que se esta preguntandp', location='form', required=True)
+new_question.add_argument('postId', type=str, help='id del post por el que se esta preguntando', location='form', required=True)
 new_question.add_argument('question', type=str, help='pregunta del post', location='form', required=True)
 
 answer = common_args.copy()
@@ -43,17 +43,17 @@ class Questions(Resource):
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
-@api.route('/postId=<string:postId>/')
-@api.param('postId', 'Id from post')
+@api.route('/question_d=<string:questionId>/')
+@api.param('question_id', 'Id from question')
 class QuestionsByPost(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)
 
     @validateAuth
-    def get(self, postId):
-        """Endpoint that gets all questions"""
+    def get(self, question_id):
+        """Endpoint that gets a single question"""
         time_start = time.time()
-        return_data = QuestionServices.getAllQuestions(postId)
+        return_data = QuestionServices.getAllQuestions(question_id)
         time_end = time.time()
         monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
