@@ -40,10 +40,10 @@ class BuyServices:
 
     @staticmethod
     def createNewBuy(request_data):
-        #try:
-        BuyTransactions.newBuy(request_data)
-        #except Exception:
-        #    return Responses.internalServerError('Error en la comunicacion con el sharedServer')
+        try:
+            BuyTransactions.newBuy(request_data)
+        except Exception:
+            return Responses.internalServerError('Error en la comunicacion con el sharedServer')
         post_data = PostTransactions.find_post_by_post_id(request_data['postId'])
         FirebaseCommunication.new_chat(request_data['facebookId'], post_data)
         UserTransactions.pushUserActivitiy(request_data['facebookId'], "Has realizado una compra")

@@ -3,9 +3,12 @@ import datetime
 import time
 import os
 import requests
+
+from server.logger import Logger
+
 URL = 'https://melli-7552.firebaseio.com/'
-import logging
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
+
+LOGGER = Logger.get(__name__)
 
 FIREBASE_KEY = os.environ.get('FIREBASE_KEY')
 
@@ -22,7 +25,7 @@ class FirebaseCommunication:
         if chats.text != "null":
             new_chat_list = json.loads(chats.text)
             new_chat_list.append(chat_key)
-            logging.debug(str(new_chat_list))
+            LOGGER.debug("Se ha credo un nuevo chat: " + str(new_chat_list))
         else:
             new_chat_list = [chat_key]
         requests.put((URL + 'userChats/' + facebook_id + '.json'), data=json.dumps({'chats': new_chat_list}))
@@ -73,7 +76,7 @@ class FirebaseCommunication:
 
             response = requests.post(url, json=json_data, headers={'Authorization': "key=" + FIREBASE_KEY,
                                                                    'Content-type': 'application/json'})
-            logging.info('Mensaje enviado satisfactoriamente. Respuesta: ' + response.text)
+            LOGGER.info('Mensaje enviado satisfactoriamente. Respuesta: ' + response.text)
         except Exception as e:
-            logging.error('Surgio un problema al enviar el mensaje: ' + str(e))
-            logging.error('Respuesta: ' + response.text)
+            LOGGER.error('Surgio un problema al enviar el mensaje: ' + str(e))
+            LOGGER.error('Respuesta: ' + response.text)
