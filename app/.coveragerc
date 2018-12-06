@@ -8,5 +8,5 @@ omit =
   *services/Validator/*
   *Communication/GeolocationServiceCommunication/*
   *Communication/SharedServerCommunication/*
-  *Communication/FirebaseCommunication/*
   *services/resourceServices.py
+  *Communication/FirebaseCommunication/*

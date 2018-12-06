@@ -116,16 +116,16 @@ class GenericTest(unittest.TestCase):
             "comment": "muy amable como comprador",
             "value": 4
         })
-        app.database.buy_states.insert({"_id": 1, "state": "Comprado"})
-        app.database.buy_states.insert({"_id": 2, "state": "Finalizado"})
-        app.database.buy_states.insert({"_id": 3, "state": "Calificado"})
-        app.database.buy_states.insert({"_id": 4, "state": "Completado"})
-        app.database.buy_states.insert({"_id": 6, "state": "Pago Pendiente", "payment": True})
-        app.database.buy_states.insert({"_id": 7, "state": "Pago rechazado", "payment": True})
-        app.database.buy_states.insert({"_id": 8, "state": "Pago aceptado", "payment": True})
-        app.database.buy_states.insert({"_id": 9, "state": "Envio en progreso", "tracking": True})
-        app.database.buy_states.insert({"_id": 10, "state": "Pendiente de envio", "tracking": True})
-        app.database.buy_states.insert({"_id": 11, "state": "Envio realizado", "tracking": True})
+        app.database.buy_states.insert({"_id": 1, "estado": "Comprado"})
+        app.database.buy_states.insert({"_id": 2, "estado": "Finalizado"})
+        app.database.buy_states.insert({"_id": 3, "estado": "Calificado"})
+        app.database.buy_states.insert({"_id": 4, "estado": "Completado"})
+        app.database.buy_states.insert({"_id": 6, "estado": "Pago Pendiente", "payment": True})
+        app.database.buy_states.insert({"_id": 7, "estado": "Pago rechazado", "payment": True})
+        app.database.buy_states.insert({"_id": 8, "estado": "Pago aceptado", "payment": True})
+        app.database.buy_states.insert({"_id": 9, "estado": "Envio en progreso", "tracking": True})
+        app.database.buy_states.insert({"_id": 10, "estado": "Pendiente de envio", "tracking": True})
+        app.database.buy_states.insert({"_id": 11, "estado": "Envio realizado", "tracking": True})
 
     def flush_database(self):
         try:

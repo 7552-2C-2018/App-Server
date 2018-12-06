@@ -1,7 +1,7 @@
+from server.logger import Logger
 from server.setup import app
-import logging
 
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
+LOGGER = Logger.get(__name__)
 with app.app_context():
     categoriesCollection = app.database.categories
     paymentsCollection = app.database.payments
@@ -27,8 +27,8 @@ class ResourceTransactions:
 
     @staticmethod
     def get_buy_states_by_id(state_id):
-        return buyStatesCollection.find_one({"_id": state_id}, {"tracking": 0, "payment": 0, "_id": 0})
-
+        result = buyStatesCollection.find_one({"_id": state_id}, {"tracking": 0, "payment": 0, "_id": 0})
+        return result
     @staticmethod
     def get_buy_tracking_states_by_id(state_id):
         return buyStatesCollection.find_one({"_id": state_id, "tracking": True}, {"tracking": 0, "_id": 0})
