@@ -5,6 +5,6 @@ services:
   - mongodb
 before_install:
   - sudo apt-get update
-  - sudo apt-get install make gcc libc-dev libjpeg-turbo-dev
+  - sudo apt-get install make gcc libc-dev libjpeg62-dev
 install: "pip install -r requirements.txt"
 script: bash travis.sh 
