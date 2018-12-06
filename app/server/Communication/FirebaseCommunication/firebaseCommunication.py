@@ -59,7 +59,6 @@ class FirebaseCommunication:
             json_data = {
                 "to": "/topics/allDevices",
                 "notification": {
-                    "body": "great match!",
                     "content_available": True,
                     "priority": "high",
                     "title": title

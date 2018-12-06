@@ -32,27 +32,33 @@ class SharedServerRequests:
 
     @staticmethod
     def __parsePayment(data, post):
-        payment_data = {}
-        date = data["cardDate"].split("/")
-        payment_data["number"] = data["cardNumber"]
-        payment_data["value"] = data["price"]
-        payment_data["expiration_year"] = "20" + date[1]
-        payment_data["expiration_month"] = date[0]
-        payment_data["currency"] = "ars"
-        payment_data["type"] = data["cardBank"]
-        payment_data["ownerId"] = data["cardBank"]
-        return payment_data
-
+        try:
+            payment_data = {}
+            date = data["cardDate"].split("/")
+            payment_data["number"] = data["cardNumber"]
+            payment_data["value"] = data["price"]
+            payment_data["expiration_year"] = "20" + date[1]
+            payment_data["expiration_month"] = date[0]
+            payment_data["currency"] = "ars"
+            payment_data["type"] = data["cardBank"]
+            payment_data["ownerId"] = data["cardBank"]
+            return payment_data
+        except Exception as e:
+            return None
     @staticmethod
     def newPayment(data, post):
         headers = (SharedServerRequests.__auth())
         payment_data = SharedServerRequests.__parsePayment(data, post)
-        response = requests.post(SHARED_SERVER_URL + '/api/payments', headers=headers,
-                                 data=json.dumps(payment_data))
-        if response.status_code == 200:
-            return json.loads(response.text)["data"][0]["transaction_id"]
+        if payment_data is not None:
+            response = SharedServerRequests.callApiPayment(headers, payment_data, '/api/payments')
+            # requests.post(SHARED_SERVER_URL + '/api/payments', headers=headers,
+            #                        data=json.dumps(payment_data))
         else:
-            return None
+            return "Error parsing data"
+        if response is not None:
+            return response
+        return None
+
 
     @staticmethod
     def __parseTracking(data, post):
@@ -66,7 +72,7 @@ class SharedServerRequests:
             tracking_data["start_lon"] = post["coordenates"][1]
             tracking_data["end_time"] = ""
             tracking_data["end_street"] = data["street"] + " " + \
-                                          data["floor"] + " " + data["dept"] + ", " + data["city"]
+                                          str(data["floor"]) + " " + str(data["dept"]) + ", " + data["city"]
             end_coordenates = GeolocationServiceCommunication.getCoordenates(data["street"], data["city"])
             tracking_data["end_lat"] = float(end_coordenates["latitud"])
             tracking_data["end_lon"] = float(end_coordenates["longitud"])
@@ -108,17 +114,18 @@ class SharedServerRequests:
 
     @staticmethod
     def newTracking(data, post):
-        try:
-            headers = (SharedServerRequests.__auth())
-            tracking_data = SharedServerRequests.__parseTracking(data, post)
-            response = requests.post(SHARED_SERVER_URL + '/api/tracking', headers=headers,
-                                     data=json.dumps(tracking_data))
-        except Exception as e:
-            return None
-        if response.status_code == 200:
-            return json.loads(response.text)["data"]["id"]
+        headers = (SharedServerRequests.__auth())
+        tracking_data = SharedServerRequests.__parseTracking(data, post)
+        if tracking_data is not None:
+            response = SharedServerRequests.callApiTracking(headers, tracking_data, '/api/tracking')
+            #requests.post(SHARED_SERVER_URL + '/api/tracking', headers=headers,
+            #                        data=json.dumps(tracking_data))
         else:
-            return None
+            return "Error parsing data"
+        if response is not None:
+            return response
+        return None
+
 
     @staticmethod
     def calculateShipping(shipping_data):
@@ -135,7 +142,23 @@ class SharedServerRequests:
         except Exception:
             return Responses.badRequest("Direccion invalida!", "")
 
+    @staticmethod
+    def callApiPayment(headers, data, url):
+        response = requests.post(SHARED_SERVER_URL + url, headers=headers,
+                                 data=json.dumps(data))
+        if response.status_code == 200:
+            return json.loads(response.text)["data"][0]["transaction_id"]
+        else:
+            return None
 
+    @staticmethod
+    def callApiTracking(headers, data, url):
+        response = requests.post(SHARED_SERVER_URL + url, headers=headers,
+                                 data=json.dumps(data))
+        if response.status_code == 200:
+            return json.loads(response.text)["data"]["id"]
+        else:
+            return None
 """
     @staticmethod
     def getPayment(id):

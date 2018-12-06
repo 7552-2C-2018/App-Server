@@ -38,6 +38,9 @@ class BuyTransactions:
             if tracking_response is None:
                 LOGGER.error("No hubo respuesta del Shared Server por el tracking")
                 raise Exception
+            if tracking_response == "Error parsing data":
+                LOGGER.error("No se pudo parsear la data para la llamada al Shared Server por el tracking")
+                raise Exception
             LOGGER.debug("Nuevo payment generado: " + str(tracking_response))
             parsed_data["shipping"] = tracking_response
         parsed_data["ID"] = data["ID"]
@@ -150,7 +153,7 @@ class BuyTransactions:
         buysCollection.insert_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}})
         buysCollection.update_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}},
                                   {'$set': parsed_data})
-        LOGGER.info("Se creo la compra:" + buy_id)
+        LOGGER.info("Se creo la compra: " + buy_id)
         return buy_id
 
     @staticmethod

@@ -10,9 +10,12 @@ new_buy_data = {"facebookId": "102510700706087",
                 "postId": "1025107007060871539228792",
                 "category": "test",
                 "street": "calle falsa 123",
-                "cardNumber": 1111,
+                "paymentMethod": "Efectivo",
                 "price": 100,
-                "paymentMethod": "Efectivo"
+                "cp": 1,
+                "floor": 2,
+                "dept": "b",
+                "city": "caba",
                  }
 
 common_update_buy_data = {"facebookId": "102510700706087",
@@ -21,17 +24,17 @@ common_update_buy_data = {"facebookId": "102510700706087",
 
 
 @patch('server.Communication.SharedServerCommunication.sharedServerRequests.'
-       'SharedServerRequests.newPayment',
+       'SharedServerRequests.callApiTracking',
        MagicMock(return_value=1))
 @patch('server.Communication.SharedServerCommunication.sharedServerRequests.'
-       'SharedServerRequests.newTracking',
+       'SharedServerRequests.callApiPayment',
        MagicMock(return_value=1))
 @patch('server.Communication.FirebaseCommunication.firebaseCommunication.'
        'FirebaseCommunication.new_chat', MagicMock())
 @patch('server.Communication.FirebaseCommunication.firebaseCommunication.'
        'FirebaseCommunication.send_notification', MagicMock())
 @patch('server.Communication.GeolocationServiceCommunication.geolocationServiceCommunication.'
-       'GeolocationServiceCommunication.getCoordenates', MagicMock(return_value=1))
+       'GeolocationServiceCommunication.getCoordenates', MagicMock(return_value={"latitud":55 ,"longitud": 55}))
 class BuyTests(GenericTest):
 
     def test_get_buy_id(self):
