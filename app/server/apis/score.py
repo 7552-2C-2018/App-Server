@@ -1,13 +1,13 @@
+import logging
 import time
 
-from flask_restplus import Resource, Api, Namespace, reqparse, inputs
+from flask_restplus import Resource, Namespace, reqparse
 
+from server.Structures.Response import responses
 from server.services.Monitoring.monitor import monitor
 from server.services.Validator.validateAuth import validateAuth
 from server.services.scoreServices import ScoreServices
-from server.services.postServices import PostServices
-from server.Structures.Response import responses
-import logging
+
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 
 
@@ -102,4 +102,3 @@ class ScoreUpdate(Resource):
         time_end = time.time()
         monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
-

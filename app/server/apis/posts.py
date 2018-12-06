@@ -54,12 +54,12 @@ new_post_args.add_argument("price",  type=int, help='precio del producto', locat
 new_post_args.add_argument("new", type=inputs.boolean,
                            help='flag si el producto es nuevo o usado', location='form', required=True)
 new_post_args.add_argument("category", type=str, help='categoria del producto', location='form', required=True)
-new_post_args.add_argument("pictures", type=str, help='imagenes del producto', location='form',action='split')
+new_post_args.add_argument("pictures", type=str, help='imagenes del producto', location='form', action='split')
 new_post_args.add_argument("shipping", type=inputs.boolean,
-                              help='si el producto puede o no ser enviado por via maritima',
+                              help='si el producto puede o no ser enviado',
                               location='form', required=True)
 new_post_args.add_argument("street", type=str, help='calle y altura del comprador', location='form', required=True)
-new_post_args.add_argument("latitude", type=float, help='latitud', location='form')
+new_post_args.add_argument("latitude", type=float, help='latitud', location='form', required=True)
 new_post_args.add_argument("longitude", type=float, help='longitud', location='form', required=True)
 
 update_post_args = common_args.copy()
@@ -73,7 +73,7 @@ update_post_args.add_argument("new", type=inputs.boolean, help='si el producto e
 update_post_args.add_argument("category", type=str, help='categoria del producto', location='form')
 update_post_args.add_argument("pictures", type=str, help='imagenes del producto', location='form',action='split')
 update_post_args.add_argument("shipping", type=inputs.boolean,
-                              help='si el producto puede o no ser enviado por via maritima', location='form')
+                              help='si el producto puede o no ser enviado', location='form')
 update_post_args.add_argument("latitude", type=float, help='latitud', location='form')
 update_post_args.add_argument("longitude", type=float, help='longitud', location='form')
 

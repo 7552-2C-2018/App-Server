@@ -1,16 +1,18 @@
+import datetime
+import logging
+import time
+
+from server.setup import app
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
 from server.Communication.DatabaseCommunication.resourceTransactions import ResourceTransactions
-from server.setup import app
-import logging
-import json
-import datetime
-import time
+from server.Communication.FirebaseCommunication.firebaseCommunication import FirebaseCommunication
 from server.Communication.SharedServerCommunication.sharedServerRequests import SharedServerRequests
+from server.logger import Logger
 
-
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
     buysCollection = app.database.buys
+
+LOGGER = Logger().get(__name__)
 
 
 class BuyTransactions:
@@ -19,33 +21,31 @@ class BuyTransactions:
         pass
 
     @staticmethod
-    def __parseData(data):
-        parsed_data = {}
-        parsed_data["postId"] = data["postId"]
-        parsed_data["paymentMethod"] = data["paymentMethod"]
+    def __parse_data(data):
+        parsed_data = {"postId": data["postId"], "paymentMethod": data["paymentMethod"]}
         post_data = PostTransactions.find_post_by_post_id(data["postId"])
         if "cardNumber" in data.keys() and data["cardNumber"] is not None:
+            LOGGER.info("Inicio de comunicacion con el Shared Server por un payment")
             payment_response = SharedServerRequests.newPayment(data, post_data)
             if payment_response is None:
-                logging.debug("se rompio le payment")
+                LOGGER.error("No hubo respuesta del Shared Server por el payment")
                 raise Exception
-            logging.debug("payment: " + str(payment_response))
+            LOGGER.debug("Nuevo payment generado: " + str(payment_response))
             parsed_data["payment"] = payment_response
 
         if "street" in data.keys() and data["street"] is not None:
             tracking_response = SharedServerRequests.newTracking(data, post_data)
             if tracking_response is None:
-                logging.debug("se rompio la street")
+                LOGGER.error("No hubo respuesta del Shared Server por el tracking")
                 raise Exception
+            LOGGER.debug("Nuevo payment generado: " + str(tracking_response))
             parsed_data["shipping"] = tracking_response
-            logging.debug("tracking: " + str(tracking_response))
         parsed_data["ID"] = data["ID"]
         parsed_data["estado"] = data["estado"]
         return parsed_data
 
-
     @staticmethod
-    def findBuyBySellerId(seller_id):
+    def find_buy_by_seller_id(seller_id):
         pipeline = [
             {
                 u"$project": {
@@ -137,8 +137,8 @@ class BuyTransactions:
             return None
 
     @staticmethod
-    def findBuyById(data):
-        return buysCollection.find_one({"ID": data})
+    def find_buy(buy_id):
+        return buysCollection.find_one({"ID": buy_id})
 
     @staticmethod
     def newBuy(data):
@@ -146,10 +146,11 @@ class BuyTransactions:
         buy_id = data['facebookId'] + str(int(buy_date))
         data["ID"] = buy_id
         data["estado"] = "Comprado"
-        parsed_data = BuyTransactions.__parseData(data)
+        parsed_data = BuyTransactions.__parse_data(data)
         buysCollection.insert_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}})
         buysCollection.update_one({"_id": {"facebookId": data['facebookId'], "buy_date": buy_date}},
-                                     {'$set': parsed_data})
+                                  {'$set': parsed_data})
+        LOGGER.info("Se creo la compra:" + buy_id)
         return buy_id
 
     @staticmethod
@@ -212,7 +213,6 @@ class BuyTransactions:
         )
         return list(cursor)
 
-
     @staticmethod
     def updateBuyData(data):
         estado = BuyTransactions.__get_estado(data["estado"])
@@ -232,11 +232,10 @@ class BuyTransactions:
                     raise Exception
             if data["estado"] == "Envio realizado":
                 data["estado"] = "Finalizado"
-            BuyTransactions.__sendNotifications(data)
+            BuyTransactions.__send_notifications(data)
             return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": estado}})
         else:
             raise Exception
-
 
     @staticmethod
     def update_buy_by_tracking_id(data):
@@ -244,7 +243,7 @@ class BuyTransactions:
         if data["State"] is not None or data["State"] == "Completado":
             if data["State"] == "Envio realizado":
                 data["State"] = "Finalizado"
-            BuyTransactions.__sendNotifications(data)
+            BuyTransactions.__send_notifications(data)
             return buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": data["State"]}})
         else:
             return "Estado Invalido"
@@ -252,7 +251,7 @@ class BuyTransactions:
     @staticmethod
     def update_buy_by_payment_id(data):
         data["State"] = BuyTransactions.__get_estado_payment(data["State"])
-        BuyTransactions.__sendNotifications(data)
+        BuyTransactions.__send_notifications(data)
         if data["State"] is not None and data["State"] != "Completado":
             return buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": data["State"]}})
         else:
@@ -260,7 +259,6 @@ class BuyTransactions:
 
     @staticmethod
     def __get_estado(estado):
-        logging.debug("estado:" + str(estado))
         return ResourceTransactions.get_buy_states_by_id(estado)
 
     @staticmethod
@@ -268,9 +266,26 @@ class BuyTransactions:
         return ResourceTransactions.get_buy_tracking_states_by_id(estado)
 
     @staticmethod
-    def __get_estado_payment( estado):
+    def __get_estado_payment(estado):
         return ResourceTransactions.get_buy_payment_states_by_id(estado)
 
     @staticmethod
-    def __sendNotifications(data):
-        pass
+    def __send_notifications(data):
+        if 'payment_id' in data.keys():
+            buy_parameter = {'payment_id': data['payment_id']}
+            estado = data["State"]
+        elif 'tracking_id' in data.keys():
+            buy_parameter = {'tracking_id': data['tracking_id']}
+            estado = data["State"]
+        else:
+            buy_parameter = {'ID': data['buyId']}
+            estado = data["estado"]
+        if estado != "Calificado" and estado != "Completado":
+            buy = buysCollection.find_one(buy_parameter)
+            post = PostTransactions.find_post_by_post_id(buy["postId"])
+            FirebaseCommunication.send_notification(buy['_id']['facebookId'],
+                                                    "Su compra del post " +
+                                                    post["title"]) + " a pasado al estado " + estado
+            FirebaseCommunication.send_notification(post['_id']['facebookId'],
+                                                    "Su venta del post " +
+                                                    post["title"]) + " a pasado al estado " + estado

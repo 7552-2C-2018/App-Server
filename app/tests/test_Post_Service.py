@@ -22,7 +22,8 @@ new_post = {"facebookId": "102510700706087",
             "stock": 2,
             "title": "Prueba"}
 
-
+@patch('server.Communication.FirebaseCommunication.firebaseCommunication.'
+       'FirebaseCommunication.send_notification', MagicMock())
 class PostsTests(GenericTest):
 
     def test_get_all_posts(self):

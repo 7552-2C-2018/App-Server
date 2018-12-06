@@ -53,17 +53,24 @@ class FirebaseCommunication:
         FirebaseCommunication.__new_user_chat(post_data["_id"]["facebookId"], chat_id)
 
     @staticmethod
-    def send_notification(facebook_id, categoria, title):
+    def send_notification(facebook_id, title):
         try:
             url = 'https://fcm.googleapis.com/fcm/send'
             json_data = {
-                "to": "/topics/pushNotifications",
-                "priority": "high",
-                "collapse_key": "type_a",
-                "data": {"title": categoria,
-                         "body": {'userId': facebook_id, 'title': title}
-                         }
-                    }
+                "to": "/topics/allDevices",
+                "notification": {
+                    "body": "great match!",
+                    "content_available": True,
+                    "priority": "high",
+                    "title": title
+                },
+                "data": {
+                    "user_id": facebook_id,
+                    "content_available": True,
+                    "priority": "high",
+                    "title": title
+                }
+            }
 
             response = requests.post(url, json=json_data, headers={'Authorization': "key=" + FIREBASE_KEY,
                                                                    'Content-type': 'application/json'})
@@ -71,4 +78,3 @@ class FirebaseCommunication:
         except Exception as e:
             logging.error('Surgio un problema al enviar el mensaje: ' + str(e))
             logging.error('Respuesta: ' + response.text)
-            logging.error('Key: ' + FIREBASE_KEY)

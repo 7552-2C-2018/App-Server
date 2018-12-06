@@ -1,12 +1,12 @@
-import time
 import datetime
+import time
 from server.setup import app
-from flask import Flask
-import logging
+from server.logger import Logger
 
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
     userCollection = app.database.users
+
+LOGGER = Logger().get(__name__)
 
 SCORE_MULTIPLIER = 100
 BUY_SCORE = 20
@@ -45,16 +45,17 @@ class UserTransactions:
     def newUser(user_id, first_name, last_name, photo_url, email):
 
         id = userCollection.insert_one({"facebookId": user_id,
-                                           "nombre": first_name,
-                                           "apellido": last_name,
-                                           "photoUrlToken": photo_url,
-                                           "email": email})
+                                        "nombre": first_name,
+                                        "apellido": last_name,
+                                        "photoUrlToken": photo_url,
+                                        "email": email})
+        LOGGER.info("Se creo un nuevo usuario id:" + user_id)
         return id
 
     @staticmethod
     def updateUserToken(facebook_id, new_token, new_expdate):
         userCollection.update_one({'facebookId': facebook_id},
-                                     {'$set': {'token': new_token, 'exp_date': new_expdate}})
+                                  {'$set': {'token': new_token, 'exp_date': new_expdate}})
 
     @staticmethod
     def updateUserBuyPoints(facebook_id, payment_method):
@@ -64,25 +65,25 @@ class UserTransactions:
         elif payment_method == "Efectivo":
             points += CASH_POINTS
         userCollection.update_one({'facebookId': facebook_id},
-                                     {'$inc': {'buyPoints': points}})
+                                  {'$inc': {'buyPoints': points}})
+        LOGGER.debug("El nuevo puntaje por compras de " + facebook_id + "es " + str(points))
         UserTransactions.__update_total_score(facebook_id)
 
     @staticmethod
     def updateUserSellPoints(facebook_id):
         points = SCORE_MULTIPLIER
         userCollection.update_one({'facebookId': facebook_id},
-                                     {'$inc': {'sellPoints': points}})
+                                  {'$inc': {'sellPoints': points}})
+        LOGGER.debug("El nuevo puntaje por ventas de " + facebook_id + "es " + str(points))
         UserTransactions.__update_total_score(facebook_id)
 
     @staticmethod
     def updateUserScorePoints(facebook_id, score_average):
-        points = int(score_average*100)
-        logging.debug(facebook_id)
-        logging.debug(points)
+        points = int(score_average * 100)
         userCollection.update_one({'facebookId': facebook_id},
-                                     {'$set': {'scorePoints': points}})
+                                  {'$set': {'scorePoints': points}})
         UserTransactions.__update_total_score(facebook_id)
-
+        LOGGER.debug("El nuevo puntaje es de " + facebook_id + "es " + str(points))
 
     @staticmethod
     def updateUserData(data):
@@ -114,6 +115,7 @@ class UserTransactions:
         points += result["buyPoints"]
         points += result["scorePoints"]
         userCollection.update_one({'facebookId': facebook_id}, {'$set': {'totalPoints': points}})
+        LOGGER.debug("El nuevo puntaje de " + facebook_id + "es " + str(points))
 
     @staticmethod
     def get_user_points(user_id):

@@ -108,7 +108,7 @@ class ScoreTransactions:
 
     @staticmethod
     def __get_calificado(data):
-        buy = BuyTransactions.findBuyById(data["buyId"])
+        buy = BuyTransactions.find_buy(data["buyId"])
         seller_facebook_id = PostTransactions.find_post_by_post_id(buy["postId"])["_id"]["facebookId"]
         buyer_facebook_id = buy["_id"]["facebookId"]
         if data["rol"] == "Vendedor":

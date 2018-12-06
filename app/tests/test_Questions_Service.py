@@ -35,7 +35,7 @@ new_answer = {
        'FirebaseCommunication.new_chat', MagicMock())
 @patch('server.Communication.FirebaseCommunication.firebaseCommunication.'
        'FirebaseCommunication.send_notification', MagicMock())
-class PostsTests(GenericTest):
+class PostsQuestions(GenericTest):
 
     def test_get_all_questions(self):
         response = QuestionServices.getAllQuestions(postId)

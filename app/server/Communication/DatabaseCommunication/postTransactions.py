@@ -1,14 +1,13 @@
-from server.setup import app
-import logging
-import json
-import datetime
-import time
-import pymongo
 import base64
-import qrcode
-from io import BytesIO
+import datetime
+import logging
 import re
+import time
+from io import BytesIO
+import qrcode
 from bson.son import SON
+
+from server.setup import app
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
@@ -27,28 +26,28 @@ class PostTransactions:
     @staticmethod
     def __parse_data(data):
         parsed_data = {}
-        if "title" in  data.keys() and data["title"] is not None:
+        if "title" in data.keys() and data["title"] is not None:
             parsed_data["title"] = data["title"]
-        if "desc" in  data.keys() and data["desc"] is not None:
+        if "desc" in data.keys() and data["desc"] is not None:
             parsed_data["description"] = data["desc"]
-        if "stock" in  data.keys() and data["stock"] is not None:
+        if "stock" in data.keys() and data["stock"] is not None:
             parsed_data["stock"] = data["stock"]
-        if "payments" in  data.keys() and data["payments"] is not None:
+        if "payments" in data.keys() and data["payments"] is not None:
             parsed_data["payments"] = data["payments"]
-        if "price" in  data.keys() and data["price"] is not None:
+        if "price" in data.keys() and data["price"] is not None:
             parsed_data["price"] = data["price"]
-        if "new" in  data.keys() and data["new"] is not None:
+        if "new" in data.keys() and data["new"] is not None:
             parsed_data["new"] = data["new"]
-        if "category" in  data.keys() and data["category"] is not None:
+        if "category" in data.keys() and data["category"] is not None:
             parsed_data["category"] = data["category"]
-        if "pictures" in  data.keys() and data["pictures"] is not None:
+        if "pictures" in data.keys() and data["pictures"] is not None:
             parsed_data["pictures"] = data["pictures"]
-        if "shipping" in  data.keys() and data["shipping"] is not None:
+        if "shipping" in data.keys() and data["shipping"] is not None:
             parsed_data["shipping"] = data["shipping"]
-        if "street" in  data.keys() and data["street"] is not None:
+        if "street" in data.keys() and data["street"] is not None:
             parsed_data["street"] = data["street"]
-        if "latitude" in  data.keys() and data["latitude"] is not None and \
-                "longitude" in  data.keys() and data["longitude"]:
+        if "latitude" in data.keys() and data["latitude"] is not None and \
+                "longitude" in data.keys() and data["longitude"]:
             parsed_data["coordenates"] = [data["longitude"], data["latitude"]]
         return parsed_data
 
@@ -57,10 +56,9 @@ class PostTransactions:
         logging.debug(post_id)
         return workingCollection.find_one({'ID': post_id})
 
-
     @staticmethod
     def getPosts(data):
-        queryFilters = PostTransactions.__build_query_filters(data)
+        query_filters = PostTransactions.__build_query_filters(data)
         pipeline = [
             {
                 u"$project": {
@@ -84,7 +82,7 @@ class PostTransactions:
             },
             {
                 u"$match":
-                    queryFilters
+                    query_filters
 
             },
             {
@@ -107,10 +105,6 @@ class PostTransactions:
             pipeline,
             allowDiskUse=True
         )
-        # response = list(workingCollection.find(queryFilters,
-        #                                        {"_id": 0, "ID": 1, "title": 1, "price": 1,
-        #                                         "coordenates": 1, 'pictures': {'$slice': 1}}
-        #                                       ))
         return list(cursor)
 
     @staticmethod
@@ -129,8 +123,8 @@ class PostTransactions:
     @staticmethod
     def find_post_by_user_id(user_id):
         return list(workingCollection.find({"_id.facebookId": user_id},
-                                           {"_id": 0, "ID": 1, "title": 1
-                                               , "price": 1, 'pictures': {'$slice': 1}}))
+                                           {"_id": 0, "ID": 1, "title": 1,
+                                            "price": 1, 'pictures': {'$slice': 1}}))
 
     @staticmethod
     def update_post_data(data):
@@ -148,10 +142,11 @@ class PostTransactions:
             if data['distancia'] is not None and data['latitud'] is not None and data['longitud'] is not None:
                 filters["posts.coordenates"] = {}
                 filters["posts.coordenates"]["$geoWithin"] = {}
-                filters["posts.coordenates"]["$geoWithin"]["$center"] = [[data['longitud'], data['latitud']], data['distancia']]
+                filters["posts.coordenates"]["$geoWithin"]["$center"] = [[data['longitud'], data['latitud']],
+                                                                         data['distancia']]
         if ('precioMinimo' in data.keys() and data['precioMinimo'] is not None) or \
                 ('precioMaximo' in data.keys() and data['precioMaximo'] is not None):
-                filters["posts.price"] = {}
+            filters["posts.price"] = {}
         if 'precioMaximo' in data.keys():
             if data['precioMaximo'] is not None:
                 filters['posts.price']['$lte'] = data['precioMaximo']
@@ -180,7 +175,7 @@ class PostTransactions:
         return filters
 
     @staticmethod
-    def __generate_qr( post_id):
+    def __generate_qr(post_id):
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,

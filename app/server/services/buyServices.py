@@ -31,7 +31,7 @@ class BuyServices:
 
     @staticmethod
     def getBuysBySeller(request_data):
-        response = BuyTransactions.findBuyBySellerId(request_data["seller_id"])
+        response = BuyTransactions.find_buy_by_seller_id(request_data["seller_id"])
 
         if not response is None:
             return Responses.success('Compras obtenidas satisfactoriamente', response)
@@ -48,6 +48,8 @@ class BuyServices:
         FirebaseCommunication.new_chat(request_data['facebookId'], post_data)
         UserTransactions.pushUserActivitiy(request_data['facebookId'], "buy")
         UserTransactions.pushUserActivitiy(post_data['_id']['facebookId'], "sell")
+        FirebaseCommunication.send_notification(post_data['_id']['facebookId'],
+                                                "Haz realizado una venta del post " + post_data["title"])
         return Responses.created('Compra creada satisfactoriamente', "")
 
 

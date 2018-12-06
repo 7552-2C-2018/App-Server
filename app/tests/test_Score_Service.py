@@ -44,7 +44,7 @@ update_score = {
        'FirebaseCommunication.new_chat', MagicMock())
 @patch('server.Communication.FirebaseCommunication.firebaseCommunication.'
        'FirebaseCommunication.send_notification', MagicMock())
-class PostsTests(GenericTest):
+class ScoresTests(GenericTest):
 
     def test_get_all_given_scores(self):
         response = ScoreServices.getScoreByScorerId(registered_credentials)

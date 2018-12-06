@@ -5,19 +5,23 @@ from functools import wraps
 import datetime
 import time
 
+from server.logger import Logger
+
 URL = 'http://servicios.usig.buenosaires.gob.ar/'
-import logging
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
+
+LOGGER = Logger().get(__name__)
 
 
 class GeolocationServiceCommunication:
 
     @staticmethod
     def getCoordenates(calle,localidad):
-        logging.debug("entro " )
+        LOGGER.info("Inicio de comunicacion con USIG")
         response = requests.get(URL + 'normalizar/?direccion='+calle+','+localidad+'&geocodificar=TRUE&maxOptions=1')
-        logging.debug("coordenadas: " + str(response.text))
-        coordenadas = json.loads(response.text)["direccionesNormalizadas"][0]["coordenadas"]
-
-        return {"latitud": coordenadas["y"], "longitud": coordenadas["x"]}
-
+        LOGGER.info("Geolocalizado: " + str(response.text))
+        try:
+            coordenadas = json.loads(response.text)["direccionesNormalizadas"][0]["coordenadas"]
+            return {"latitud": coordenadas["y"], "longitud": coordenadas["x"]}
+        except:
+            LOGGER.warn("Error de USIG al geolocalizar")
+            return None

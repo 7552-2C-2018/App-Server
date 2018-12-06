@@ -33,9 +33,7 @@ class QuestionServices:
         QuestionTransactions.newQuestion(request_data)
         UserTransactions.pushUserActivitiy(request_data["facebookId"], "question")
         UserTransactions.pushUserActivitiy(post_data["_id"]["facebookId"], "questioned")
-        QuestionServices.__sendNotifications(request_data)
-        FirebaseCommunication.send_notification(request_data["facebookId"],
-                                                "questioned",
+        FirebaseCommunication.send_notification(post_data["_id"]["facebookId"],
                                                 "Recibiste una pregunta sobre el post " + post_data["title"])
         return Responses.created('Pregunta creada satisfactoriamente', "")
 
@@ -45,7 +43,8 @@ class QuestionServices:
         if response is not None:
             UserTransactions.pushUserActivitiy(request_data["facebookId"], "answer")
             UserTransactions.pushUserActivitiy(response["userId"], "answered")
-            QuestionServices.__sendNotifications(request_data)
+            FirebaseCommunication.send_notification(response["userId"],
+                                                    "Recibiste una respuesta!")
             return Responses.success('Pregunta actualizada satisfactoriamente', "")
         else:
             return Responses.badRequest('Pregunta inexistente', "")
