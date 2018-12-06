@@ -27,8 +27,8 @@ class ScoreServices:
                 return Responses.badRequest('No se puede calificar a si mismo', "")
             score_average = ScoreTransactions.find_scored_user_average(scored_user_id)
             UserTransactions.updateUserScorePoints(scored_user_id, score_average)
-            UserTransactions.pushUserActivitiy(request_data["facebookId"], "scorer")
-            UserTransactions.pushUserActivitiy(scored_user_id, "scored")
+            UserTransactions.pushUserActivitiy(request_data["facebookId"], "Has calificado una publicacion")
+            UserTransactions.pushUserActivitiy(scored_user_id, "Has sido calificado por una publicacion")
             FirebaseCommunication.send_notification(scored_user_id,
                                                     "Haz recibido una calificacion: " + \
                                                     str(request_data["value"]) + " puntos.")
