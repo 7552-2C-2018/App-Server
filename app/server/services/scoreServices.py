@@ -31,7 +31,7 @@ class ScoreServices:
             UserTransactions.pushUserActivitiy(scored_user_id, "Has sido calificado por una publicacion")
             FirebaseCommunication.send_notification(scored_user_id,
                                                     "Has recibido una calificacion: " + \
-                                                    str(request_data["value"]) + " puntos.")
+                                                    str(request_data["value"]) + " puntos.", "")
             return Responses.created('Calificado correctamente', "")
         else:
             LOGGER.warn("No se pudo crear la calificacion, Rol invalido")

@@ -41,7 +41,7 @@ new_buy_args.add_argument('dept', type=str, help='Depto del shipping', location=
 new_buy_args.add_argument('city', type=str, help='Ciudad del shipping', location='form')
 
 modify_state = common_args.copy()
-modify_state.add_argument('State', type=int, help='Nuevo estado de la compra',
+modify_state.add_argument('estado', type=int, help='Nuevo estado de la compra',
                           location='form', required=True)
 
 server_communication_args = reqparse.RequestParser()

@@ -238,42 +238,45 @@ class BuyTransactions:
                     raise Exception
             if estado == "Envio realizado":
                 estado = "Finalizado"
+            buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": estado}})
             BuyTransactions.__send_notifications(data)
-            return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": estado}})
         else:
             raise Exception
 
     @staticmethod
     def update_buy_by_tracking_id(data):
-        data["State"] = BuyTransactions.__get_estado_tracking(data["State"])
-        if data["State"] is not None or data["State"] == "Completado":
-            if data["State"] == "Envio realizado":
-                data["State"] = "Finalizado"
+        estado = BuyTransactions.__get_estado_tracking(data["State"])
+        if estado is not None:
+            if estado == "Envio realizado":
+                estado = "Finalizado"
+            buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": estado}})
             BuyTransactions.__send_notifications(data)
-            return buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": data["State"]}})
+            return ""
         else:
             return "Estado Invalido"
 
     @staticmethod
     def update_buy_by_payment_id(data):
-        data["State"] = BuyTransactions.__get_estado_payment(data["State"])
+        estado = BuyTransactions.__get_estado_payment(data["State"])
         BuyTransactions.__send_notifications(data)
-        if data["State"] is not None and data["State"] != "Completado":
-            return buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": data["State"]}})
+        if estado is not None:
+            buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": estado}})
+            BuyTransactions.__send_notifications(data)
+            return ""
         else:
             return "Estado Invalido"
 
     @staticmethod
     def __get_estado(estado):
-        return ResourceTransactions.get_buy_states_by_id(estado)
+        return ResourceTransactions.get_buy_states_by_id(estado)["estado"]
 
     @staticmethod
     def __get_estado_tracking(estado):
-        return ResourceTransactions.get_buy_tracking_states_by_id(estado)
+        return ResourceTransactions.get_buy_tracking_states_by_id(estado)["estado"]
 
     @staticmethod
     def __get_estado_payment(estado):
-        return ResourceTransactions.get_buy_payment_states_by_id(estado)
+        return ResourceTransactions.get_buy_payment_states_by_id(estado)["estado"]
 
     @staticmethod
     def __send_notifications(data):

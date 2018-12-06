@@ -105,17 +105,18 @@ class UserTransactions:
     @staticmethod
     def __update_total_score(facebook_id):
         result = userCollection.find_one({'facebookId': facebook_id})
-        if "sellPoints" not in result.keys():
-            result["sellPoints"] = 0
-        if "buyPoints" not in result.keys():
-            result["buyPoints"] = 0
-        if "scorePoints" not in result.keys():
-            result["scorePoints"] = 0
-        points = result["sellPoints"]
-        points += result["buyPoints"]
-        points += result["scorePoints"]
-        userCollection.update_one({'facebookId': facebook_id}, {'$set': {'totalPoints': points}})
-        LOGGER.debug("El nuevo puntaje de " + facebook_id + "es " + str(points))
+        if result is not None:
+            if "sellPoints" not in result.keys():
+                result["sellPoints"] = 0
+            if "buyPoints" not in result.keys():
+                result["buyPoints"] = 0
+            if "scorePoints" not in result.keys():
+                result["scorePoints"] = 0
+            points = result["sellPoints"]
+            points += result["buyPoints"]
+            points += result["scorePoints"]
+            userCollection.update_one({'facebookId': facebook_id}, {'$set': {'totalPoints': points}})
+            LOGGER.debug("El nuevo puntaje de " + facebook_id + "es " + str(points))
 
     @staticmethod
     def get_user_points(user_id):

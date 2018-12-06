@@ -1,3 +1,4 @@
+from server.logger import Logger
 from server.Communication.DatabaseCommunication.buyTransactions import BuyTransactions
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
 from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
@@ -8,6 +9,7 @@ import datetime
 import time
 from server.Communication.SharedServerCommunication.sharedServerRequests import SharedServerRequests
 
+LOGGER = Logger.get(__name__)
 
 logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 with app.app_context():
@@ -41,7 +43,7 @@ class ScoreTransactions:
                                                   "value": data['value'],
                                                   "comment": data['comment']}})
         except Exception:
-            return "calificado"
+            return "Calificado"
         return calificado
     @staticmethod
     def update_score(data):
@@ -109,6 +111,7 @@ class ScoreTransactions:
     @staticmethod
     def __get_calificado(data):
         buy = BuyTransactions.find_buy(data["buyId"])
+        LOGGER.debug("buy id" + str(buy))
         seller_facebook_id = PostTransactions.find_post_by_post_id(buy["postId"])["_id"]["facebookId"]
         buyer_facebook_id = buy["_id"]["facebookId"]
         if data["rol"] == "Vendedor":
@@ -118,6 +121,6 @@ class ScoreTransactions:
             return buyer_facebook_id
         else:
             data["estado"] = ESTADO_CALIFICADO
-            UserTransactions.updateUserBuyPoints(buyer_facebook_id, buy["paymentMethod"])
+            UserTransactions.updateUserBuyPoints(buyer_facebook_id, "Efectivo")
             #BuyTransactions.updateBuyData(data)
             return seller_facebook_id
