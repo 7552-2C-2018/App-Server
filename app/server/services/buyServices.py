@@ -56,13 +56,14 @@ class BuyServices:
 
     @staticmethod
     def updateBuy(request_data):
+        LOGGER.debug("Req data:" + str(request_data))
         if BuyServices.__validate_buy(request_data):
             return Responses.badRequest('Compra inexistente')
-        try:
-            response = BuyTransactions.updateBuyData(request_data)
-            return Responses.success('Compra actualizada satisfactoriamente', "")
-        except Exception:
-            return Responses.badRequest('Estado Invalido')
+        #try:
+        response = BuyTransactions.updateBuyData(request_data)
+        return Responses.success('Compra actualizada satisfactoriamente', "")
+        #except Exception:
+        return Responses.badRequest('Estado Invalido')
 
     @staticmethod
     def update_buy_by_payment_id(request_data):

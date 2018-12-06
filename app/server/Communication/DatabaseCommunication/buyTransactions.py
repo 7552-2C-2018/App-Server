@@ -222,8 +222,8 @@ class BuyTransactions:
     @staticmethod
     def updateBuyData(data):
         estado = BuyTransactions.__get_estado(data["estado"])
-        LOGGER.info("estado:" + str(estado))
-        if estado is not None and estado != "Completado":
+        LOGGER.debug("Estado a actualizar:" + str(estado))
+        if estado is not None:
             has_tracking = buysCollection.find_one({'ID': data['buyId'], 'tracking': {"$exists": True}})
             tracking_state = BuyTransactions.__get_estado_tracking(data["estado"])
             if has_tracking is not None:
@@ -232,6 +232,7 @@ class BuyTransactions:
                     raise Exception
             has_payment = buysCollection.find_one({'ID': data['buyId'], 'payment': {"$exists": True}})
             payment_state = BuyTransactions.__get_estado_payment(data["estado"])
+            LOGGER.debug("estado pre update:" + str(estado))
             if has_payment is not None:
                 if payment_state is not None:
                     LOGGER.debug("invalid by payment")
@@ -239,7 +240,7 @@ class BuyTransactions:
             if estado == "Envio realizado":
                 estado = "Finalizado"
             buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": estado}})
-            BuyTransactions.__send_notifications(data)
+            BuyTransactions.__send_notifications(data, estado)
         else:
             raise Exception
 
@@ -250,7 +251,7 @@ class BuyTransactions:
             if estado == "Envio realizado":
                 estado = "Finalizado"
             buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": estado}})
-            BuyTransactions.__send_notifications(data)
+            BuyTransactions.__send_notifications(data, estado)
             return ""
         else:
             return "Estado Invalido"
@@ -258,43 +259,51 @@ class BuyTransactions:
     @staticmethod
     def update_buy_by_payment_id(data):
         estado = BuyTransactions.__get_estado_payment(data["State"])
-        BuyTransactions.__send_notifications(data)
         if estado is not None:
             buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": estado}})
-            BuyTransactions.__send_notifications(data)
+            BuyTransactions.__send_notifications(data, estado)
             return ""
         else:
             return "Estado Invalido"
 
     @staticmethod
-    def __get_estado(estado):
-        return ResourceTransactions.get_buy_states_by_id(estado)["estado"]
+    def __get_estado(estado_dict):
+        try:
+            LOGGER.debug(str(estado_dict))
+            estado = ResourceTransactions.get_buy_states_by_id(estado_dict)["estado"]
+
+            return estado
+        except Exception:
+            return None
 
     @staticmethod
     def __get_estado_tracking(estado):
-        return ResourceTransactions.get_buy_tracking_states_by_id(estado)["estado"]
+        try:
+            return ResourceTransactions.get_buy_tracking_states_by_id(estado)["estado"]
+        except Exception:
+            return None
 
     @staticmethod
     def __get_estado_payment(estado):
-        return ResourceTransactions.get_buy_payment_states_by_id(estado)["estado"]
+        try:
+            return ResourceTransactions.get_buy_payment_states_by_id(estado)["estado"]
+        except Exception:
+            return None
 
     @staticmethod
-    def __send_notifications(data):
+    def __send_notifications(data, estado):
         if 'payment_id' in data.keys():
             buy_parameter = {'payment_id': data['payment_id']}
-            estado = data["State"]
         elif 'tracking_id' in data.keys():
             buy_parameter = {'tracking_id': data['tracking_id']}
-            estado = data["State"]
         else:
             buy_parameter = {'ID': data['buyId']}
-            estado = data["estado"]
         if estado != "Calificado" and estado != "Completado":
             buy = buysCollection.find_one(buy_parameter)
             post = PostTransactions.find_post_by_post_id(buy["postId"])
             FirebaseCommunication.send_notification(buy['_id']['facebookId'], "Una compra a cambiado de estado",
                                                     "Su compra del post " +
-                                                    post["title"]) + " a pasado al estado " + estado
+                                                    post["title"] + " a pasado al estado " + estado)
             FirebaseCommunication.send_notification(post['_id']['facebookId'], "Una venta a cambiado de estado",
                                                     "Su venta del post " +
-                                                    post["title"]) + " a pasado al estado " + estado
+                                                    post["title"] + " a pasado al estado " + estado)

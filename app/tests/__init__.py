@@ -66,6 +66,7 @@ class GenericTest(unittest.TestCase):
                 "facebookId": "99",
                 "publication_date": 1539228792
             },
+            "estado": "Comprado",
             "ID": "991539228792",
             "postId": "1025107007060871539228792",
             "street": "calle falsa 123",
@@ -80,6 +81,7 @@ class GenericTest(unittest.TestCase):
             "ID": "991539228999",
             "postId": "1025107007060871539228792",
             "street": "calle falsa 123",
+            "estado": "Comprado",
             "price": 100,
             "paymentMethod": "Credito",
             "payment": 1,

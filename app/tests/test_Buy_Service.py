@@ -1,7 +1,9 @@
+from server.logger import Logger
 from . import GenericTest
 from server.setup import app
 from server.services.buyServices import BuyServices
 from unittest.mock import *
+LOGGER = Logger.get(__name__)
 PAYMENT_STATE_CODE = 7
 TRACKING_STATE_CODE = 11
 registered_credentials = {"facebookId": "102510700706087", "token": ""}
@@ -62,6 +64,7 @@ class BuyTests(GenericTest):
 
     def test_update_buy_user(self):
         update_buy_data = common_update_buy_data.copy()
+        LOGGER.debug(str(update_buy_data))
         response = BuyServices.updateBuy(update_buy_data)
         assert response["message"] == 'Compra actualizada satisfactoriamente'
         assert response["status"] == 200

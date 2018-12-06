@@ -63,14 +63,12 @@ class FirebaseCommunication:
                 "to": "/topics/allDevices",
                 "notification": {
                     "content_available": True,
-                    "priority": "high",
                     "title": title,
                     "body": body
                 },
                 "data": {
                     "user_id": facebook_id,
                     "content_available": True,
-                    "priority": "high",
                     "title": title,
                     "body": body
                 }
