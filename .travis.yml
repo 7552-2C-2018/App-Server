@@ -3,9 +3,5 @@ python:
   - "3.6.4"
 services:
   - mongodb
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install make gcc libc-dev libjpeg62-dev tk8.5 tcl8.5 tk8.5-dev tcl8.5-dev
-  - sudo apt-get build-dep python-imaging --fix-missing
-install: "pip install -r requirements.txt"
+install: "pip install -r requirements-travis.txt"
 script: bash travis.sh 
