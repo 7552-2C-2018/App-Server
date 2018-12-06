@@ -43,17 +43,17 @@ class Questions(Resource):
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
-@api.route('/question_d=<string:questionId>/')
-@api.param('question_id', 'Id from question')
+@api.route('/postId=<string:postId>/')
+@api.param('postId', 'Id from post')
 class QuestionsByPost(Resource):
     @api.doc(responses=responses)
     @api.expect(common_args)
 
     @validateAuth
-    def get(self, question_id):
-        """Endpoint that gets a single question"""
+    def get(self, postId):
+        """Endpoint that gets all questions"""
         time_start = time.time()
-        return_data = QuestionServices.getAllQuestions(question_id)
+        return_data = QuestionServices.getAllQuestions(postId)
         time_end = time.time()
         monitor(time_start, time_end, path, "get")
         return return_data["data"], return_data["status"], {'message': return_data["message"]}

@@ -56,7 +56,7 @@ class FirebaseCommunication:
         FirebaseCommunication.__new_user_chat(post_data["_id"]["facebookId"], chat_id)
 
     @staticmethod
-    def send_notification(facebook_id, title):
+    def send_notification(facebook_id, title, body):
         try:
             url = 'https://fcm.googleapis.com/fcm/send'
             json_data = {
@@ -64,13 +64,15 @@ class FirebaseCommunication:
                 "notification": {
                     "content_available": True,
                     "priority": "high",
-                    "title": title
+                    "title": title,
+                    "body": body
                 },
                 "data": {
                     "user_id": facebook_id,
                     "content_available": True,
                     "priority": "high",
-                    "title": title
+                    "title": title,
+                    "body": body
                 }
             }
 

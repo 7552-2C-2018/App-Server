@@ -1,10 +1,11 @@
+from server.logger import Logger
 from server.Communication.DatabaseCommunication.userTransactions import UserTransactions
 from server.Structures.Response import Responses
 from server.Communication.DatabaseCommunication.buyTransactions import BuyTransactions
 from server.Communication.DatabaseCommunication.postTransactions import PostTransactions
 from server.Communication.FirebaseCommunication.firebaseCommunication import FirebaseCommunication
-import logging
-logging.basicConfig(filename='debug.log', level=logging.DEBUG)
+
+LOGGER = Logger.get(__name__)
 
 
 class BuyServices:
@@ -48,8 +49,8 @@ class BuyServices:
         FirebaseCommunication.new_chat(request_data['facebookId'], post_data)
         UserTransactions.pushUserActivitiy(request_data['facebookId'], "Has realizado una compra")
         UserTransactions.pushUserActivitiy(post_data['_id']['facebookId'], "Has realizado una venta")
-        FirebaseCommunication.send_notification(post_data['_id']['facebookId'],
-                                                "Has realizado una venta del post " + post_data["title"])
+        FirebaseCommunication.send_notification(post_data['_id']['facebookId'], "Has realizado una venta",
+                                                post_data["title"])
         return Responses.created('Compra creada satisfactoriamente', "")
 
 

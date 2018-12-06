@@ -1,5 +1,4 @@
 import datetime
-import logging
 import time
 
 from server.setup import app
@@ -219,19 +218,19 @@ class BuyTransactions:
     @staticmethod
     def updateBuyData(data):
         estado = BuyTransactions.__get_estado(data["estado"])
-        logging.debug("estado:" + str(estado))
-        if estado is not None or data["State"] == "Completado":
+        LOGGER.debug("estado:" + str(estado))
+        if estado is not None and data["State"] != "Completado":
             has_tracking = buysCollection.find_one({'ID': data['buyId'], 'tracking': {"$exists": True}})
             tracking_state = BuyTransactions.__get_estado_tracking(data["estado"])
             if has_tracking is not None:
                 if tracking_state is not None:
-                    logging.debug("invalid by tracking")
+                    LOGGER.debug("invalid by tracking")
                     raise Exception
             has_payment = buysCollection.find_one({'ID': data['buyId'], 'payment': {"$exists": True}})
             payment_state = BuyTransactions.__get_estado_payment(data["estado"])
             if has_payment is not None:
                 if payment_state is not None:
-                    logging.debug("invalid by payment")
+                    LOGGER.debug("invalid by payment")
                     raise Exception
             if data["estado"] == "Envio realizado":
                 data["estado"] = "Finalizado"
@@ -286,9 +285,9 @@ class BuyTransactions:
         if estado != "Calificado" and estado != "Completado":
             buy = buysCollection.find_one(buy_parameter)
             post = PostTransactions.find_post_by_post_id(buy["postId"])
-            FirebaseCommunication.send_notification(buy['_id']['facebookId'],
+            FirebaseCommunication.send_notification(buy['_id']['facebookId'], "Una compra a cambiado de estado",
                                                     "Su compra del post " +
                                                     post["title"]) + " a pasado al estado " + estado
-            FirebaseCommunication.send_notification(post['_id']['facebookId'],
+            FirebaseCommunication.send_notification(post['_id']['facebookId'], "Una venta a cambiado de estado",
                                                     "Su venta del post " +
                                                     post["title"]) + " a pasado al estado " + estado
