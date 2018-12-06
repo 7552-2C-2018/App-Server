@@ -10,6 +10,7 @@ RUN pip install gunicorn
 
 
 ENV MONGO_URI = mongodb://admin:Taller2018@ds245532.mlab.com:45532/app-server
+ENV MONGO_URL_TEST = mongodb://mongo-db:27017/testDatabase
 
 CMD gunicorn --pythonpath app app.server.app:app
 

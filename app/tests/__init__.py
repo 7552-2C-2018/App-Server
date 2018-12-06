@@ -1,7 +1,7 @@
 import os
-MONGO_URL = os.environ.get('MONGO_URL')
+MONGO_URL = os.environ.get('MONGO_URL_TEST')
 if not MONGO_URL:
-    os.environ.setdefault('MONGO_URL', 'mongodb://mongo-db:27017/testDatabase')
+    os.environ.setdefault('MONGO_URL', 'mongodb://127.0.0:27017/testDatabase')
     MONGO_URL
 import unittest
 from server.setup import app
