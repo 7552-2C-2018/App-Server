@@ -20,7 +20,7 @@ new_buy_data = {"facebookId": "102510700706087",
 
 common_update_buy_data = {"facebookId": "102510700706087",
                    "buyId": "991539228792",
-                   "estado": "1"}
+                   "estado": 2}
 
 
 @patch('server.Communication.SharedServerCommunication.sharedServerRequests.'

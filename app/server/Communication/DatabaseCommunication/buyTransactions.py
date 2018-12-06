@@ -140,7 +140,11 @@ class BuyTransactions:
 
     @staticmethod
     def find_buy(buy_id):
-        return buysCollection.find_one({"ID": buy_id})
+        cursor = buysCollection.find({"ID": buy_id})
+        try:
+            return list(cursor)[0]
+        except Exception:
+            return None
 
     @staticmethod
     def newBuy(data):
@@ -218,8 +222,8 @@ class BuyTransactions:
     @staticmethod
     def updateBuyData(data):
         estado = BuyTransactions.__get_estado(data["estado"])
-        LOGGER.debug("estado:" + str(estado))
-        if estado is not None and data["State"] != "Completado":
+        LOGGER.info("estado:" + str(estado))
+        if estado is not None and estado != "Completado":
             has_tracking = buysCollection.find_one({'ID': data['buyId'], 'tracking': {"$exists": True}})
             tracking_state = BuyTransactions.__get_estado_tracking(data["estado"])
             if has_tracking is not None:
@@ -232,8 +236,8 @@ class BuyTransactions:
                 if payment_state is not None:
                     LOGGER.debug("invalid by payment")
                     raise Exception
-            if data["estado"] == "Envio realizado":
-                data["estado"] = "Finalizado"
+            if estado == "Envio realizado":
+                estado = "Finalizado"
             BuyTransactions.__send_notifications(data)
             return buysCollection.update_one({'ID': data['buyId']}, {'$set': {"estado": estado}})
         else:

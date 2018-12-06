@@ -84,9 +84,9 @@ class BuyServices:
         else:
             return Responses.badRequest('Estado Invalido')
 
-    @classmethod
-    def __validate_buy(cls, request_data):
-        valid_buy = BuyTransactions.findBuyById(request_data["buyId"])
+    @staticmethod
+    def __validate_buy(request_data):
+        valid_buy = BuyTransactions.find_buy(request_data["buyId"])
         return valid_buy is None
 
 

@@ -114,10 +114,10 @@ class ScoreTransactions:
         if data["rol"] == "Vendedor":
             data["estado"] = ESTADO_COMPLETADO
             UserTransactions.updateUserSellPoints(seller_facebook_id)
-            BuyTransactions.updateBuyData(data)
+            #BuyTransactions.updateBuyData(data)
             return buyer_facebook_id
         else:
             data["estado"] = ESTADO_CALIFICADO
             UserTransactions.updateUserBuyPoints(buyer_facebook_id, buy["paymentMethod"])
-            BuyTransactions.updateBuyData(data)
+            #BuyTransactions.updateBuyData(data)
             return seller_facebook_id
