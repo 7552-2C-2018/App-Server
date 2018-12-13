@@ -27,7 +27,7 @@ class Stats(Resource):
                     }
                 },
                 {'$sort': {
-                    'date_time': 1}
+                    '_id.day': 1, '_id.hour': 1}
                 }
             ]
             aware_colection = monitor_collection.with_options(
