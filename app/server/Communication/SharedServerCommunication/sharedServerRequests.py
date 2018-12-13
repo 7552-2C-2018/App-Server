@@ -146,7 +146,7 @@ class SharedServerRequests:
     def callApiPayment(headers, data, url):
         response = requests.post(SHARED_SERVER_URL + url, headers=headers,
                                  data=json.dumps(data))
-        if response.status_code == 200:
+        if response.status_code == 201:
             return json.loads(response.text)["data"][0]["transaction_id"]
         else:
             return None
@@ -155,7 +155,7 @@ class SharedServerRequests:
     def callApiTracking(headers, data, url):
         response = requests.post(SHARED_SERVER_URL + url, headers=headers,
                                  data=json.dumps(data))
-        if response.status_code == 200:
+        if response.status_code == 201:
             return json.loads(response.text)["data"]["id"]
         else:
             return None
