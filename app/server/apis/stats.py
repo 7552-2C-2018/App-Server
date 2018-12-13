@@ -18,12 +18,16 @@ class Stats(Resource):
         """Endpoint for checking requests stats"""
         try:
             pipeline = [
-                {'$group':
+                {
+                    '$group':
                     {
                         '_id': {'route': '$route', 'method': '$method', 'day': '$day', 'hour': '$hour'},
                         'totalRequests': {'$sum': 1},
                         'averageTimeElapsed': {'$avg': '$time_elapsed_ms'}
                     }
+                },
+                {'$sort': {
+                    'date_time': 1}
                 }
             ]
             aware_colection = monitor_collection.with_options(
