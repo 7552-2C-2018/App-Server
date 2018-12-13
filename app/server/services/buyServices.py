@@ -67,8 +67,6 @@ class BuyServices:
 
     @staticmethod
     def update_buy_by_payment_id(request_data):
-        if BuyServices.__validate_buy(request_data):
-            return Responses.badRequest('Compra inexistente')
         response = BuyTransactions.update_buy_by_payment_id(request_data)
         if response != "Estado Invalido":
             return Responses.success('Compra actualizada satisfactoriamente', "")
@@ -77,8 +75,6 @@ class BuyServices:
 
     @staticmethod
     def update_buy_by_tracking_id(request_data):
-        if BuyServices.__validate_buy(request_data):
-            return Responses.badRequest('Compra inexistente')
         response = BuyTransactions.update_buy_by_tracking_id(request_data)
         if response != "Estado Invalido":
             return Responses.success('Compra actualizada satisfactoriamente', "")

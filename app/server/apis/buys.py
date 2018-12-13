@@ -129,8 +129,8 @@ class BuyBySeller(Resource):
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
-@api.route('/trackingId=<string:tracking_id>')
-@api.param('trackingId', 'Id from trackingId')
+@api.route('/tracking_id=<string:tracking_id>')
+@api.param('tracking_id', 'Id from trackingId')
 class BuyByTracking(Resource):
     @api.doc(responses=responses)
     @api.expect(server_communication_args)
@@ -138,7 +138,7 @@ class BuyByTracking(Resource):
     def put(self, tracking_id):
         """Endpoint that updates buy state by paymentId"""
         time_start = time.time()
-        args = common_args.parse_args()
+        args = server_communication_args.parse_args()
         args['tracking_id'] = tracking_id
         return_data = BuyServices.update_buy_by_tracking_id(args)
         time_end = time.time()
@@ -146,8 +146,8 @@ class BuyByTracking(Resource):
         return return_data["data"], return_data["status"], {'message': return_data["message"]}
 
 
-@api.route('/paymentId=<string:payment_id>')
-@api.param('paymentId', 'Id from payment_id')
+@api.route('/payment_id=<string:payment_id>')
+@api.param('payment_id', 'Id from payment_id')
 class BuyByShipment(Resource):
     @api.doc(responses=responses)
     @api.expect(server_communication_args)
@@ -155,7 +155,7 @@ class BuyByShipment(Resource):
     def put(self, payment_id):
         """Endpoint that updates buy state by shipmentId"""
         time_start = time.time()
-        args = common_args.parse_args()
+        args = server_communication_args.parse_args()
         args['payment_id'] = payment_id
         return_data = BuyServices.update_buy_by_payment_id(args)
         time_end = time.time()

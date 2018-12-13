@@ -250,7 +250,7 @@ class BuyTransactions:
         if estado is not None:
             if estado == "Envio realizado":
                 estado = "Finalizado"
-            buysCollection.update_one({'tracking_id': data['tracking_id']}, {'$set': {"estado": estado}})
+            buysCollection.update_one({'tracking': int(data['tracking'])}, {'$set': {"estado": estado}})
             BuyTransactions.__send_notifications(data, estado)
             return ""
         else:
@@ -260,7 +260,7 @@ class BuyTransactions:
     def update_buy_by_payment_id(data):
         estado = BuyTransactions.__get_estado_payment(data["State"])
         if estado is not None:
-            buysCollection.update_one({'payment_id': data['payment_id']}, {'$set': {"estado": estado}})
+            buysCollection.update_one({'payment': int(data['payment_id'])}, {'$set': {"estado": estado}})
             BuyTransactions.__send_notifications(data, estado)
             return ""
         else:
@@ -293,13 +293,14 @@ class BuyTransactions:
     @staticmethod
     def __send_notifications(data, estado):
         if 'payment_id' in data.keys():
-            buy_parameter = {'payment_id': data['payment_id']}
+            buy_parameter = {'payment': int(data['payment_id'])}
         elif 'tracking_id' in data.keys():
-            buy_parameter = {'tracking_id': data['tracking_id']}
+            buy_parameter = {'tracking': int(data['tracking_id'])}
         else:
             buy_parameter = {'ID': data['buyId']}
         if estado != "Calificado" and estado != "Completado":
             buy = buysCollection.find_one(buy_parameter)
+            LOGGER.debug(str(buy))
             post = PostTransactions.find_post_by_post_id(buy["postId"])
             FirebaseCommunication.send_notification(buy['_id']['facebookId'], "Una compra a cambiado de estado",
                                                     "Su compra del post " +
