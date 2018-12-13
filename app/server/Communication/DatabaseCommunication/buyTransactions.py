@@ -250,7 +250,7 @@ class BuyTransactions:
         if estado is not None:
             if estado == "Envio realizado":
                 estado = "Finalizado"
-            buysCollection.update_one({'tracking': int(data['tracking'])}, {'$set': {"estado": estado}})
+            buysCollection.update_one({'shipping': int(data['tracking_id'])}, {'$set': {"estado": estado}})
             BuyTransactions.__send_notifications(data, estado)
             return ""
         else:
@@ -295,7 +295,7 @@ class BuyTransactions:
         if 'payment_id' in data.keys():
             buy_parameter = {'payment': int(data['payment_id'])}
         elif 'tracking_id' in data.keys():
-            buy_parameter = {'tracking': int(data['tracking_id'])}
+            buy_parameter = {'shipping': int(data['tracking_id'])}
         else:
             buy_parameter = {'ID': data['buyId']}
         if estado != "Calificado" and estado != "Completado":
