@@ -24,12 +24,12 @@ class Stats(Resource):
                         '_id': {'route': '$route', 'method': '$method', 'day': '$day', 'hour': '$hour'},
                         'totalRequests': {'$sum': 1},
                         'averageTimeElapsed': {'$avg': '$time_elapsed_ms'}
-                    },
-                    '$sort': {
-                        'date_time': 1}
+                    }
+                },
+                {'$sort': {
+                    'date_time': 1}
                 }
             ]
-
             aware_colection = monitor_collection.with_options(
                 codec_options=CodecOptions(tz_aware=True, tzinfo=pytz.timezone('America/Argentina/Buenos_Aires')))
             cursor = aware_colection.aggregate(pipeline)
